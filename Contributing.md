@@ -1,99 +1,183 @@
 # 🤝 Contributing to NeoNest
 
-Thank you for your interest in contributing to **NeoNest** – your efforts mean a lot to us! 💜  
-Before you get started, please read through this document to understand the contribution process. Happy contributing! 🚀
+Thank you for your interest in contributing to *NeoNest* – your time and effort mean a lot to us! 💜  
+Whether you're reporting a bug, suggesting an enhancement, or writing your first pull request – you're welcome here. Let’s build a supportive space for contributors of all experience levels. 🚀
 
 ---
 
 ## 📌 Table of Contents
+
 - [📋 How to Contribute](#-how-to-contribute)
 - [🧠 Code Style Guidelines](#-code-style-guidelines)
+- [📁 File Naming Conventions](#-file-naming-conventions)
+- [✅ PR Review Process](#-pr-review-process)
 - [💬 Community & Communication](#-community--communication)
 - [📝 Contribution Rules](#-contribution-rules)
 - [🎯 Points & Difficulty Levels](#-points--difficulty-levels)
-- [🛡️ Code of Conduct](#-code-of-conduct)
+- [🛡 Code of Conduct](#-code-of-conduct)
 
 ---
 
 ## 📋 How to Contribute
 
 ### 🐞 Bug Reports
-- Open a new issue with the `bug` label.
-- Include a **clear title**, a concise description, and exact **file name/line number** if possible.
-- Mention the expected vs actual behavior.
-- Add **screenshots or screen recordings** if it helps.
-- Provide **steps to reproduce**.
 
-### 🌟 Feature Requests / Documentation Improvements
-- Open a new issue with `feature` or `docs` label.
-- Describe the new feature/enhancement with **context**.
-- If suggesting UI changes, include **mockups** or screenshots.
-- If backend/API changes are involved, mention the endpoints and flow.
+- Open a new issue using the bug label.
+- Include a *clear title, a concise description, and the **file name/line number* if possible.
+- Mention *expected behavior vs actual behavior*.
+- Provide *steps to reproduce the issue*.
+- Add *screenshots or screen recordings* to help us understand better.
 
-### 🧑‍💻 Workflow for Code Contributions
-1. **Star** and **Fork** the repo.
-2. Create a branch: `yourname/feature-name` or `yourname/bugfix-name`.
-3. Make your changes following the project structure.
-4. Run `npm run lint` to fix formatting.
-5. **Test your code thoroughly**.
-6. Commit using clear messages. Example:  
-   `fix: corrected typo in LandingPage.jsx`  
-   `feat: added baby sleep graph comparison`
-7. Push to your fork and open a PR:
-   - Reference the issue with: `Fixes #<issue-number>`
-   - Keep PRs small and focused (1 issue per PR)
+### 🌟 Feature Requests / Docs Improvements
+
+- Open a new issue using the feature or docs label.
+- Describe what you’re proposing and *why it matters*.
+- Include *UI mockups, **screenshots, or **API flow diagrams*, if applicable.
+- Keep ideas beginner-friendly and scalable.
+
+### 🧑‍💻 Code Contributions (Pull Requests)
+
+Here’s a quick overview of the contribution flow:
+
+#### 🔁 Contribution Workflow
+
+1. *Star* and *Fork* the repo.
+
+2. Clone your fork:
+   bash
+   git clone https://github.com/your-username/NeoNest.git
+
+1.  **Create a new branch:**
+
+    bash
+    git checkout -b yourname/feature-name
+    
+
+2.  **Make your changes:**
+    * Stick to the project structure.
+    * Use helpful commit messages:
+        * `fix: corrected typo in LandingPage.jsx`
+        * `feat: added baby sleep graph comparison`
+
+3.  **Format your code:**
+
+    bash
+    npm run lint
+    
+
+4.  **Test everything!** (Manual/automated if applicable)
+
+5.  **Push your branch:**
+
+    bash
+    git push origin yourname/feature-name
+    ```
+
+6.  *Open a Pull Request (PR) from your fork:*
+    * Reference related issue(s): Fixes #<issue-number>
+    * Add a clear title and summary.
+   
 
 ---
 
 ## 🧠 Code Style Guidelines
 
-- **Use camelCase** for variables and function names.
-- **Component files** should be PascalCase: `SleepTracker.jsx`
-- Follow our ESLint + Prettier config (auto-fix with `npm run lint`).
-- Keep functions modular and reusable.
-- Write meaningful variable names, not `x`, `y`, or `temp123`.
+To ensure consistency and maintainability, please adhere to these guidelines:
+
+* Use *camelCase* for variables and function names.
+* Component files should be *PascalCase*: SleepTracker.jsx.
+* Run npm run lint to follow our ESLint + Prettier rules.
+* Keep functions modular and reusable.
+* Use descriptive variable names (sleepDuration > temp123).
+* Avoid hardcoded values – use constants/configs where possible.
+
+---
+
+## 📁 File Naming Conventions
+
+* *🧩 React Components:* PascalCase (BabyStats.jsx)
+* *📂 Folders:* kebab-case (/baby-data, /user-profile)
+* *🖼 Images/GIFs:* kebab-case and descriptive (baby-growth-graph.gif)
+* *📄 Markdown/Docs:* kebab-case (getting-started.md, api-reference.md)
+
+---
+
+## ✅ PR Review Process
+
+We aim to keep things smooth and transparent:
+
+* Once your PR is submitted, a maintainer will review it.
+* You may be asked to:
+    * Fix styling issues.
+    * Add missing documentation/tests.
+    * Break large PRs into smaller pieces.
+* After approval:
+    * Your PR will be merged with a squash merge to keep history clean.
+    * Points will be awarded if part of GSSoC.
+    * You’ll receive feedback, even if the PR isn’t merged immediately.
+* ⌛ Reviews may take *24–72 hours* depending on activity. Thanks for your patience!
 
 ---
 
 ## 💬 Community & Communication
 
-- For general doubts or help, use **GitHub Discussions** or join our **Discord** community.
-- Be polite and patient in communication.
-- Mentorship is available — don’t hesitate to ask.
+We’re friendly and open – come say hi! 👋
+
+Whether you’re stuck or want to share an idea, reach out through:
+
+* 💬 [GitHub Discussions](https://github.com/AditiGupta-tech/neonest/discussions) 
+
+
+🧑‍🏫 Mentorship & pairing sessions are available – just ask!
 
 ---
 
 ## 📝 Contribution Rules
 
-- **Star** and **Fork** the repo before starting.
-- Browse **open issues** and comment to get assigned.
-- First-come, first-assigned basis.
-- **Don’t work on issues not assigned to you.**
-- If you raised the issue, it will be assigned to you by default.
-- PRs with unrelated changes or spams will be closed.
+To ensure a smooth and fair contribution process:
+
+* Always *Star and Fork* before contributing.
+* Browse [open issues](https://github.com/your-repo/issues) (Replace with actual link) and comment to get assigned.
+* *One PR per issue* – stay focused and scoped.
+* *Don’t start work on an issue unless you’re assigned.*
+* If you raised an issue, you’ll be assigned by default.
+* Avoid making "drive-by PRs" or unrelated fixes — they’ll be closed.
 
 ---
 
 ## 🎯 Points & Difficulty Levels
 
+Your contributions earn points that count toward GSSoC'25 and your NeoNest Leaderboard status!
+
 | Difficulty | Points |
-|------------|--------|
-| Level 1    |   3    |
-| Level 2    |   7    |
-| Level 3    |  10    |
-
-
-> 🏆 These points count toward your GSSoC'25 score and may boost your standing on the community leaderboard.
+| :--------- | :----- |
+| Level 1    | 3      |
+| Level 2    | 7      |
+| Level 3    | 10     |
 
 ---
 
-## 🛡️ Code of Conduct
+## 🛡 Code of Conduct
 
-- Be respectful and inclusive.
-- No hate speech, discrimination, or trolling.
-- Avoid self-promotion or link spamming.
-- Help maintain a safe and welcoming environment.
+We follow a strict code of conduct to keep this community safe and welcoming for everyone.
+
+*TL;DR: Be kind. Be respectful. Help each other.*
+
+🚫 *Not Allowed*
+
+* Harassment, hate speech, or discrimination.
+* Spam, self-promotion, or off-topic rants.
+* Intimidation or dismissive behavior toward new contributors.
+
+Let’s support each other and grow together! 💫
 
 ---
 
-Let’s make **NeoNest** the go-to guide for new parents, together! 💫
+## ✨ New Here? Start with These!
+
+* 🐣 Check out our [Good First Issues](https://github.com/AditiGupta-tech/neonest/issues?q=is%3Aopen%20is%3Aissue%20label%3A%22good%20first%20issue%22)  to begin your journey.
+* You can also read our [Getting Started Guide](https://github.com/AditiGupta-tech/neonest/blob/main/README.md)  to set up the project locally.
+
+Let’s make NeoNest the go-to guide for new parents, together! 🌱
+
+We’re excited to see what you’ll build. 💜
