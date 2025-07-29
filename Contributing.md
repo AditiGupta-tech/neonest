@@ -40,39 +40,39 @@ Here’s a quick overview of the contribution flow:
 
 #### 🔁 Contribution Workflow
 
-1.  **Star** and **Fork** the repo.
+1. **Star** and **Fork** the repo.
 
-2.  Clone your fork:
-    ```bash
-    git clone [https://github.com/your-username/NeoNest.git](https://github.com/your-username/NeoNest.git)
-    ```
+2. Clone your fork:
+ ```bash
+ git clone git clone https://github.com/AditiGupta-tech/NeoNest.git
+ ```
 
-3.  **Create a new branch:**
-    ```bash
-    git checkout -b yourname/feature-name
-    ```
+3. **Create a new branch:**
+ ```bash
+ git checkout -b yourname/feature-name
+ ```
 
-4.  **Make your changes:**
-    * Stick to the project structure.
-    * Use helpful commit messages:
-        * `fix: corrected typo in LandingPage.jsx`
-        * `feat: added baby sleep graph comparison`
+4. **Make your changes:**
+ * Stick to the project structure.
+ * Use helpful commit messages:
+ * `fix: corrected typo in LandingPage.jsx`
+ * `feat: added baby sleep graph comparison`
 
-5.  **Format your code:**
-    ```bash
-    npm run lint
-    ```
+5. **Format your code:**
+ ```bash
+ npm run lint
+ ```
 
-6.  **Test everything!** (Manual/automated if applicable)
+6. **Test everything!** (Manual/automated if applicable)
 
-7.  **Push your branch:**
-    ```bash
-    git push origin yourname/feature-name
-    ```
+7. **Push your branch:**
+ ```bash
+ git push origin yourname/feature-name
+ ```
 
-8.  **Open a Pull Request (PR) from your fork:**
-    * Reference related issue(s): `Fixes #<issue-number>`
-    * Add a clear title and summary.
+8. **Open a Pull Request (PR) from your fork:**
+ * Reference related issue(s): `Fixes #<issue-number>`
+ * Add a clear title and summary.
 
 ---
 
@@ -104,13 +104,13 @@ We aim to keep things smooth and transparent:
 
 * Once your PR is submitted, a maintainer will review it.
 * You may be asked to:
-    * Fix styling issues.
-    * Add missing documentation/tests.
-    * Break large PRs into smaller pieces.
+ * Fix styling issues.
+ * Add missing documentation/tests.
+ * Break large PRs into smaller pieces.
 * After approval:
-    * Your PR will be merged with a squash merge to keep history clean.
-    * Points will be awarded if part of GSSoC.
-    * You’ll receive feedback, even if the PR isn’t merged immediately.
+ * Your PR will be merged with a squash merge to keep history clean.
+ * Points will be awarded if part of GSSoC.
+ * You’ll receive feedback, even if the PR isn’t merged immediately.
 * ⌛ Reviews may take **24–72 hours** depending on activity. Thanks for your patience!
 
 ---
@@ -144,25 +144,28 @@ To ensure a smooth and fair contribution process:
 
 Your contributions earn points that count toward GSSoC'25 and your NeoNest Leaderboard status!
 
-| Difficulty | Label                  | Points |
-|------------|------------------------|--------|
-| Easy       | good-first-issue       | 5      |
-| Medium     | intermediate / medium  | 8      |
-| Hard       | hard                   | 10     |
-
 | Difficulty | Points |
 | :--------- | :----- |
-| Level 1    | 3      |
-| Level 2    | 7      |
-| Level 3    | 10     |
+| Level 1 | 3 |
+| Level 2 | 7 |
+| Level 3 | 10 |
 
 ---
 
 ## 🛡 Code of Conduct
 
+To maintain a respectful and inclusive environment for all, we follow a Code of Conduct for all contributors and community interactions.
+
 [Code of Conduct](CODE_OF_CONDUCT.md)
 
+
 ---
+
+## 📜 License
+
+By contributing to this project, you agree that your contributions will be licensed under the [MIT License](https://github.com/AditiGupta-tech/neonest/blob/main/LICENSE).
+
+This helps ensure that all contributions are open, consistent, and usable for the community.
 
 ## ✨ New Here? Start with These!
 
@@ -171,4 +174,4 @@ Your contributions earn points that count toward GSSoC'25 and your NeoNest Leade
 
 Let’s make NeoNest the go-to guide for new parents, together! 🌱
 
-We’re excited to see what you’ll build. 💜
+We’re excited to see what you’ll build.
