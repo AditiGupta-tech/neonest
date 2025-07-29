@@ -132,7 +132,7 @@ Whether you’re stuck or want to share an idea, reach out through:
 To ensure a smooth and fair contribution process:
 
 * Always **Star and Fork** before contributing.
-* Browse [open issues](https://github.com/your-repo/issues) and comment to get assigned.
+* Browse [open issues](https://github.com/AditiGupta-tech/neonest/issues) and comment to get assigned.
 * **One PR per issue** – stay focused and scoped.
 * **Don’t start work on an issue unless you’re assigned.**
 * If you raised an issue, you’ll be assigned by default.
