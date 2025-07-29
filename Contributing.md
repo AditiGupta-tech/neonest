@@ -144,6 +144,12 @@ To ensure a smooth and fair contribution process:
 
 Your contributions earn points that count toward GSSoC'25 and your NeoNest Leaderboard status!
 
+| Difficulty | Label                  | Points |
+|------------|------------------------|--------|
+| Easy       | good-first-issue       | 5      |
+| Medium     | intermediate / medium  | 8      |
+| Hard       | hard                   | 10     |
+
 | Difficulty | Points |
 | :--------- | :----- |
 | Level 1    | 3      |
