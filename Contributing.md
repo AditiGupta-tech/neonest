@@ -154,17 +154,7 @@ Your contributions earn points that count toward GSSoC'25 and your NeoNest Leade
 
 ## 🛡 Code of Conduct
 
-We follow a strict code of conduct to keep this community safe and welcoming for everyone.
-
-*TL;DR: Be kind. Be respectful. Help each other.*
-
-🚫 *Not Allowed*
-
-* Harassment, hate speech, or discrimination.
-* Spam, self-promotion, or off-topic rants.
-* Intimidation or dismissive behavior toward new contributors.
-
-Let’s support each other and grow together! 💫
+[Code of Conduct](CODE_OF_CONDUCT.md)
 
 ---
 
