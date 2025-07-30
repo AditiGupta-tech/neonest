@@ -2,13 +2,15 @@
 
 import { useState, useRef, useEffect } from "react"
 import axios from "axios"
-import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3, Copy } from "lucide-react"
+import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../components/ui/tooltip"
 import { Button } from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import Badge from "../components/ui/Badge"
 import ReactMarkdown from "react-markdown"
+
+import useChatStore from "../store/chatStore"
 
 const quickQuestions = [
   { icon: Baby, text: "When should my baby start crawling?", color: "pink" },
@@ -28,11 +30,12 @@ export default function NeonestAi() {
     document.title = "NeoNestAi | NeoNest"
   }, [])
 
-  const [role, setRole] = useState("pediatrician")
-  const [messages, setMessages] = useState([])
+  const { role, setRole, messages, addMessage, clearMessages } = useChatStore()
+
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [analytics, setAnalytics] = useState({
+  const [transitionMessage, setTransitionMessage] = useState(null)
+  const [analytics] = useState({
     totalChats: 1247,
     totalMessages: 5832,
     averageResponseTime: 1.2,
@@ -60,18 +63,18 @@ export default function NeonestAi() {
   const isUserNearBottom = () => {
     const el = chatContainerRef.current
     if (el) {
-      const threshold = 100; 
-      return el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+      const threshold = 100
+      return el.scrollHeight - el.scrollTop - el.clientHeight < threshold
     }
-    return true;
+    return true
   }
 
   useEffect(() => {
     if (messages.length === 0 || isUserNearBottom()) {
-      scrollToBottom();
-      setShowNewMessageButton(false);
+      scrollToBottom()
+      setShowNewMessageButton(false)
     } else {
-      setShowNewMessageButton(true);
+      setShowNewMessageButton(true)
     }
   }, [messages])
 
@@ -91,7 +94,6 @@ export default function NeonestAi() {
   const handleSubmit = async (e = null, customInput = null) => {
     if (e) e.preventDefault()
     const finalInput = customInput !== null ? customInput : input
-
     if (!finalInput.trim()) return
 
     const newMessage = {
@@ -101,7 +103,7 @@ export default function NeonestAi() {
       createdAt: new Date().toISOString(),
     }
 
-    setMessages((prevMessages) => [...prevMessages, newMessage])
+    addMessage(newMessage)
     setInput("")
     setIsLoading(true)
 
@@ -110,18 +112,15 @@ export default function NeonestAi() {
         messages: [...messages, newMessage],
         role,
       })
-      setMessages((prevMessages) => [...prevMessages, res.data])
+      addMessage(res.data)
     } catch (err) {
       console.error("Error sending message:", err)
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: Date.now() + 1,
-          role: "system",
-          content: "Oops! Something went wrong. Please try again.",
-          createdAt: new Date().toISOString(),
-        },
-      ]);
+      addMessage({
+        id: Date.now() + 1,
+        role: "system",
+        content: "Oops! Something went wrong. Please try again.",
+        createdAt: new Date().toISOString(),
+      })
     } finally {
       setIsLoading(false)
     }
@@ -133,22 +132,20 @@ export default function NeonestAi() {
   }
 
   const formatTime = (isoString) => {
-    const date = new Date(isoString);
+    const date = new Date(isoString)
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
-  const copyToClipboard = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      alert("Copied to clipboard!")
-    } catch (err) {
-      console.error("Copy failed:", err)
-      alert("Failed to copy!")
-    }
+  const handleRoleChange = (newRole) => {
+    clearMessages()
+    setRole(newRole)
+    setTransitionMessage(`Switched to ${newRole} mode`)
+    setTimeout(() => setTransitionMessage(null), 2000)
   }
 
-return (
+  return (
     <div className="min-h-screen bg-gray-50 p-6 space-y-10">
+      {/* Top Chatbot UI */}
       <Card className="max-w-4xl mx-auto">
         <CardHeader className="flex justify-between items-center bg-pink-100 rounded-t-lg px-6 py-4">
           <div className="flex items-center gap-3">
@@ -160,7 +157,7 @@ return (
               <TooltipTrigger asChild>
                 <select
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  onChange={(e) => handleRoleChange(e.target.value)}
                   className="border px-3 py-1 rounded-md text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                 >
                   {roles.map((r) => (
@@ -178,11 +175,14 @@ return (
         </CardHeader>
 
         <CardContent className="space-y-6 p-6 relative">
+          {transitionMessage && (
+            <div className="flex justify-center animate-fade-in">
+              <Badge variant="outline">{transitionMessage}</Badge>
+            </div>
+          )}
+
           {messages.length === 0 && (
             <div className="text-center space-y-4">
-              <p className="text-sm text-gray-500 mt-2">
-                AI advice is not a substitute for professional medical consultation.
-              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {quickQuestions.map((q, idx) => (
                   <Button
@@ -198,131 +198,62 @@ return (
               </div>
             </div>
           )}
-
-          <div
-            ref={chatContainerRef}
-            className="space-y-4 max-h-[600px] overflow-y-auto pr-2 pb-4"
-          >
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`flex mt-3 group ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`relative rounded-xl px-4 py-3 max-w-[80%] ${
-                    m.role === "user"
-                      ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  {/* Action icons for messages */}
-                  <div className={`absolute bottom-full mb-2 flex gap-1 bg-white p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
-                    ${m.role === "user" ? 'right-0' : 'left-0'}
-                  `}>
-                    {/* Copy button (for both user and AI messages) */}
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => copyToClipboard(m.content)}
-                          >
-                            <Copy className="w-4 h-4 text-gray-600" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Copy to clipboard</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>           
-                  </div>
-
-                  <div className="prose prose-sm max-w-full text-sm">
-                    <ReactMarkdown
-                      components={{
-                        h1: ({ node, ...props }) => (
-                          <h1 className={`text-2xl font-extrabold mb-2 mt-4 ${m.role === 'pediatrician' ? 'text-blue-700' : 'text-pink-600'}`} {...props} />
-                        ),
-                        h2: ({ node, ...props }) => (
-                          <h2 className={`text-xl font-semibold mb-2 mt-4 ${m.role === 'baby' ? 'text-purple-700' : 'text-blue-600'}`} {...props} />
-                        ),
-                        h3: ({ node, ...props }) => (
-                          <h3 className={`text-lg font-semibold mb-2 mt-4 ${m.role === 'nani' ? 'text-green-700' : 'text-pink-500'}`} {...props} />
-                        ),
-                        h4: ({ node, ...props }) => (
-                          <h4 className={`text-base font-semibold mb-2 mt-4 ${m.role === 'general' ? 'text-orange-700' : 'text-purple-500'}`} {...props} />
-                        ),
-                        p: ({ node, ...props }) => <p className="text-sm leading-relaxed mb-2" {...props} />,
-                        ul: ({ node, ...props }) => <ul className="list-disc list-inside text-sm mb-2" {...props} />,
-                        li: ({ node, ...props }) => <li className="ml-4 mb-1" {...props} />,
-                        strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
-                        em: ({ node, ...props }) => <em className="italic" {...props} />,
-                        code: ({ node, ...props }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props} />,
-                        blockquote: ({ node, ...props }) => (
-                          <blockquote className="border-l-4 border-pink-300 pl-4 italic text-sm text-gray-600 my-2" {...props} />
-                        ),
-                      }}
-                    >
-                      {m.content}
-                    </ReactMarkdown>
-                  </div>
-
-                  <span
-                    className={`text-xs block mt-1 ${
-                      m.role === "user" ? "text-gray-300" : "text-pink-700"
-                    }`}
-                  >
-                    {formatTime(m.createdAt)}
-                  </span>
-                </div>
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex justify-start mt-3">
-                <div className="rounded-xl px-4 py-2 max-w-[80%] bg-gray-200 text-gray-800 flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="text-sm">NeoNest AI is thinking...</span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {showNewMessageButton && (
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => {
-                  scrollToBottom()
-                  setShowNewMessageButton(false)
-                }}
-                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition"
-              >
-                ⬇ New Message
-              </button>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="flex gap-2 pt-4 items-center">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask me about baby care..."
-              className="flex-1 border-pink-300"
-              disabled={isLoading}
-            />
-            <Button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-            >
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            </Button>
-          </form>
         </CardContent>
       </Card>
 
-      <div className="max-w-4xl mx-auto space-y-4">
+      {/* Chat, Analytics, Top Questions */}
+      <div className="max-w-4xl mx-auto space-y-4 -mt-2">
+        <Card className="rounded-t-none">
+          <CardHeader>
+            <CardTitle>Conversation</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div
+              ref={chatContainerRef}
+              className="max-h-[400px] overflow-y-auto border rounded-md p-4 space-y-3 bg-white shadow-sm"
+            >
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`p-3 rounded-md ${
+                    msg.role === "user"
+                      ? "bg-blue-100 text-right"
+                      : msg.role === "assistant"
+                      ? "bg-gray-100 text-left"
+                      : "bg-yellow-100 text-left"
+                  }`}
+                >
+                  <ReactMarkdown
+                    components={{
+                      p: ({ node, children }) => <p className="text-sm whitespace-pre-line my-2">{children}</p>,
+                      ul: ({ node, children }) => <ul className="list-disc pl-5 my-2 text-sm">{children}</ul>,
+                      ol: ({ node, children }) => <ol className="list-decimal pl-5 my-2 text-sm">{children}</ol>,
+                      li: ({ node, children }) => <li className="my-1 text-sm">{children}</li>,
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                  <span className="text-xs text-gray-500">
+                    {formatTime(msg.createdAt)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask me about baby care..."
+                className="flex-1"
+              />
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
