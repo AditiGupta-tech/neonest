@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/Button";
 import Chatbot from "./Chatbot";
 import { useAuth } from "../context/AuthContext";
+import { useChatStore } from "@/lib/store/chatStore";
 import { Menu, X } from "lucide-react";
 
 const tabs = [
@@ -32,6 +33,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
+    useChatStore.getState().clearChatHistory();
     logout();
     setShowModal(true);
     setProgress(100);
@@ -81,20 +83,17 @@ const Navbar = () => {
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[999] flex items-center justify-center transition-all duration-300">
           <div className="bg-white px-6 py-5 rounded-xl shadow-lg text-center w-[320px]">
             <p className="text-gray-800 mb-3">
-              Logged out successfully.{" "}
+              Logged out successfully.
               <Link
                 href="/Login"
                 className="text-pink-600 font-normal no-underline"
               >
                 Login
-              </Link>{" "}
+              </Link>
               again!
             </p>
             <div className="w-full h-1 bg-pink-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-pink-500 transition-all duration-100"
-                style={{ width: `${progress}%` }}
-              ></div>
+              <div className="h-full bg-pink-500 transition-all duration-100" style={{ width: `${progress}%` }}></div>
             </div>
           </div>
         </div>
@@ -117,6 +116,11 @@ const Navbar = () => {
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="text-pink-600 focus:outline-none"
               >
+            <div className="flex items-center">
+              <Image src="/logo.jpg" alt="NeoNest" width={60} height={60} />
+              <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">NeoNest</span>
+            </div>
+
                 {menuOpen ? <X size={28} /> : <Menu size={28} />}
               </button>
             </div>
@@ -133,8 +137,7 @@ const Navbar = () => {
                       : "text-gray-600 hover:text-pink-600"
                   }`}
                 >
-                  {label}
-                </Link>
+
               ))}
             </nav>
 
@@ -143,24 +146,15 @@ const Navbar = () => {
               <Chatbot />
               {!isAuth ? (
                 <>
-                  <Button
-                    asChild
-                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-                  >
+                  <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
                     <Link href="/Login">Login</Link>
                   </Button>
-                  <Button
-                    asChild
-                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-                  >
+                  <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
                     <Link href="/Signup">Signup</Link>
                   </Button>
                 </>
               ) : (
-                <Button
-                  onClick={handleLogout}
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-                >
+                <Button onClick={handleLogout} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
                   Logout
                 </Button>
               )}
@@ -176,12 +170,7 @@ const Navbar = () => {
                     key={label}
                     href={path}
                     onClick={() => setMenuOpen(false)}
-                    className={`block capitalize px-3 py-2 rounded-md text-sm ${
-                      pathname === path
-                        ? "text-pink-600 font-medium"
-                        : "text-gray-700 hover:text-pink-600"
-                    }`}
-                  >
+                    className={`block capitalize px-3 py-2 rounded-md text-sm ${pathname === path ? "text-pink-600 font-medium" : "text-gray-700 hover:text-pink-600"}`}>
                     {label}
                   </Link>
                 ))}
@@ -197,10 +186,8 @@ const Navbar = () => {
                     </Button>
                   </>
                 ) : (
-                  <Button
-                    onClick={handleLogout}
-                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-                  >
+                  <Button onClick={handleLogout} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+
                     Logout
                   </Button>
                 )}

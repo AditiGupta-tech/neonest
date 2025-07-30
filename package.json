@@ -75,12 +75,16 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.6",
     "vercel": "^43.3.0",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
     "@types/node": "^22",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "^15.4.5",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
