@@ -61,6 +61,19 @@ const Navbar = () => {
     }
   }, [progress, showModal]);
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden"; // disable scroll
+    } else {
+      document.body.style.overflow = "auto"; // enable scroll
+    }
+
+    // Cleanup when component unmounts
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [menuOpen]);
+
   return (
     <>
       {/* Logout Modal */}
@@ -69,7 +82,10 @@ const Navbar = () => {
           <div className="bg-white px-6 py-5 rounded-xl shadow-lg text-center w-[320px]">
             <p className="text-gray-800 mb-3">
               Logged out successfully.{" "}
-              <Link href="/Login" className="text-pink-600 font-normal no-underline">
+              <Link
+                href="/Login"
+                className="text-pink-600 font-normal no-underline"
+              >
                 Login
               </Link>{" "}
               again!
@@ -84,19 +100,19 @@ const Navbar = () => {
         </div>
       )}
 
-      <header className="bg-white/80 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+      <header className="bg-white w-full backdrop-blur-sm border-b border-pink-100 sticky top-0 z-50">
+        <div className="w-full mx-auto pl-3 pr-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center">
-              <Image src="/logo.jpg" alt="NeoNest" width={60} height={60} />
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">
+            <Link href="/" className="flex items-center">
+              <Image src="/logo-neo.png" alt="NeoNest" width={65} height={65} />
+              <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
                 NeoNest
               </span>
-            </div>
+            </Link>
 
             {/* Hamburger - Mobile */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="text-pink-600 focus:outline-none"
@@ -106,12 +122,12 @@ const Navbar = () => {
             </div>
 
             {/* Nav - Desktop */}
-            <nav className="hidden md:flex items-center gap-4">
+            <nav className="hidden lg:flex items-center gap-[2vw] tracking-tight">
               {tabs.map(({ label, path }) => (
                 <Link
                   key={label}
                   href={path}
-                  className={`transition-colors capitalize ${
+                  className={`transition-colors capitalize text-[1.2vw] ${
                     pathname === path
                       ? "text-pink-600"
                       : "text-gray-600 hover:text-pink-600"
@@ -123,7 +139,7 @@ const Navbar = () => {
             </nav>
 
             {/* CTA - Desktop */}
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="hidden lg:flex items-center space-x-2">
               <Chatbot />
               {!isAuth ? (
                 <>
@@ -153,8 +169,8 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {menuOpen && (
-            <div className="md:hidden mt-4 space-y-3">
-              <div className="flex flex-col gap-3">
+            <div className="w-full lg:hidden mt-4 space-y-3">
+              <div className="flex flex-col gap-2">
                 {tabs.map(({ label, path }) => (
                   <Link
                     key={label}
@@ -173,24 +189,20 @@ const Navbar = () => {
               <div className="mt-3 flex flex-col gap-2">
                 {!isAuth ? (
                   <>
-                    <Button
-                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-                  >
-                    <Link href="/Login">Login</Link>
-                  </Button>
-                  <Button
-                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-                  >
-                    <Link href="/Signup">Signup</Link>
-                  </Button>
+                    <Button className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                      <Link href="/Login">Login</Link>
+                    </Button>
+                    <Button className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                      <Link href="/Signup">Signup</Link>
+                    </Button>
                   </>
                 ) : (
                   <Button
-                  onClick={handleLogout}
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
-                >
-                  Logout
-                </Button>
+                    onClick={handleLogout}
+                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
+                  >
+                    Logout
+                  </Button>
                 )}
               </div>
             </div>

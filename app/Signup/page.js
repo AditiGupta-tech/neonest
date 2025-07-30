@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
+import { Eye, EyeClosed } from "lucide-react";
 
 export default function SignupPage() {
+  const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
     document.title = "Signup | NeoNest";
   }, []);
@@ -101,7 +103,6 @@ export default function SignupPage() {
     return nameIsValid && emailIsValid && passwordIsValid;
   }, [name, email, password]);
 
-
   const handleNext = async (e) => {
     e.preventDefault();
 
@@ -125,10 +126,7 @@ export default function SignupPage() {
         password: password,
       };
 
-      const res = await axios.post(
-        "/api/auth/signup",
-        userData
-      );
+      const res = await axios.post("/api/auth/signup", userData);
 
       const data = res.data;
 
@@ -175,10 +173,16 @@ export default function SignupPage() {
             onBlur={() => setNameTouched(true)}
             required
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-              ${(nameError && nameTouched) ? 'border-red-500 focus:ring-red-400' : 'border-pink-300 focus:ring-pink-400'}
+              ${
+                nameError && nameTouched
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-pink-300 focus:ring-pink-400"
+              }
             `}
           />
-          {(nameError && nameTouched) && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
+          {nameError && nameTouched && (
+            <p className="text-red-500 text-sm mt-1">{nameError}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -190,37 +194,58 @@ export default function SignupPage() {
             onBlur={() => setEmailTouched(true)}
             required
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-              ${(emailError && emailTouched) ? 'border-red-500 focus:ring-red-400' : 'border-pink-300 focus:ring-pink-400'}
+              ${
+                emailError && emailTouched
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-pink-300 focus:ring-pink-400"
+              }
             `}
           />
-          {(emailError && emailTouched) && (
+          {emailError && emailTouched && (
             <p className="text-red-500 text-sm mt-1">
-              Email already exists!{' '}
+              Email already exists!{" "}
               <span
-                onClick={() => router.push('/Login')} // Navigate to login page
+                onClick={() => router.push("/Login")} // Navigate to login page
                 className="text-pink-600 italic cursor-pointer hover:underline"
               >
                 Login
-              </span>{' '}
+              </span>
               instead.
             </p>
           )}
         </div>
 
         <div className="mb-6">
-          <input
-            type="password"
-            placeholder="Create Password"
-            value={password}
-            onChange={handlePasswordChange}
-            onBlur={() => setPasswordTouched(true)}
-            required
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-              ${(passwordError && passwordTouched) ? 'border-red-500 focus:ring-red-400' : 'border-pink-300 focus:ring-pink-400'}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Create Password"
+              value={password}
+              onChange={handlePasswordChange}
+              onBlur={() => setPasswordTouched(true)}
+              required
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+              ${
+                passwordError && passwordTouched
+                  ? "border-red-500 focus:ring-red-400"
+                  : "border-pink-300 focus:ring-pink-400"
+              }
             `}
-          />
-          <p className="text-[11px] mt-1 text-gray-700 italic">Password must be at least 6 characters.</p>
-          {(passwordError && passwordTouched) && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+            />
+            <div onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <Eye className="absolute transition-all duration-300 ease-in text-[#999] right-3 top-1/2 -translate-y-1/2 w-6 h-6" />
+              ) : (
+                <EyeClosed className="absolute transition-all duration-300 ease-in text-[#999] right-3 top-1/2 -translate-y-1/2 w-6 h-6" />
+              )}
+            </div>
+          </div>
+          <p className="text-[11px] mt-1 text-gray-700 italic">
+            Password must be at least 6 characters.
+          </p>
+          {passwordError && passwordTouched && (
+            <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+          )}
         </div>
 
         <p className="text-center text-sm text-gray-500 mb-4">
@@ -233,9 +258,10 @@ export default function SignupPage() {
           type="submit"
           disabled={!isFormValid}
           className={`w-full py-2 rounded-lg font-semibold transition-transform
-            ${isFormValid
-              ? "bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:scale-105"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            ${
+              isFormValid
+                ? "bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:scale-105"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }
           `}
         >
