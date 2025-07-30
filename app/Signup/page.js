@@ -4,7 +4,11 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
+import debounce from "lodash.debounce";
 import { useAuth } from "../context/AuthContext";
+
+// ✅ Added for clarity during development
+console.log("Signup page loaded in the frontend");
 
 export default function SignupPage() {
   useEffect(() => {
@@ -14,22 +18,25 @@ export default function SignupPage() {
   const router = useRouter();
   const { login } = useAuth();
 
-  // State for input values
+  // Input states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // State for validation errors
+  // Error states
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  // State to track if an input field has been "touched" (interacted with)
+  // Touch tracking
   const [nameTouched, setNameTouched] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
 
-  // Function to validate name
+  // Loading state
+  const [checkingEmail, setCheckingEmail] = useState(false);
+
+  // ===== Validation Functions =====
   const validateName = (nameValue) => {
     if (!nameValue.trim()) {
       setNameError("Name cannot be empty.");
@@ -39,7 +46,6 @@ export default function SignupPage() {
     return true;
   };
 
-  // Function to validate email
   const validateEmail = (emailValue) => {
     if (!emailValue.trim()) {
       setEmailError("Email cannot be empty.");
@@ -49,19 +55,14 @@ export default function SignupPage() {
       setEmailError("Please enter a valid email address.");
       return false;
     }
-    setEmailError("");
     return true;
   };
 
-  // Function to validate password
   const validatePassword = (passwordValue) => {
     if (!passwordValue.trim()) {
       setPasswordError("Password cannot be empty.");
       return false;
     }
-    // IMPORTANT: Ensure this matches your backend's password length requirement.
-    // Your backend previously had < 9, but your client-side now has < 6.
-    // For consistency, I will assume 8 characters is the minimum as per earlier discussions.
     if (passwordValue.length < 6) {
       setPasswordError("Password must be at least 6 characters.");
       return false;
@@ -70,7 +71,31 @@ export default function SignupPage() {
     return true;
   };
 
-  // Handle changes for each input with immediate validation
+  // ===== Debounced Email Check =====
+  const checkEmailExists = useMemo(
+    () =>
+      debounce(async (emailToCheck) => {
+        if (!validateEmail(emailToCheck)) return;
+
+        try {
+          setCheckingEmail(true);
+          const res = await axios.post("/api/auth/check-email", { email: emailToCheck });
+          if (res.data.exists) {
+            setEmailError("Email already exists! Login instead.");
+          } else {
+            setEmailError("");
+          }
+        } catch (err) {
+          console.error("Error checking email:", err);
+          setEmailError("Could not verify email right now.");
+        } finally {
+          setCheckingEmail(false);
+        }
+      }, 500),
+    []
+  );
+
+  // ===== Handlers =====
   const handleNameChange = (e) => {
     const value = e.target.value;
     setName(value);
@@ -81,10 +106,8 @@ export default function SignupPage() {
     const value = e.target.value;
     setEmail(value);
     validateEmail(value);
-    // Clear the specific "Email already exists" error when email changes
-    if (emailError.includes("Email already exists")) {
-      setEmailError("");
-    }
+    setEmailError(""); // Clear before checking again
+    checkEmailExists(value);
   };
 
   const handlePasswordChange = (e) => {
@@ -93,14 +116,12 @@ export default function SignupPage() {
     validatePassword(value);
   };
 
-  // Determine if the form is valid and button should be enabled
   const isFormValid = useMemo(() => {
     const nameIsValid = validateName(name);
-    const emailIsValid = validateEmail(email);
+    const emailIsValid = validateEmail(email) && !emailError;
     const passwordIsValid = validatePassword(password);
     return nameIsValid && emailIsValid && passwordIsValid;
-  }, [name, email, password]);
-
+  }, [name, email, password, emailError]);
 
   const handleNext = async (e) => {
     e.preventDefault();
@@ -113,29 +134,22 @@ export default function SignupPage() {
     const emailValid = validateEmail(email);
     const passwordValid = validatePassword(password);
 
-    if (!nameValid || !emailValid || !passwordValid) {
+    if (!nameValid || !emailValid || !passwordValid || emailError) {
       toast.error("Please correct the errors in the form.");
       return;
     }
 
     try {
-      const userData = {
-        name: name,
-        email: email,
-        password: password,
-      };
-
-      const res = await axios.post(
-        "/api/auth/signup",
-        userData
-      );
+      const res = await axios.post("/api/auth/signup", {
+        name,
+        email,
+        password,
+      });
 
       const data = res.data;
 
       if (res.status === 201) {
-        console.log(data);
         login(data.token);
-
         toast.success(data.success);
         router.push(`/signupbaby`);
       }
@@ -145,8 +159,7 @@ export default function SignupPage() {
         const backendError = err.response.data.error;
         toast.error(backendError || "An unexpected error occurred.");
 
-        if (backendError && backendError.includes("Email already exists")) {
-          // Set the specific error message to be rendered with the link
+        if (backendError?.includes("Email already exists")) {
           setEmailError("Email already exists! Login instead.");
           setEmailTouched(true);
         }
@@ -195,14 +208,20 @@ export default function SignupPage() {
           />
           {(emailError && emailTouched) && (
             <p className="text-red-500 text-sm mt-1">
-              Email already exists!{' '}
-              <span
-                onClick={() => router.push('/Login')} // Navigate to login page
-                className="text-pink-600 italic cursor-pointer hover:underline"
-              >
-                Login
-              </span>{' '}
-              instead.
+              {emailError.includes("Login") ? (
+                <>
+                  Email already exists!{" "}
+                  <span
+                    onClick={() => router.push("/Login")}
+                    className="text-pink-600 italic cursor-pointer hover:underline"
+                  >
+                    Login
+                  </span>{" "}
+                  instead.
+                </>
+              ) : (
+                emailError
+              )}
             </p>
           )}
         </div>
@@ -231,15 +250,15 @@ export default function SignupPage() {
 
         <button
           type="submit"
-          disabled={!isFormValid}
+          disabled={!isFormValid || checkingEmail}
           className={`w-full py-2 rounded-lg font-semibold transition-transform
-            ${isFormValid
+            ${isFormValid && !checkingEmail
               ? "bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:scale-105"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }
           `}
         >
-          Next
+          {checkingEmail ? "Checking..." : "Next"}
         </button>
       </form>
     </div>
