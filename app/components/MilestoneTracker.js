@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Lock, PlusCircle, PartyPopper, Check, MinusCircle } from "lucide-react";
-import { Button } from "../components/ui/Button";
+import { Check, Lock, MinusCircle, PartyPopper, PlusCircle } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "../components/ui/Button";
 
 const defaultMilestones = {
   "0": ["Lifts head", "Responds to sound"],
@@ -95,8 +95,8 @@ export default function MilestoneTracker({ babyDOB }) {
             <div
               ref={(el) => (cardRefs.current[i] = el)}
               key={i}
-              className={`min-w-[250px] sm:min-w-[300px] rounded-xl p-4 transition-all duration-300 shadow-md relative flex flex-col justify-between border-2 snap-start ${
-                isCurrent ? "scale-110 mx-2" : "scale-100"
+              className={`min-w-[250px]  sm:min-w-[300px] rounded-xl p-4 transition-all duration-300 shadow-md relative flex flex-col justify-between border-2 snap-start ${
+                isCurrent ? "scale-110  mx-2" : "scale-100"
               } ${
                 i === currentMonth
                   ? "bg-purple-100 border-purple-400"
@@ -107,7 +107,7 @@ export default function MilestoneTracker({ babyDOB }) {
                   : "bg-gray-100 border-gray-200 opacity-50"
               }`}
             >
-              <div>
+              <div className={isCurrent ? "blur-none" : "blur-[2px]"}>
                 <h3 className="text-lg font-bold text-purple-800 mb-2">Month {i + 1}</h3>
                 <ul className="space-y-1">
                   {monthMilestones.map((m) => (
@@ -170,8 +170,8 @@ export default function MilestoneTracker({ babyDOB }) {
                 )}
 
                 {i > currentMonth && (
-                  <div className="absolute inset-0 flex justify-center items-center">
-                    <Lock className="w-10 h-10 text-gray-500 opacity-50" />
+                  <div className="absolute inset-0  flex justify-center items-center">
+                    <Lock className="w-10 h-10 text-gray-500 " />
                   </div>
                 )}
 

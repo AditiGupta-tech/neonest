@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Plus, Calendar, BarChart3, Pencil, Trash2 } from "lucide-react";
-import { Button } from "../components/ui/Button";
-import Input from "../components/ui/Input";
+import { BarChart3, Pencil, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import InteractionWithBaby from "../components/InteractionWithBaby";
 import MilestoneTracker from "../components/MilestoneTracker";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
+import { Button } from "../components/ui/Button";
+import Input from "../components/ui/Input";
 
 
 export default function GrowthPage() {
@@ -131,7 +131,9 @@ export default function GrowthPage() {
 
       <div className="bg-white p-4 rounded-lg shadow space-y-3">
         <h3 className="text-xl font-semibold">{editId ? "Edit Growth Entry" : "Log Growth Entry"}</h3>
-        <div className="grid grid-cols-2 gap-3">
+
+
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <Input placeholder="Date (YYYY-MM-DD)" value={newEntry.date} onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })} />
           <Input placeholder="Height (cm)" value={newEntry.height} onChange={(e) => setNewEntry({ ...newEntry, height: e.target.value })} />
           <Input placeholder="Weight (kg)" value={newEntry.weight} onChange={(e) => setNewEntry({ ...newEntry, weight: e.target.value })} />

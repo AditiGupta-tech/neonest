@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "./ui/Button";
-import Chatbot from "./Chatbot";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Menu, X } from "lucide-react";
+import Chatbot from "./Chatbot";
+import { Button } from "./ui/Button";
 
 const tabs = [
   { label: "home", path: "/" },
@@ -90,13 +90,13 @@ const Navbar = () => {
             {/* Logo */}
             <div className="flex items-center">
               <Image src="/logo.jpg" alt="NeoNest" width={60} height={60} />
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">
+              <span className="lg:hidden xl:block text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">
                 NeoNest
               </span>
             </div>
 
             {/* Hamburger - Mobile */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="text-pink-600 focus:outline-none"
@@ -106,7 +106,7 @@ const Navbar = () => {
             </div>
 
             {/* Nav - Desktop */}
-            <nav className="hidden md:flex items-center gap-4">
+            <nav className="hidden lg:flex items-center gap-4">
               {tabs.map(({ label, path }) => (
                 <Link
                   key={label}
@@ -123,7 +123,7 @@ const Navbar = () => {
             </nav>
 
             {/* CTA - Desktop */}
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="hidden lg:flex items-center space-x-2">
               <Chatbot />
               {!isAuth ? (
                 <>

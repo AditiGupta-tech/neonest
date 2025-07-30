@@ -1,21 +1,21 @@
 "use client";
 
-import { Baby, Heart, Utensils, Star } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import { Baby, Heart, Star, Utensils } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
 export default function InteractionWithBaby() {
   return (
-    <section id="interaction" className="py-4 px-4 sm:px-6 lg:px-8 bg-white/50">
-      <div className="container mx-auto max-w-6xl">
+    <section id="interaction" className="py-4  sm:px-6 lg:px-8 bg-white/50">
+      <div className="container mx-auto max-w-6xl xl:max-w-full">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold mb-4 text-gray-800">
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">
             Interacting With Your Baby
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg text-gray-600">
             Discover meaningful ways to engage and support your baby's development
           </p>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid items-center grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 xxl:grid-cols-4 ">
           {[
             {
               month: "0-3 Months",
@@ -72,9 +72,9 @@ export default function InteractionWithBaby() {
           ].map((stage, index) => (
             <Card
               key={index}
-              className="hover:shadow-lg transition-shadow border-none bg-white/80 backdrop-blur-sm rounded-xl p-4"
+              className="hover:shadow-soft hover:scale-105 transition-shadow border-none bg-white/80 backdrop-blur-sm rounded-xl p-4"
             >
-              <CardHeader className="text-center p-0 mb-4">
+              <CardHeader className="text-center p-0 mb-6">
                 <div
                   className={`w-16 h-16 mx-auto rounded-full bg-${stage.color}-400 flex items-center justify-center mb-4 shadow-md`}
                 >
@@ -84,8 +84,8 @@ export default function InteractionWithBaby() {
                   {stage.month}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
-                <ul className="space-y-2">
+              <CardContent className="p-0 flex items-center justify-center ">
+                <ul className="space-y-2 inline-block">
                   {stage.activities.map((activity, idx) => (
                     <li key={idx} className="flex items-center gap-2 text-base text-gray-700">
                       <div className={`w-2 h-2 rounded-full bg-${stage.color}-400 flex-shrink-0`}></div>
