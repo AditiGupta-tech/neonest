@@ -94,6 +94,7 @@ const ScrollLinked = () => {
     },
   };
 
+  const reviewRef = useRef(null);
   const featuredReviews = [
     {
       name: "Riya Sharma",
@@ -613,9 +614,37 @@ const ScrollLinked = () => {
                   variants={cardVariants}
                   initial="hidden"
                   whileInView="visible"
+                  className="group perspective-[1000px] transform-gpu"
+                  style={{ transformStyle: "preserve-3d" }}
                 >
-                  <Card className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl">
-                    <CardHeader className="p-0 mb-3">
+                  <Card
+                    className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl"
+                    style={{
+                      transformStyle: "preserve-3d",
+                      transformOrigin: "center center",
+                    }}
+                    onMouseMove={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const x = e.clientX - rect.left;
+                      const y = e.clientY - rect.top;
+                      const centerX = rect.width / 2;
+                      const centerY = rect.height / 2;
+                      const rotateX = (y - centerY) / 8;
+                      const rotateY = (centerX - x) / 8;
+
+                      e.currentTarget.style.transform = `
+                        scale(1.05) 
+                        rotateX(${rotateX}deg) 
+                        rotateY(${rotateY}deg) 
+                        translateY(-8px)
+                        translateZ(20px)
+                      `;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "";
+                    }}
+                  >
+                    <CardHeader>
                       <CardTitle className="text-lg text-gray-800 font-semibold">
                         {userReview.name}
                       </CardTitle>
@@ -630,7 +659,7 @@ const ScrollLinked = () => {
                       <div className="text-xs text-gray-500 mb-2">
                         Tags:{" "}
                         {userReview.keywords
-                          .map((word) => `"${word}"`)
+                          .map((word) => "${word}")
                           .join(", ")}
                       </div>
                     </CardContent>
@@ -684,29 +713,20 @@ const ScrollLinked = () => {
                       }}
                     >
                       {/* Header with layered 3D transform */}
-                      <CardHeader
-                        className="pb-4 transform transition-all duration-500 group-hover:translateZ-[15px]"
-                        style={{ transform: "translateZ(10px)" }}
-                      >
+                      <CardHeader>
                         <CardTitle
                           className="text-lg text-gray-800 font-semibold transform transition-all duration-500 group-hover:translate-x-1 hover:scale-[1.02]"
                           style={{ transform: "translateZ(5px)" }}
                         >
                           {review.name}
                         </CardTitle>
-                        <CardDescription
-                          className="text-sm text-pink-600 font-medium transform transition-all duration-500 group-hover:translate-x-2 group-hover:text-pink-500 hover:scale-105"
-                          style={{ transform: "translateZ(8px)" }}
-                        >
+                        <CardDescription className="text-pink-600">
                           #{review.tag}
                         </CardDescription>
                       </CardHeader>
 
                       {/* Content with progressive depth */}
-                      <CardContent
-                        className="pt-0 pb-4 transform transition-all duration-500 group-hover:translateZ-[12px]"
-                        style={{ transform: "translateZ(6px)" }}
-                      >
+                      <CardContent>
                         <p
                           className="text-gray-700 text-base mb-4 leading-relaxed transform transition-all duration-500 group-hover:translate-x-1 hover:scale-[1.01]"
                           style={{ transform: "translateZ(4px)" }}
@@ -782,24 +802,7 @@ const ScrollLinked = () => {
                           </span>
                         </motion.div>
                       </CardFooter>
-
-                      {/* Enhanced bottom reflection with depth */}
-                      <div
-                        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent transform translate-y-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                        style={{ transform: "translateZ(-2px)" }}
-                      />
-
-                      {/* Inner glow border with proper layering */}
-                      <div
-                        className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                        style={{ transform: "translateZ(-1px)" }}
-                      />
-
-                      {/* Additional depth layers */}
-                      <div
-                        className="absolute inset-2 rounded-lg opacity-0 group-hover:opacity-10 bg-white transition-opacity duration-500 pointer-events-none"
-                        style={{ transform: "translateZ(-3px)" }}
-                      />
+                      
                     </Card>
 
                     {/* Enhanced ground shadow with 3D positioning */}
