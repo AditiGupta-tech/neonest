@@ -25,9 +25,24 @@ import {
 import { Button } from "./ui/Button";
 import Image from "next/image";
 import NewSections from "./Newsections";
-import { Toaster, toast } from 'sonner';
+import { Toaster, toast } from "sonner";
+import { motion, useScroll } from "framer-motion";
 
-const Homepage = () => {
+export default function Homepage() {
+  const { scrollYProgress } = useScroll();
+
+  return (
+    <>
+      {/* Scroll Indicator Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-pink-500 z-50"
+        style={{ scaleX: scrollYProgress, transformOrigin: "left" }}
+      />
+      <ScrollLinked />
+    </>
+  );
+}
+const ScrollLinked = () => {
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
   const [selectedRating, setSelectedRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
@@ -35,7 +50,48 @@ const Homepage = () => {
   const [userReview, setUserReview] = useState(null);
   const [showWelcomeOverlay, setShowWelcomeOverlay] = useState(false);
 
-  const reviewRef = useRef(null);
+  const cardVariants = {
+    offscreen: {
+      y: 200,
+      opacity: 0,
+    },
+    onscreen: {
+      y: 50,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        bounce: 0.4,
+        duration: 0.8,
+      },
+    },
+  };
+
+  const headingVariants = {
+    hidden: { opacity: 0, y: -40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
+  const paragraphVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" },
+    },
+  };
+
+  const dotVariants = {
+    hidden: { scale: 0, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 300, damping: 15 },
+    },
+  };
 
   const featuredReviews = [
     {
@@ -105,40 +161,39 @@ const Homepage = () => {
     return () => clearInterval(interval);
   }, []);
 
-useEffect(() => {
-  const showWelcomeToast = sessionStorage.getItem('showWelcomeToast');
-  const showWelcomeBackToast = sessionStorage.getItem('showWelcomeBackToast');
-  const parentName = sessionStorage.getItem('parentName');
+  useEffect(() => {
+    const showWelcomeToast = sessionStorage.getItem("showWelcomeToast");
+    const showWelcomeBackToast = sessionStorage.getItem("showWelcomeBackToast");
+    const parentName = sessionStorage.getItem("parentName");
 
-  let timer;
+    let timer;
 
-  if (showWelcomeToast === 'true' && parentName) {
-    setShowWelcomeOverlay(true);
-    toast.success(
-      `Welcome ${parentName}! Explore NeoNest and make your parenting experience beautiful!`,
-      { duration: 3000 }
-    );
-    timer = setTimeout(() => {
-      sessionStorage.removeItem('showWelcomeToast');
-      sessionStorage.removeItem('parentName');
-      setShowWelcomeOverlay(false);
-    }, 3000);
-  } else if (showWelcomeBackToast === 'true' && parentName) {
-    setShowWelcomeOverlay(true);
-    toast.success(
-      `Welcome back ${parentName}! Continue your parenting journey with NeoNest!`,
-      { duration: 3000 }
-    );
-    timer = setTimeout(() => {
-      sessionStorage.removeItem('showWelcomeBackToast');
-      sessionStorage.removeItem('parentName');
-      setShowWelcomeOverlay(false);
-    }, 3000);
-  }
+    if (showWelcomeToast === "true" && parentName) {
+      setShowWelcomeOverlay(true);
+      toast.success(
+        `Welcome ${parentName}! Explore NeoNest and make your parenting experience beautiful!`,
+        { duration: 3000 }
+      );
+      timer = setTimeout(() => {
+        sessionStorage.removeItem("showWelcomeToast");
+        sessionStorage.removeItem("parentName");
+        setShowWelcomeOverlay(false);
+      }, 3000);
+    } else if (showWelcomeBackToast === "true" && parentName) {
+      setShowWelcomeOverlay(true);
+      toast.success(
+        `Welcome back ${parentName}! Continue your parenting journey with NeoNest!`,
+        { duration: 3000 }
+      );
+      timer = setTimeout(() => {
+        sessionStorage.removeItem("showWelcomeBackToast");
+        sessionStorage.removeItem("parentName");
+        setShowWelcomeOverlay(false);
+      }, 3000);
+    }
 
-  return () => clearTimeout(timer);
-}, []);
- 
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmitReview = () => {
     const newReview = {
@@ -251,27 +306,38 @@ useEffect(() => {
         <div className="fixed inset-0 z-40 bg-black bg-opacity-20 backdrop-blur-sm transition-all duration-300"></div>
       )}
 
-      <div className={`${showWelcomeOverlay ? 'pointer-events-none' : ''}`}>
+      <div className={`${showWelcomeOverlay ? "pointer-events-none" : ""}`}>
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto text-center max-w-6xl">
             <div className="mb-10">
-              <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
+              <motion.h1
+                variants={headingVariants}
+                initial="hidden"
+                animate="visible"
+                className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight"
+              >
                 Your Baby's First Year Journey
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+              </motion.h1>
+              <motion.p
+                variants={paragraphVariants}
+                initial="hidden"
+                animate="visible"
+                className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed"
+              >
                 Expert guidance, milestone tracking, and loving support for
                 parents navigating their baby's incredible first year of life.
                 Now with AI-powered chat support!
-              </p>
+              </motion.p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12"></div>
               <div className="relative w-full max-w-2xl mx-auto">
+                <motion.div variants={dotVariants} initial='hidden' whileInView='visible'>
                 <Image
                   src="/happyBaby.png"
                   alt="Happy baby with parents"
                   width={500}
                   height={500}
                   className="mx-auto mt-8 rounded-2xl shadow-2xl w-full h-auto"
-                />
+                /></motion.div>
                 <div className="absolute -top-4 -left-4 w-20 h-20 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce shadow-md">
                   <Heart className="w-9 h-9 text-yellow-600" />
                 </div>
@@ -283,127 +349,184 @@ useEffect(() => {
           </div>
         </section>
 
-        <section className="py-4 px-4 sm:px-6 lg:px-8 bg-white/80">
+        <section className="py-4 mb-20 px-4 sm:px-6 lg:px-8 bg-white/80">
           <div className="container mx-auto max-w-6xl">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4 text-gray-800">
+            <div className="text-center mb-8">
+              <motion.h2
+                variants={headingVariants}
+                initial="hidden"
+                whileInView="visible"
+                className="text-4xl font-bold mb-4 text-gray-800"
+              >
                 Everything You Need in One Place
-              </h2>
-              <p className="text-xl text-gray-600">
+              </motion.h2>
+              <motion.p
+                variants={paragraphVariants}
+                initial="hidden"
+                whileInView="visible"
+                className="text-xl text-gray-600"
+              >
                 Comprehensive tools to support your parenting journey
-              </p>
+              </motion.p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
-                <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Utensils className="w-6 h-6 text-pink-600" />
-                  </div>
-                  <CardTitle className="group-hover:text-pink-600 transition-colors text-xl font-semibold">
-                    Feeding Schedule
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
-                    Track feeding times, amounts, and create custom schedules
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <motion.div
+                initial="offscreen"
+                whileInView="onscreen"
+                variants={cardVariants}
+              >
+                <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+                  <CardHeader className="p-0 mb-4">
+                    <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <Utensils className="w-6 h-6 text-pink-600" />
+                    </div>
+                    <CardTitle className="group-hover:text-pink-600 transition-colors text-xl font-semibold">
+                      Feeding Schedule
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 text-sm">
+                      Track feeding times, amounts, and create custom schedules
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
-                <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Package className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <CardTitle className="group-hover:text-blue-600 transition-colors text-xl font-semibold">
-                    Inventory Tracker
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
-                    Monitor baby essentials and get low stock alerts
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <motion.div
+                initial="offscreen"
+                whileInView="onscreen"
+                variants={cardVariants}
+              >
+                <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+                  <CardHeader className="p-0 mb-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <Package className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <CardTitle className="group-hover:text-blue-600 transition-colors text-xl font-semibold">
+                      Inventory Tracker
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 text-sm">
+                      Monitor baby essentials and get low stock alerts
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
-                <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Camera className="w-6 h-6 text-purple-600" />
-                  </div>
-                  <CardTitle className="group-hover:text-purple-600 transition-colors text-xl font-semibold">
-                    Memory Vault
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
-                    Capture precious moments and share with community
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <motion.div
+                initial="offscreen"
+                whileInView="onscreen"
+                variants={cardVariants}
+              >
+                <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+                  <CardHeader className="p-0 mb-4">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <Camera className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <CardTitle className="group-hover:text-purple-600 transition-colors text-xl font-semibold">
+                      Memory Vault
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 text-sm">
+                      Capture precious moments and share with community
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
-                <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Shield className="w-6 h-6 text-green-600" />
-                  </div>
-                  <CardTitle className="group-hover:text-green-600 transition-colors text-xl font-semibold">
-                    Vaccine Tracker
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
-                    Track vaccinations and upload medical records
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <motion.div
+                initial="offscreen"
+                whileInView="onscreen"
+                variants={cardVariants}
+              >
+                <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+                  <CardHeader className="p-0 mb-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <Shield className="w-6 h-6 text-green-600" />
+                    </div>
+                    <CardTitle className="group-hover:text-green-600 transition-colors text-xl font-semibold">
+                      Vaccine Tracker
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 text-sm">
+                      Track vaccinations and upload medical records
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
-                <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <PlayCircle className="w-6 h-6 text-orange-600" />
-                  </div>
-                  <CardTitle className="group-hover:text-orange-600 transition-colors text-xl font-semibold">
-                    Parent Resources
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
-                    Videos, articles, and expert advice
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <motion.div
+                initial="offscreen"
+                whileInView="onscreen"
+                variants={cardVariants}
+              >
+                <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+                  <CardHeader className="p-0 mb-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <PlayCircle className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <CardTitle className="group-hover:text-orange-600 transition-colors text-xl font-semibold">
+                      Parent Resources
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 text-sm">
+                      Videos, articles, and expert advice
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
-                <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <HelpCircle className="w-6 h-6 text-teal-600" />
-                  </div>
-                  <CardTitle className="group-hover:text-teal-600 transition-colors text-xl font-semibold">
-                    FAQs
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
-                    Quick answers to common baby care questions
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <motion.div
+                initial="offscreen"
+                whileInView="onscreen"
+                variants={cardVariants}
+              >
+                <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+                  <CardHeader className="p-0 mb-4">
+                    <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <HelpCircle className="w-6 h-6 text-teal-600" />
+                    </div>
+                    <CardTitle className="group-hover:text-teal-600 transition-colors text-xl font-semibold">
+                      FAQs
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 text-sm">
+                      Quick answers to common baby care questions
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
             </div>
           </div>
         </section>
 
-        <section
-          id="about"
-          className="py-4 px-4 sm:px-6 lg:px-8"
-        >
+        <section id="about" className="py-4 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4 text-gray-8000 leading-tight">
+              <motion.h2
+                variants={headingVariants}
+                initial="hidden"
+                whileInView="visible"
+                className="text-4xl font-bold mb-4 text-gray-8000 leading-tight"
+              >
                 Why Mothers Trust NeoNest
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              </motion.h2>
+              <motion.p
+                variants={paragraphVariants}
+                initial="hidden"
+                whileInView="visible"
+                className="text-lg text-gray-600 max-w-2xl mx-auto"
+              >
                 From sleepless nights to first giggles, NeoNest supports every
                 step of your parenting journey. Here's why thousands of parents
                 trust us.
-              </p>
+              </motion.p>
             </div>
 
             <div className="relative flex flex-col items-center">
               <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1.5 bg-purple-300 z-0"></div>
 
               {features.map((feature, index) => (
-                <div
+                <motion.div
                   key={index}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ amount: 0.5 }}
+                  variants={dotVariants}
                   className={`relative w-full flex items-center mb-20 ${
                     index % 2 === 0 ? "justify-start" : "justify-end"
                   }`}
@@ -415,11 +538,7 @@ useEffect(() => {
                           ? "left-1/2 -translate-x-1/2"
                           : "right-1/2 translate-x-1/2"
                       }
-                      ${
-                        index % 2 === 0
-                          ? "border-pink-400"
-                          : "border-blue-400"
-                      }
+                      ${index % 2 === 0 ? "border-pink-400" : "border-blue-400"}
                       shadow-md transition-all duration-300 hover:scale-110 hover:shadow-lg
                     `}
                   >
@@ -449,7 +568,7 @@ useEffect(() => {
                       {feature.desc}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -458,10 +577,20 @@ useEffect(() => {
         <section className="px-4 sm:px-6 lg:px-8 bg-white/80 py-16">
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-              <h2 className="text-3xl font-bold text-gray-800 text-center mt-6 md:text-left">
+              <motion.h2
+                variants={headingVariants}
+                initial="hidden"
+                whileInView="visible"
+                className="text-3xl font-bold text-gray-800 text-center mt-6 md:text-left"
+              >
                 Read how NeoNest helped parents
-              </h2>
-              <div className="text-center md:text-right">
+              </motion.h2>
+              <motion.div
+                variants={dotVariants}
+                initial="hidden"
+                whileInView="visible"
+                className="text-center md:text-right"
+              >
                 <Button
                   variant="outline"
                   className="text-pink-600 border-pink-400 font-semibold hover:bg-pink-50 px-6 py-2 rounded-full"
@@ -469,30 +598,34 @@ useEffect(() => {
                 >
                   + Add Your Review
                 </Button>
-              </div>
+              </motion.div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 gap-6 mb-2">
               {userReview && (
-                <Card className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl">
-                  <CardHeader className="p-0 mb-3">
-                    <CardTitle className="text-lg text-gray-800 font-semibold">
-                      {userReview.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-green-600">
-                      #{userReview.tag}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <p className="text-gray-700 text-base mb-3">
-                      {userReview.content}
-                    </p>
-                    <div className="text-xs text-gray-500 mb-2">
-                      Tags:{" "}
-                      {userReview.keywords.map((word) => `"${word}"`).join(", ")}
-                    </div>
-                  </CardContent>
-                </Card>
+                <motion.div variants={cardVariants} initial='hidden' whileInView='visible' >
+                  <Card className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl">
+                    <CardHeader className="p-0 mb-3">
+                      <CardTitle className="text-lg text-gray-800 font-semibold">
+                        {userReview.name}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-green-600">
+                        #{userReview.tag}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <p className="text-gray-700 text-base mb-3">
+                        {userReview.content}
+                      </p>
+                      <div className="text-xs text-gray-500 mb-2">
+                        Tags:{" "}
+                        {userReview.keywords
+                          .map((word) => `"${word}"`)
+                          .join(", ")}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               )}
 
               {featuredReviews.map((review, index) => {
@@ -504,69 +637,78 @@ useEffect(() => {
                 };
 
                 return (
-                  <Card
-                    key={index}
-                    className="bg-white/90 border border-gray-200 shadow-md p-4 rounded-xl"
-                  >
-                    <CardHeader className="p-0 mb-3">
-                      <CardTitle className="text-lg text-gray-800 font-semibold">
-                        {review.name}
-                      </CardTitle>
-                      <CardDescription className="text-sm text-pink-600">
-                        #{review.tag}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                      <p className="text-gray-700 text-base mb-3">
-                        {review.content}
-                      </p>
-                      <div className="text-xs text-gray-500 mb-2">
-                        Popular tags:{" "}
-                        {review.keywords.map((word) => `"${word}"`).join(", ")}
-                      </div>
+                    <motion.div key={index} initial='offscreen' whileInView='onscreen' variants={cardVariants} >
+                    <Card
+                      key={index}
+                      className="bg-white/90 border border-gray-200 shadow-md p-4 rounded-xl"
+                    >
+                      <CardHeader className="p-0 mb-3">
+                        <CardTitle className="text-lg text-gray-800 font-semibold">
+                          {review.name}
+                        </CardTitle>
+                        <CardDescription className="text-sm text-pink-600">
+                          #{review.tag}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        <p className="text-gray-700 text-base mb-3">
+                          {review.content}
+                        </p>
+                        <div className="text-xs text-gray-500 mb-2">
+                          Popular tags:{" "}
+                          {review.keywords
+                            .map((word) => `"${word}"`)
+                            .join(", ")}
+                        </div>
 
-                      <div className="flex items-center gap-6 text-sm mt-3">
-                        <div
-                          className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
-                            reaction.helpful
-                              ? "text-green-600"
-                              : "text-gray-400 hover:text-green-500"
-                          }`}
-                          onClick={() => handleReaction(index, "helpful")}
-                        >
-                          <ThumbsUp size={18} />
-                          <span className="text-xs">
-                            {reaction.helpfulCount || 0}
-                          </span>
+                        <div className="flex items-center gap-6 text-sm mt-3">
+                          <div
+                            className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
+                              reaction.helpful
+                                ? "text-green-600"
+                                : "text-gray-400 hover:text-green-500"
+                            }`}
+                            onClick={() => handleReaction(index, "helpful")}
+                          >
+                            <ThumbsUp size={18} />
+                            <span className="text-xs">
+                              {reaction.helpfulCount || 0}
+                            </span>
+                          </div>
+                          <div
+                            className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
+                              reaction.notHelpful
+                                ? "text-red-600"
+                                : "text-gray-400 hover:text-red-500"
+                            }`}
+                            onClick={() => handleReaction(index, "notHelpful")}
+                          >
+                            <ThumbsDown size={18} />
+                            <span className="text-xs">
+                              {reaction.notHelpfulCount || 0}
+                            </span>
+                          </div>
                         </div>
-                        <div
-                          className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
-                            reaction.notHelpful
-                              ? "text-red-600"
-                              : "text-gray-400 hover:text-red-500"
-                          }`}
-                          onClick={() => handleReaction(index, "notHelpful")}
-                        >
-                          <ThumbsDown size={18} />
-                          <span className="text-xs">
-                            {reaction.notHelpfulCount || 0}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card></motion.div>
+                  
                 );
               })}
             </div>
 
-            <div className="text-center mt-8">
+            <motion.div
+              variants={dotVariants}
+              initial="hidden"
+              whileInView="visible"
+              className="text-center mt-16"
+            >
               <Button
                 variant="outline"
                 className="text-pink-600 border-pink-400 font-bold hover:bg-pink-50 px-8 py-3 rounded-full"
               >
                 View All Reviews →
               </Button>
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -636,5 +778,3 @@ useEffect(() => {
     </>
   );
 };
-
-export default Homepage;
