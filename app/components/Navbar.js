@@ -88,7 +88,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             {/* changed div tag to link tag so user can redirect to home page whenever they click on navbar logo */}
-            <Link href="/" className="flex items-center">  
+            <Link href="/" className="flex items-center">
               <Image src="/logo.jpg" alt="NeoNest" width={60} height={60} />
               <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">NeoNest</span>
             </Link>
@@ -146,11 +146,15 @@ const Navbar = () => {
               <div className="mt-3 flex flex-col gap-2">
                 {!isAuth ? (
                   <>
-                    <Button className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                      <Link href="/Login">Login</Link>
+                    <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                      <Link href="/Login" onClick={() => setMenuOpen(false)}>
+                        Login
+                      </Link>
                     </Button>
-                    <Button className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                      <Link href="/Signup">Signup</Link>
+                    <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                      <Link href="/Signup" onClick={() => setMenuOpen(false)}>
+                        Signup
+                      </Link>
                     </Button>
                   </>
                 ) : (
