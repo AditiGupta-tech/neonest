@@ -1,103 +1,131 @@
 "use client";
-
+import React, { useState } from "react";
 import { Baby, Heart, Utensils, Star } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
+import { CardStack } from "./ui/card-stack";
 
-export default function InteractionWithBaby() {
+const interactionStages = [
+  {
+    title: "0–3 Months",
+    value: "0-3",
+    color: "pink",
+    icon: Baby,
+    tips: [
+      "⮞ Make eye contact and smile at your baby",
+      "⮞ Talk softly and use gentle expressions",
+      "⮞ Sing lullabies and nursery rhymes",
+      "⮞ Practice supervised tummy time daily",
+      "⮞ Give gentle baby massages",
+      "⮞ Show high-contrast black and white toys",
+      "⮞ Hold baby close during feeding times",
+      "⮞ Respond to baby's coos and sounds",
+      "⮞ Use soft toys and rattles",
+      "⮞ Create daily bonding routines",
+    ],
+  },
+  {
+    title: "4–6 Months",
+    value: "4-6",
+    color: "purple",
+    icon: Heart,
+    tips: [
+      "⮞ Play peek-a-boo games frequently",
+      "⮞ Use mirrors for self-recognition",
+      "⮞ Introduce various rattles and sounds",
+      "⮞ Read colorful picture books together",
+      "⮞ Encourage rolling and reaching",
+      "⮞ Let them grasp safe toys",
+      "⮞ Practice sitting with support",
+      "⮞ Make funny faces and expressions",
+      "⮞ Introduce different textures",
+      "⮞ Play simple interactive games",
+    ],
+  },
+  {
+    title: "7–9 Months",
+    value: "7-9",
+    color: "blue",
+    icon: Utensils,
+    tips: [
+      "⮞ Guide exploration of safe objects",
+      "⮞ Play musical games and sing along",
+      "⮞ Support crawling attempts",
+      "⮞ Practice object permanence games",
+      "⮞ Encourage self-feeding attempts",
+      "⮞ Play with different textures",
+      "⮞ Practice clapping and waving",
+      "⮞ Read interactive books together",
+      "⮞ Support standing with assistance",
+      "⮞ Create obstacle courses for crawling",
+    ],
+  },
+  {
+    title: "10–12 Months",
+    value: "10-12",
+    color: "green",
+    icon: Star,
+    tips: [
+      "⮞ Name objects and body parts",
+      "⮞ Support early walking attempts",
+      "⮞ Play stacking and sorting games",
+      "⮞ Encourage imitation of sounds",
+      "⮞ Practice simple words regularly",
+      "⮞ Play roll and catch with soft balls",
+      "⮞ Create safe exploration spaces",
+      "⮞ Introduce simple puzzles",
+      "⮞ Practice finger foods",
+      "⮞ Encourage social interaction",
+    ],
+  },
+];
+
+const InteractionWithBaby = () => {
+  const [selectedAge, setSelectedAge] = useState(undefined);
+
+  const selectedStage = interactionStages.find((stage) => stage.value === selectedAge);
+
+  const cardStackItems = selectedStage?.tips.map((tip, index) => ({
+    id: index,
+    name: selectedStage.title,
+    designation: "Interaction Tip",
+    content: <p className="text-base">{tip}</p>,
+  })) || [];
+
   return (
-    <section id="interaction" className="py-4 px-4 sm:px-6 lg:px-8 bg-white/50">
-      <div className="container mx-auto max-w-6xl">
+    <section id="interaction" className="px-4 py-8 bg-white/50 rounded-lg">
+      <div className="container mx-auto">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold mb-4 text-gray-800">
-            Interacting With Your Baby
-          </h2>
-          <p className="text-xl text-gray-600">
-            Discover meaningful ways to engage and support your baby's development
-          </p>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              month: "0-3 Months",
-              icon: Baby,
-              color: "pink",
-              activities: [
-                "Make eye contact",
-                "Talk softly to them",
-                "Sing lullabies",
-                "Tummy time",
-                "Gentle massage",
-                "Use high-contrast toys",
-              ],
-            },
-            {
-              month: "4-6 Months",
-              icon: Heart,
-              color: "purple",
-              activities: [
-                "Play peekaboo",
-                "Mirror play",
-                "Rattles and sounds",
-                "Read picture books",
-                "Encourage rolling",
-                "Let them grasp toys",
-              ],
-            },
-            {
-              month: "7-9 Months",
-              icon: Utensils,
-              color: "blue",
-              activities: [
-                "Introduce solid foods",
-                "Let them bang objects",
-                "Interactive songs",
-                "Support while sitting",
-                "Play with textures",
-                "Encourage crawling",
-              ],
-            },
-            {
-              month: "10-12 Months",
-              icon: Star,
-              color: "green",
-              activities: [
-                "Name objects",
-                "Encourage standing",
-                "Imitate sounds",
-                "Play stacking games",
-                "Clap hands together",
-                "Walk with support",
-              ],
-            },
-          ].map((stage, index) => (
-            <Card
-              key={index}
-              className="hover:shadow-lg transition-shadow border-none bg-white/80 backdrop-blur-sm rounded-xl p-4"
+          <h2 className="text-4xl font-bold text-gray-800 mb-2">Interacting With Your Baby</h2>
+          <p className="text-lg text-gray-600 mb-6">Discover meaningful ways to engage and support your baby's development</p>
+
+          <div className="max-w-xs mx-auto">
+            <Select
+              defaultValue={undefined}
+              value={selectedAge}
+              onValueChange={setSelectedAge}
             >
-              <CardHeader className="text-center p-0 mb-4">
-                <div
-                  className={`w-16 h-16 mx-auto rounded-full bg-${stage.color}-400 flex items-center justify-center mb-4 shadow-md`}
-                >
-                  <stage.icon className={`w-8 h-8 text-${stage.color}-600`} />
-                </div>
-                <CardTitle className="text-xl font-semibold">
-                  {stage.month}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <ul className="space-y-2">
-                  {stage.activities.map((activity, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-base text-gray-700">
-                      <div className={`w-2 h-2 rounded-full bg-${stage.color}-400 flex-shrink-0`}></div>
-                      {activity}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          ))}
+              <SelectTrigger className="w-full bg-white/90 backdrop-blur-sm border-gray-200 text-gray-700">
+                <SelectValue placeholder="Select age" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {interactionStages.map((stage) => (
+                  <SelectItem key={stage.value} value={stage.value}>
+                    {stage.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
+        {selectedStage && (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <CardStack items={cardStackItems} offset={5} scaleFactor={0.08} />
+          </div>
+        )}
       </div>
     </section>
   );
-}
+};
+
+export default InteractionWithBaby;

@@ -1,10 +1,14 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Baby, Bed, Smile } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
+import { CardStack } from "./ui/card-stack";
 
 const sleepStages = [
   {
     title: "0–3 Months",
+    value: "0-3",
     color: "pink",
     icon: Baby,
     tips: [
@@ -14,7 +18,7 @@ const sleepStages = [
       "⮞ Place baby on their back to sleep.",
       "⮞ Swaddling (when done safely) can soothe.",
       "⮞ Avoid overstimulation before naps.",
-      "⮞ Respond calmly to night wakings — it’s normal.",
+      "⮞ Respond calmly to night wakings — it's normal.",
       "⮞ Use dim lights at night to help differentiate day/night.",
       "⮞ Burp gently before laying baby down.",
       "⮞ Track sleep patterns to understand habits early on.",
@@ -22,6 +26,7 @@ const sleepStages = [
   },
   {
     title: "4–6 Months",
+    value: "4-6",
     color: "purple",
     icon: Bed,
     tips: [
@@ -39,6 +44,7 @@ const sleepStages = [
   },
   {
     title: "7–12 Months",
+    value: "7-12",
     color: "blue",
     icon: Smile,
     tips: [
@@ -57,39 +63,49 @@ const sleepStages = [
 ];
 
 const Sleeptips = () => {
+  const [selectedAge, setSelectedAge] = useState(undefined);
+
+  const selectedStage = sleepStages.find((stage) => stage.value === selectedAge);
+
+  const cardStackItems = selectedStage?.tips.map((tip, index) => ({
+    id: index,
+    name: selectedStage.title,
+    designation: "Sleep Tip",
+    content: <p className="text-base">{tip}</p>,
+  })) || [];
+
   return (
     <section id="sleep-tips" className="px-4 py-8 bg-white/50 rounded-lg mb-6">
       <div className="container mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-4xl font-bold text-gray-800 mb-2">Baby Sleep Tips by Age</h2>
-          <p className="text-lg text-gray-600">Because if baby sleeps well, so do you!</p>
+          <p className="text-lg text-gray-600 mb-6">Because if baby sleeps well, so do you!</p>
+
+          <div className="max-w-xs mx-auto">
+            <Select
+              defaultValue={undefined}
+              value={selectedAge}
+              onValueChange={setSelectedAge}
+            >
+              <SelectTrigger className="w-full bg-white/90 backdrop-blur-sm border-gray-200 text-gray-700">
+                <SelectValue placeholder="Select age" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {sleepStages.map((stage) => (
+                  <SelectItem key={stage.value} value={stage.value}>
+                    {stage.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* Age-based sleep tips */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {sleepStages.map((stage, index) => (
-            <Card
-              key={index}
-              className={`border-0 bg-white/90 backdrop-blur-sm hover:shadow-md transition-shadow`}
-            >
-              <CardHeader className="text-center">
-                <div
-                  className={`w-16 h-16 mx-auto rounded-full bg-${stage.color}-100 flex items-center justify-center mb-3`}
-                >
-                  <stage.icon className={`w-7 h-7 text-${stage.color}-600`} />
-                </div>
-                <CardTitle className="text-2xl font-semibold  text-gray-800">{stage.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-[15px] bg-gradient-to-l from-pink-700 to-blue-700 bg-clip-text text-transparent">
-                  {stage.tips.map((tip, idx) => (
-                    <li key={idx}>{tip}</li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {selectedStage && (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <CardStack items={cardStackItems} offset={5} scaleFactor={0.08} />
+          </div>
+        )}
 
         {/* Statement */}
         <div className="text-center text-gray-500 text-sm mt-10">
