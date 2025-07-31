@@ -168,11 +168,9 @@ export async function POST(req) {
       );
     }
 
-    // IMPORTANT: Ensure this password length check matches your frontend (if it's 8, use < 6)
-    // Your frontend has < 6 now, but this line still has < 6. Let's make it consistent.
-    if (password.length < 6) { // Changed from < 6 to < 6 for consistency with 8 characters minimum
+    if (password.length < 6) {
       return Response.json(
-        { error: "Password must be at least 8 characters" },
+        { error: "Password must be at least 6 characters" },
         { status: 422 }
       );
     }

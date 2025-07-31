@@ -9,6 +9,7 @@ import Chatbot from "./Chatbot";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
 import { Menu, X } from "lucide-react";
+import NotificationBell from "./NotificationBell";
 
 const tabs = [
   { label: "home", path: "/" },
@@ -111,6 +112,7 @@ const Navbar = () => {
 
             {/* CTA - Desktop */}
             <div className="hidden md:flex items-center space-x-2">
+              {isAuth && <NotificationBell />}
               <Chatbot />
               {!isAuth ? (
                 <>
