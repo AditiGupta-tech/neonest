@@ -664,6 +664,16 @@ const ScrollLinked = () => {
                       </div>
                     </CardContent>
                   </Card>
+                  <div
+                      className="absolute inset-0 bg-gray-900/10 rounded-xl transform translate-y-8 scale-95 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-lg group-hover:translate-y-12 group-hover:scale-90"
+                      style={{ transform: "translateZ(-10px)" }}
+                    />
+
+                    {/* Additional shadow layer for depth */}
+                    <div
+                      className="absolute inset-0 bg-gray-900/5 rounded-xl transform translate-y-4 scale-98 opacity-0 group-hover:opacity-100 transition-all duration-300 blur-md"
+                      style={{ transform: "translateZ(-5px)" }}
+                    />
                 </motion.div>
               )}
 
