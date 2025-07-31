@@ -87,10 +87,11 @@ const Navbar = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center">
+            {/* changed div tag to link tag so user can redirect to home page whenever they click on navbar logo */}
+            <Link href="/" className="flex items-center">  
               <Image src="/logo.jpg" alt="NeoNest" width={60} height={60} />
               <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">NeoNest</span>
-            </div>
+            </Link>
 
             {/* Hamburger - Mobile */}
             <div className="md:hidden">
