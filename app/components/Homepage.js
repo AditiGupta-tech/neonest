@@ -21,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "./ui/card";
 import { Button } from "./ui/Button";
 import Image from "next/image";
@@ -330,14 +331,19 @@ const ScrollLinked = () => {
               </motion.p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12"></div>
               <div className="relative w-full max-w-2xl mx-auto">
-                <motion.div variants={dotVariants} initial='hidden' whileInView='visible'>
-                <Image
-                  src="/happyBaby.png"
-                  alt="Happy baby with parents"
-                  width={500}
-                  height={500}
-                  className="mx-auto mt-8 rounded-2xl shadow-2xl w-full h-auto"
-                /></motion.div>
+                <motion.div
+                  variants={dotVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                >
+                  <Image
+                    src="/happyBaby.png"
+                    alt="Happy baby with parents"
+                    width={500}
+                    height={500}
+                    className="mx-auto mt-8 rounded-2xl shadow-2xl w-full h-auto"
+                  />
+                </motion.div>
                 <div className="absolute -top-4 -left-4 w-20 h-20 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce shadow-md">
                   <Heart className="w-9 h-9 text-yellow-600" />
                 </div>
@@ -603,7 +609,11 @@ const ScrollLinked = () => {
 
             <div className="grid sm:grid-cols-2 gap-6 mb-2">
               {userReview && (
-                <motion.div variants={cardVariants} initial='hidden' whileInView='visible' >
+                <motion.div
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                >
                   <Card className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl">
                     <CardHeader className="p-0 mb-3">
                       <CardTitle className="text-lg text-gray-800 font-semibold">
@@ -637,61 +647,173 @@ const ScrollLinked = () => {
                 };
 
                 return (
-                    <motion.div key={index} initial='offscreen' whileInView='onscreen' variants={cardVariants} >
+                  <motion.div
+                    key={index}
+                    initial="offscreen"
+                    whileInView="onscreen"
+                    variants={cardVariants}
+                    className="group perspective-[1000px] transform-gpu"
+                    style={{ transformStyle: "preserve-3d" }}
+                  >
+                    {/* Main card with enhanced 3D transformations */}
                     <Card
-                      key={index}
-                      className="bg-white/90 border border-gray-200 shadow-md p-4 rounded-xl"
+                      className="relative bg-white/95 backdrop-blur-sm border-gray-200/50 shadow-lg hover:shadow-2xl transition-all duration-500 transform-gpu group-hover:scale-[1.05] group-hover:rotateX-[8deg] group-hover:rotateY-[15deg] group-hover:-translate-y-2"
+                      style={{
+                        transformStyle: "preserve-3d",
+                        transformOrigin: "center center",
+                      }}
+                      onMouseMove={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = (y - centerY) / 8;
+                        const rotateY = (centerX - x) / 8;
+
+                        e.currentTarget.style.transform = `
+                        scale(1.05) 
+                        rotateX(${rotateX}deg) 
+                        rotateY(${rotateY}deg) 
+                        translateY(-8px)
+                        translateZ(20px)
+                      `;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "";
+                      }}
                     >
-                      <CardHeader className="p-0 mb-3">
-                        <CardTitle className="text-lg text-gray-800 font-semibold">
+                      {/* Header with layered 3D transform */}
+                      <CardHeader
+                        className="pb-4 transform transition-all duration-500 group-hover:translateZ-[15px]"
+                        style={{ transform: "translateZ(10px)" }}
+                      >
+                        <CardTitle
+                          className="text-lg text-gray-800 font-semibold transform transition-all duration-500 group-hover:translate-x-1 hover:scale-[1.02]"
+                          style={{ transform: "translateZ(5px)" }}
+                        >
                           {review.name}
                         </CardTitle>
-                        <CardDescription className="text-sm text-pink-600">
+                        <CardDescription
+                          className="text-sm text-pink-600 font-medium transform transition-all duration-500 group-hover:translate-x-2 group-hover:text-pink-500 hover:scale-105"
+                          style={{ transform: "translateZ(8px)" }}
+                        >
                           #{review.tag}
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="p-0">
-                        <p className="text-gray-700 text-base mb-3">
+
+                      {/* Content with progressive depth */}
+                      <CardContent
+                        className="pt-0 pb-4 transform transition-all duration-500 group-hover:translateZ-[12px]"
+                        style={{ transform: "translateZ(6px)" }}
+                      >
+                        <p
+                          className="text-gray-700 text-base mb-4 leading-relaxed transform transition-all duration-500 group-hover:translate-x-1 hover:scale-[1.01]"
+                          style={{ transform: "translateZ(4px)" }}
+                        >
                           {review.content}
                         </p>
-                        <div className="text-xs text-gray-500 mb-2">
-                          Popular tags:{" "}
-                          {review.keywords
-                            .map((word) => `"${word}"`)
-                            .join(", ")}
-                        </div>
 
-                        <div className="flex items-center gap-6 text-sm mt-3">
-                          <div
-                            className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
-                              reaction.helpful
-                                ? "text-green-600"
-                                : "text-gray-400 hover:text-green-500"
-                            }`}
-                            onClick={() => handleReaction(index, "helpful")}
-                          >
-                            <ThumbsUp size={18} />
-                            <span className="text-xs">
-                              {reaction.helpfulCount || 0}
-                            </span>
-                          </div>
-                          <div
-                            className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
-                              reaction.notHelpful
-                                ? "text-red-600"
-                                : "text-gray-400 hover:text-red-500"
-                            }`}
-                            onClick={() => handleReaction(index, "notHelpful")}
-                          >
-                            <ThumbsDown size={18} />
-                            <span className="text-xs">
-                              {reaction.notHelpfulCount || 0}
-                            </span>
-                          </div>
+                        <div
+                          className="text-xs text-gray-500 transform transition-all duration-500 group-hover:translate-x-2 hover:scale-[1.02]"
+                          style={{ transform: "translateZ(6px)" }}
+                        >
+                          Popular tags:{" "}
+                          <span className="font-medium">
+                            {review.keywords
+                              .map((word) => `"${word}"`)
+                              .join(", ")}
+                          </span>
                         </div>
                       </CardContent>
-                    </Card></motion.div>
-                  
+
+                      {/* Interactive buttons with enhanced 3D effects */}
+                      <CardFooter
+                        className="pt-0 flex items-center gap-6 text-sm transform transition-all duration-500 group-hover:translateZ-[18px]"
+                        style={{ transform: "translateZ(12px)" }}
+                      >
+                        <motion.div
+                          className={`cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                            reaction.helpful
+                              ? "text-green-600 bg-green-50 shadow-md"
+                              : "text-gray-400 hover:text-green-500 hover:bg-green-50 hover:shadow-sm"
+                          }`}
+                          onClick={() => handleReaction(index, "helpful")}
+                          whileHover={{
+                            scale: 1.15,
+                            rotateZ: 3,
+                            translateZ: 10,
+                            transition: { type: "spring", stiffness: 400 },
+                          }}
+                          whileTap={{ scale: 0.95 }}
+                          style={{ transform: "translateZ(8px)" }}
+                        >
+                          <ThumbsUp
+                            size={18}
+                            className="transform transition-transform duration-300 group-hover:rotate-12"
+                          />
+                          <span className="text-xs font-medium">
+                            {reaction.helpfulCount || 0}
+                          </span>
+                        </motion.div>
+
+                        <motion.div
+                          className={`cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                            reaction.notHelpful
+                              ? "text-red-600 bg-red-50 shadow-md"
+                              : "text-gray-400 hover:text-red-500 hover:bg-red-50 hover:shadow-sm"
+                          }`}
+                          onClick={() => handleReaction(index, "notHelpful")}
+                          whileHover={{
+                            scale: 1.15,
+                            rotateZ: -3,
+                            translateZ: 10,
+                            transition: { type: "spring", stiffness: 400 },
+                          }}
+                          whileTap={{ scale: 0.95 }}
+                          style={{ transform: "translateZ(8px)" }}
+                        >
+                          <ThumbsDown
+                            size={18}
+                            className="transform transition-transform duration-300 group-hover:-rotate-12"
+                          />
+                          <span className="text-xs font-medium">
+                            {reaction.notHelpfulCount || 0}
+                          </span>
+                        </motion.div>
+                      </CardFooter>
+
+                      {/* Enhanced bottom reflection with depth */}
+                      <div
+                        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent transform translate-y-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        style={{ transform: "translateZ(-2px)" }}
+                      />
+
+                      {/* Inner glow border with proper layering */}
+                      <div
+                        className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                        style={{ transform: "translateZ(-1px)" }}
+                      />
+
+                      {/* Additional depth layers */}
+                      <div
+                        className="absolute inset-2 rounded-lg opacity-0 group-hover:opacity-10 bg-white transition-opacity duration-500 pointer-events-none"
+                        style={{ transform: "translateZ(-3px)" }}
+                      />
+                    </Card>
+
+                    {/* Enhanced ground shadow with 3D positioning */}
+                    <div
+                      className="absolute inset-0 bg-gray-900/10 rounded-xl transform translate-y-8 scale-95 opacity-0 group-hover:opacity-100 transition-all duration-500 blur-lg group-hover:translate-y-12 group-hover:scale-90"
+                      style={{ transform: "translateZ(-10px)" }}
+                    />
+
+                    {/* Additional shadow layer for depth */}
+                    <div
+                      className="absolute inset-0 bg-gray-900/5 rounded-xl transform translate-y-4 scale-98 opacity-0 group-hover:opacity-100 transition-all duration-300 blur-md"
+                      style={{ transform: "translateZ(-5px)" }}
+                    />
+                  </motion.div>
                 );
               })}
             </div>
