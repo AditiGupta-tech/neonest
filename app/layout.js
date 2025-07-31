@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import GoToTop from "./components/GoToTop";
 import { AuthProvider } from "./context/AuthContext";
 // import Chatbot from "./components/Chatbot";
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           <main className="flex-grow">{children}</main>
           <Footer />
+          <GoToTop />
         </AuthProvider>
       </body>
     </html>
