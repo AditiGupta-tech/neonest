@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 import { useState, useEffect, useRef } from "react";
 import {
   ThumbsUp,
@@ -474,7 +474,7 @@ useEffect(() => {
 
             <div className="grid sm:grid-cols-2 gap-6">
               {userReview && (
-                <Card className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl">
+                <Card className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
                   <CardHeader className="p-0 mb-3">
                     <CardTitle className="text-lg text-gray-800 font-semibold">
                       {userReview.name}
@@ -506,7 +506,7 @@ useEffect(() => {
                 return (
                   <Card
                     key={index}
-                    className="bg-white/90 border border-gray-200 shadow-md p-4 rounded-xl"
+                    className="bg-white/90 border border-gray-200 shadow-md p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
                   >
                     <CardHeader className="p-0 mb-3">
                       <CardTitle className="text-lg text-gray-800 font-semibold">
