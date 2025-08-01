@@ -98,27 +98,13 @@ export default function VaccineTracker({ babyId }) {
     }
   }
 
-  // const fetchBabyBirthDate = async () => {
-  //   try {
-  //     const token = getAuthToken()
-  //     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/baby/${babyId}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     if (res.data && res.data.birthDate) {
-  //       setBabyBirthDate(res.data.birthDate.split("T")[0]) 
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching baby birth date:", error)
-  //   }
-  // }
-
   const initializeStandardSchedule = async () => {
     if (!babyBirthDate) return; 
 
     try {
       const token = getAuthToken()
       await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/vaccine/initialize-schedule`, 
+        "/api/vaccine/initialize-schedule", 
         { babyId, birthDate: babyBirthDate },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -137,7 +123,7 @@ export default function VaccineTracker({ babyId }) {
     try {
       const token = getAuthToken()
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/vaccine`,
+        "/api/vaccine",
         { ...newVaccine, babyId },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -155,7 +141,7 @@ export default function VaccineTracker({ babyId }) {
     try {
       const token = getAuthToken()
       await axios.put( 
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/vaccine/${editingVaccine._id}`, 
+        `/api/vaccine/${editingVaccine._id}`, 
         { ...editingVaccine, babyId },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -170,7 +156,7 @@ export default function VaccineTracker({ babyId }) {
     try {
       const token = getAuthToken()
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/vaccine/${id}`, 
+        `/api/vaccine/${id}`, 
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -182,18 +168,25 @@ export default function VaccineTracker({ babyId }) {
   }
 
   const markAsCompleted = async (id) => {
-    try {
-      const token = getAuthToken()
-      await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/vaccine/${id}/complete`, 
-        { completedDate: new Date().toISOString().split("T")[0] },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      fetchVaccines() 
-    } catch (error) {
-      console.error("Error marking vaccine as completed:", error)
-    }
+  try {
+    const token = getAuthToken();
+    await axios.patch(
+      `/api/vaccine`,
+      {
+        vaccineId: id,
+        newStatus: "completed"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    fetchVaccines();
+  } catch (error) {
+    console.error("Error marking vaccine as completed:", error);
   }
+};
 
   const handleFileUpload = (e, targetVaccine = null) => {
     const file = e.target.files[0]
