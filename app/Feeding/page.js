@@ -53,7 +53,7 @@ export default function Page() {
   const handleAddSchedule = async () => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/feeding`,
+        "/api/feeding",
         newSchedule,
         {
           headers: {
@@ -77,7 +77,7 @@ export default function Page() {
   const handleUpdateSchedule = async (id, updatedData) => {
     try {
       await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/feeding`,
+        "/api/feeding",
         { feedId: id, ...updatedData },
         {
           headers: {
@@ -95,7 +95,7 @@ export default function Page() {
 
   const handleDeleteSchedule = async (id) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/feeding`, {
+      await axios.delete("/api/feeding", {
         params: { feedId: id },
         headers: {
           Authorization: `Bearer ${token}`,

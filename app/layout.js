@@ -27,9 +27,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`flex flex-col min-h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`w-screen flex flex-col min-h-screen overflow-x-hidden ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
+
           <NotificationProvider>
             <Navbar />
             <main className="flex-grow">{children}</main>

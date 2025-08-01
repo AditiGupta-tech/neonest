@@ -86,7 +86,7 @@ const Navbar = () => {
 
       <header className="bg-white/80 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between xl:pr-4">
             {/* Logo */}
             {/* changed div tag to link tag so user can redirect to home page whenever they click on navbar logo */}
             <Link href="/" className="flex items-center">
@@ -102,7 +102,7 @@ const Navbar = () => {
             </div>
 
             {/* Nav - Desktop */}
-            <nav className="hidden md:flex items-center gap-4">
+            <nav className="hidden xl:flex items-center gap-4">
               {tabs.map(({ label, path }) => (
                 <Link key={label} href={path} className={`transition-colors capitalize ${pathname === path ? "text-pink-600" : "text-gray-600 hover:text-pink-600"}`}>
                   {label}
