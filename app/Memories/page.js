@@ -110,7 +110,7 @@ export default function MemoriesCommunityBlog() {
     try {
       if (editingMemory) {
         await axios.put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/memories/${editingMemory._id}`,
+          `/api/memories/${editingMemory._id}`,
           data,
           {
             headers: {
@@ -120,7 +120,7 @@ export default function MemoriesCommunityBlog() {
           }
         );
       } else {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/memories`, data, {
+        await axios.post("/api/memories", data, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
