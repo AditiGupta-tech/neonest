@@ -3,6 +3,7 @@ import "./globals.css";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import { AuthProvider } from "./context/AuthContext";
+import { icons } from "lucide-react";
 // import Chatbot from "./components/Chatbot";
 
 const geistSans = Geist({
@@ -19,6 +20,10 @@ export const metadata = {
   title: "NeoNest - For Parents and Babies",
   description:
     "Supporting parents through their baby's incredible first year with expert guidance, AI assistance, and loving community.",
+  icons: {
+    icon:"favicon.png"
+  },
+  keywords:["Child Care","NeoNest","JavaScript","Nextjs","Reactjs"]
 };
 
 export default function RootLayout({ children }) {
