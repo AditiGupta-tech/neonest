@@ -25,6 +25,7 @@ import {
 import { Button } from "./ui/Button";
 import Image from "next/image";
 import NewSections from "./Newsections";
+import NotificationDemo from "./NotificationDemo";
 import { Toaster, toast } from 'sonner';
 
 const Homepage = () => {
@@ -571,6 +572,22 @@ useEffect(() => {
         </section>
 
         <NewSections />
+
+        {/* Notification Demo Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Smart Notifications System
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Experience our intelligent notification system that keeps you informed about feeding times, 
+                sleep schedules, vaccines, milestones, and more. Test it out below!
+              </p>
+            </div>
+            <NotificationDemo />
+          </div>
+        </section>
 
         {showReviewPrompt && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 animate-fadeIn">

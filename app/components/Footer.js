@@ -51,12 +51,19 @@ export default function NeoNestFooter() {
   ];
 
   return (
+<<<<<<< HEAD
     <div className="bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-white">
       <footer className="relative overflow-hidden">
         {/* Floating Blurs */}
         <div className="absolute top-10 left-10 w-20 h-20 bg-pink-700/10 rounded-full blur-xl"></div>
         <div className="absolute top-20 right-20 w-32 h-32 bg-indigo-700/10 rounded-full blur-xl"></div>
         <div className="absolute bottom-20 left-1/3 w-24 h-24 bg-purple-800/10 rounded-full blur-xl"></div>
+=======
+    <div className="w-full md:mx-10 lg:mx-0 bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-white flex flex-col justify-end">
+      <footer className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
+        {/* Decorative top border */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+>>>>>>> 15fe0a6b7fb2aae73885e1b35761e14d9250f78c
 
         <div className="max-w-6xl mx-auto px-2 py-12 relative">
           <div className="grid md:grid-cols-4 gap-8 mb-8">

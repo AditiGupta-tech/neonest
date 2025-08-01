@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
@@ -7,20 +6,8 @@ import Input from "../components/ui/Input"
 import { Button } from "../components/ui/Button"
 import ImportantContacts from "../components/ImportantContacts "
 import Badge from "../components/ui/Badge"
-import {
-  Plus,
-  Shield,
-  Calendar,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Upload,
-  FileText,
-  Edit,
-  Trash2,
-  Bell,
-  Save,
-} from "lucide-react"
+import {Plus,Shield,Calendar,AlertTriangle,CheckCircle,Clock,Upload,FileText,Edit,Trash2,Bell,Save,} from "lucide-react"
+
 
 function getVaccineStatus(vaccine) {
   const today = new Date()
@@ -62,7 +49,6 @@ const staticStandardVaccines = [
   { name: "Varicella", ageMonths: 12, description: "Chickenpox vaccine" },
   { name: "Hepatitis A", ageMonths: 12, description: "First dose" },
 ];
-
 
 export default function VaccineTracker({ babyId }) {
   const [vaccines, setVaccines] = useState([])
@@ -227,9 +213,9 @@ export default function VaccineTracker({ babyId }) {
 
 
   return (
-    <div className="p-6 space-y-6 container mx-auto">
+    <div className="p-6 md:p-6 md:mx-20 lg:mx-0 w-full space-y-6 mx-auto">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-800">Medical Records: Vaccines & Important Contacts</h2>
           <p className="text-gray-600">Keep track of your baby's vaccination schedule and essential medical contacts for quick access.</p>
@@ -242,7 +228,7 @@ export default function VaccineTracker({ babyId }) {
           }}
           className="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600"
         >
-          <Plus className="w-4 h-4 mr-2" />
+        <Plus className="w-4 h-4 mr-2" />
           Add Vaccine
         </Button>
       </div>
@@ -260,7 +246,7 @@ export default function VaccineTracker({ babyId }) {
             <p className="text-gray-600">
               Enter your baby's birth date to automatically generate the standard vaccination schedule.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-wrap">
               <Input
                 type="date"
                 value={babyBirthDate}
