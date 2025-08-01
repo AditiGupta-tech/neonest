@@ -252,10 +252,10 @@ useEffect(() => {
       )}
 
       <div className={`${showWelcomeOverlay ? 'pointer-events-none' : ''}`}>
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <section className="py-10 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto text-center max-w-6xl">
             <div className="mb-10">
-              <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
+              <h1 className="text-3xl md:text-5xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
                 Your Baby's First Year Journey
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -270,7 +270,7 @@ useEffect(() => {
                   alt="Happy baby with parents"
                   width={500}
                   height={500}
-                  className="mx-auto mt-8 rounded-2xl shadow-2xl w-full h-auto"
+                  className="mx-auto mt-6 rounded-2xl shadow-2xl w-full h-auto"
                 />
                 <div className="absolute -top-4 -left-4 w-20 h-20 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce shadow-md">
                   <Heart className="w-9 h-9 text-yellow-600" />
@@ -294,7 +294,7 @@ useEffect(() => {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
               <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
                   <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -328,7 +328,7 @@ useEffect(() => {
                   <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Camera className="w-6 h-6 text-purple-600" />
                   </div>
-                  <CardTitle className="group-hover:text-purple-600 transition-colors text-xl font-semibold">
+                  <CardTitle className="text-lg sm:text-xl font-semibold ...">
                     Memory Vault
                   </CardTitle>
                   <CardDescription className="text-gray-600 text-sm">
@@ -339,7 +339,7 @@ useEffect(() => {
 
               <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="relative flex flex-col items-center px-2 sm:px-4">
                     <Shield className="w-6 h-6 text-green-600" />
                   </div>
                   <CardTitle className="group-hover:text-green-600 transition-colors text-xl font-semibold">
@@ -353,7 +353,7 @@ useEffect(() => {
 
               <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <div className="relative z-20 w-full max-w-md p-4 sm:p-6 shadow-xl ...">
                     <PlayCircle className="w-6 h-6 text-orange-600" />
                   </div>
                   <CardTitle className="group-hover:text-orange-600 transition-colors text-xl font-semibold">
@@ -386,7 +386,7 @@ useEffect(() => {
           id="about"
           className="py-4 px-4 sm:px-6 lg:px-8"
         >
-          <div className="container mx-auto max-w-5xl">
+          <div className="container mx-auto max-w-full sm:max-w-4xl md:max-w-5xl lg:max-w-6xl px-3 sm:px-6">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4 text-gray-8000 leading-tight">
                 Why Mothers Trust NeoNest
@@ -456,7 +456,7 @@ useEffect(() => {
         </section>
 
         <section className="px-4 sm:px-6 lg:px-8 bg-white/80 py-16">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-full sm:max-w-4xl md:max-w-5xl lg:max-w-6xl px-3 sm:px-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
               <h2 className="text-3xl font-bold text-gray-800 text-center mt-6 md:text-left">
                 Read how NeoNest helped parents
@@ -592,10 +592,10 @@ useEffect(() => {
                 </div>
               ) : (
                 <>
-                  <h3 className="text-2xl font-bold text-yellow-800 mb-4 text-center">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-800">
                     Help us make NeoNest better!
                   </h3>
-                  <div className="flex justify-center gap-2 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
