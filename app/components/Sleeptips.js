@@ -150,7 +150,7 @@ const Sleeptips = () => {
         </div>
 
         {/* Statement */}
-        <div className="text-center text-gray-500 text-sm mt-2">
+        <div className="text-center text-gray-500 text-sm mt-6">
           For more information, visit{" "}
           <a href="/Resources" className="text-pink-600 hover:underline">
             Resources

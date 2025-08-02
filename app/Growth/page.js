@@ -197,7 +197,7 @@ export default function GrowthPage() {
         </div>
       )}
 
-      <div className="text-center text-gray-500 text-sm mt-10 mb-6">
+      <div className="text-center text-gray-500 text-sm py-8 ">
         For more information regarding this section, visit{" "}
         <a href="/Resources" className="text-pink-600 hover:underline">Resources</a> or{" "}
         <a href="/Faqs" className="text-pink-600 hover:underline">FAQs</a>.

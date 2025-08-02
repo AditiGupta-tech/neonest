@@ -167,17 +167,7 @@ const InteractionWithBaby = () => {
         </div>
 
         {/* Statement */}
-        <div className="text-center text-gray-500 text-sm mt-2">
-          For more information, visit{" "}
-          <a href="/Resources" className="text-pink-600 hover:underline">
-            Resources
-          </a>{" "}
-          or{" "}
-          <a href="/Faqs" className="text-pink-600 hover:underline">
-            FAQs
-          </a>
-          .
-        </div>
+    
       </div>
     </section>
   );
