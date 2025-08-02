@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect, useRef } from "react";
 import {
   ThumbsUp,
@@ -21,13 +20,12 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
- 
 } from "./ui/card";
 import { Button } from "./ui/Button";
 import Image from "next/image";
 import NewSections from "./Newsections";
-import { Toaster, toast } from "sonner";
-import { motion, useScroll } from "framer-motion";
+import { Toaster, toast } from "sonner"; // ✅ merge both imports (keep one with consistent quotes)
+import { motion, useScroll } from "framer-motion"; // ✅ from your branch
 
 export default function Homepage() {
   const { scrollYProgress } = useScroll();
