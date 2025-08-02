@@ -71,7 +71,7 @@ export default function MilestoneTracker({ babyDOB }) {
     }
   };
 
- return (
+  return (
     <div className="w-full">
       <div
         ref={containerRef}
@@ -95,16 +95,21 @@ export default function MilestoneTracker({ babyDOB }) {
             <div
               ref={(el) => (cardRefs.current[i] = el)}
               key={i}
-              className={`min-w-[250px] sm:min-w-[300px] rounded-xl p-4 transition-all duration-300 shadow-md relative flex flex-col justify-between border-2 snap-start ${
-                isCurrent ? "scale-110 mx-2" : "scale-100"
-              } ${
-                i === currentMonth
-                  ? "bg-purple-100 border-purple-400"
-                  : showRedAlert
-                  ? "bg-red-100 border-red-400"
-                  : isPast
-                  ? "bg-purple-50 border-purple-200 opacity-70"
-                  : "bg-gray-100 border-gray-200 opacity-50"
+              onClick={() => {
+                if (visibleMonth !== i) scrollToCard(i);
+              }}
+              className={`min-w-[250px] sm:min-w-[300px] rounded-xl p-4 transition-all duration-300 shadow-md relative flex flex-col justify-between border-2 snap-start ${isCurrent ? "scale-110 mx-2" : "scale-100"} ${
+                i === visibleMonth && i === currentMonth
+                  ? "bg-purple-200 border-purple-500 scale-110 ring-2 ring-purple-500 z-10"
+                  : i === visibleMonth
+                    ? "bg-white border-purple-300 scale-105 ring-1 ring-purple-300 z-10"
+                    : showRedAlert
+                      ? "bg-red-100 border-red-400"
+                      : i === currentMonth
+                        ? "bg-purple-100 border-purple-400"
+                        : isPast
+                          ? "bg-purple-50 border-purple-200 opacity-70"
+                          : "bg-gray-100 border-gray-200 opacity-50"}
               }`}
             >
               <div>
@@ -113,9 +118,8 @@ export default function MilestoneTracker({ babyDOB }) {
                   {monthMilestones.map((m) => (
                     <li
                       key={m}
-                      className={`flex items-center justify-between gap-2 text-sm group ${
-                        completed[`${i}:${m}`] ? "text-green-600 line-through" : "text-gray-700"
-                      }`}
+                      className={`flex items-center justify-between gap-2 text-sm group ${completed[`${i}:${m}`] ? "text-green-600 line-through" : "text-gray-700"
+                        }`}
                     >
                       <div
                         className="flex items-center gap-2 cursor-pointer"
@@ -177,8 +181,8 @@ export default function MilestoneTracker({ babyDOB }) {
 
                 {i < currentMonth && completedAll && (
                   <div className="absolute inset-0 flex justify-center items-center z-0">
-    <PartyPopper className="w-12 h-12 text-purple-700 opacity-50 animate-bounce" />
-  </div>
+                    <PartyPopper className="w-12 h-12 text-purple-700 opacity-50 animate-bounce" />
+                  </div>
                 )}
 
                 {i < currentMonth && !completedAll && (
@@ -196,9 +200,8 @@ export default function MilestoneTracker({ babyDOB }) {
                   <span
                     key={d}
                     title={`${m} - ${completed[`${i}:${m}`] ? "Completed" : "Pending"}`}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      completed[`${i}:${m}`] ? "bg-green-500" : "bg-gray-300"
-                    }`}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${completed[`${i}:${m}`] ? "bg-green-500" : "bg-gray-300"
+                      }`}
                   ></span>
                 ))}
               </div>
@@ -211,9 +214,8 @@ export default function MilestoneTracker({ babyDOB }) {
         {Array.from({ length: 12 }).map((_, i) => (
           <button
             key={i}
-            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-              i === visibleMonth ? "bg-purple-500" : "bg-gray-400"
-            }`}
+            className={`w-3 h-3 rounded-full transition-colors duration-300 ${i === visibleMonth ? "bg-purple-500" : "bg-gray-400"
+              }`}
             onClick={() => scrollToCard(i)}
           ></button>
         ))}
