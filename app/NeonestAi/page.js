@@ -5,12 +5,12 @@ import axios from "axios";
 import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3, Copy } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../components/ui/tooltip";
-
 import { Button } from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Badge from "../components/ui/Badge";
 import ReactMarkdown from "react-markdown";
-
+import SpeechRecognition from "../components/SpeechRecognition";
+import TextToSpeech from "../components/TextToSpeech";
 import { fetchChatHistory, saveChatHistory } from "@/lib/chatService";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
@@ -30,13 +30,21 @@ const roles = [
 
 export default function NeonestAi() {
   const [role, setRole] = useState("pediatrician");
-  const { chatHistory = {}, setChatHistory = () => {}, historyLoaded = {} } = useChatStore((state) => state || {});
+  const {
+    chatHistory = {},
+    setChatHistory = () => {},
+    historyLoaded = {},
+    resetChatHistoryForRole = () => {},
+  } = useChatStore((state) => state || {});
   const messages = useMemo(() => chatHistory[role] || [], [chatHistory, role]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [showNewMessageButton, setShowNewMessageButton] = useState(false);
+  const [transitionMessage, setTransitionMessage] = useState(null);
 
-  const [analytics, setAnalytics] = useState({
+  const [analytics] = useState({
     totalChats: 1247,
     totalMessages: 5832,
     averageResponseTime: 1.2,
@@ -49,7 +57,6 @@ export default function NeonestAi() {
       { question: "When do babies start teething?", count: 76 },
     ],
   });
-  const [showNewMessageButton, setShowNewMessageButton] = useState(false);
 
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
@@ -73,20 +80,17 @@ export default function NeonestAi() {
 
   useEffect(() => {
     if (historyLoaded[role]) return;
-
     const loadHistory = async () => {
       setIsHistoryLoading(true);
       try {
         const messages = await fetchChatHistory(role, token);
         setChatHistory(role, messages);
       } catch (error) {
-        console.error("Failed to load chat history:", error);
         setChatHistory(role, []);
       } finally {
         setIsHistoryLoading(false);
       }
     };
-
     if (token) loadHistory();
   }, [role, token, chatHistory, setChatHistory]);
 
@@ -106,41 +110,45 @@ export default function NeonestAi() {
       const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 50;
       setShowNewMessageButton(!atBottom);
     };
-
     const el = chatContainerRef.current;
     el?.addEventListener("scroll", handleScroll);
     return () => el?.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- HANDLE ROLE SWITCH & AUTO-CLEAR CHAT ---
+  const handleRoleChange = (newRole) => {
+    resetChatHistoryForRole(newRole); // auto-clear chat for new role
+    setRole(newRole);
+    setInput("");
+    setIsSending(false);
+    setTransitionMessage(`Switched to ${roles.find(r => r.value === newRole)?.label} mode`);
+    setTimeout(() => setTransitionMessage(null), 1500);
+    scrollToBottom();
+  };
+
   const handleSubmit = async (e = null, customInput = null) => {
     if (e) e.preventDefault();
     const finalInput = customInput !== null ? customInput : input;
-
     if (!finalInput.trim()) return;
-
     const newMessage = {
       id: Date.now(),
       role: "user",
       content: finalInput,
       createdAt: new Date().toISOString(),
     };
-
     const updatedMessages = [...messages, newMessage];
     setChatHistory(role, updatedMessages);
     setInput("");
     setIsSending(true);
-
     try {
       const res = await axios.post("/api/chat", {
         messages: updatedMessages,
         role,
       });
-
       const finalMessages = [...updatedMessages, res.data];
       setChatHistory(role, finalMessages);
       await saveChatHistory(role, finalMessages, token);
     } catch (err) {
-      console.error("Error sending message:", err);
       const errorMsg = {
         id: Date.now() + 1,
         role: "system",
@@ -158,6 +166,10 @@ export default function NeonestAi() {
     handleSubmit(null, question);
   };
 
+  const handleSpeechTranscript = (transcript) => {
+    setInput(transcript);
+  };
+
   const formatTime = (isoString) => {
     const date = new Date(isoString);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -168,7 +180,6 @@ export default function NeonestAi() {
       await navigator.clipboard.writeText(text);
       alert("Copied to clipboard!");
     } catch (err) {
-      console.error("Copy failed:", err);
       alert("Failed to copy!");
     }
   };
@@ -186,8 +197,9 @@ export default function NeonestAi() {
               <TooltipTrigger asChild>
                 <select
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="border px-3 py-1 rounded-md text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                  onChange={(e) => handleRoleChange(e.target.value)}
+                  className="border px-3 py-1 rounded-md text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                >
                   {roles.map((r) => (
                     <option key={r.value} value={r.value}>
                       {r.label}
@@ -203,9 +215,19 @@ export default function NeonestAi() {
         </CardHeader>
 
         <CardContent className="space-y-6 p-6 relative">
+          {transitionMessage && (
+            <div className="absolute top-0 left-0 right-0 flex justify-center z-20">
+              <span className="bg-pink-200 text-pink-900 px-6 py-2 rounded-lg shadow-lg font-semibold text-base">
+                {transitionMessage}
+              </span>
+            </div>
+          )}
+
           {messages.length === 0 && (
             <div className="text-center space-y-4">
-              <p className="text-sm text-gray-500 mt-2">AI advice is not a substitute for professional medical consultation.</p>
+              <p className="text-sm text-gray-500 mt-2">
+                AI advice is not a substitute for professional medical consultation.
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {quickQuestions.map((q, idx) => (
                   <Button key={idx} onClick={() => handleQuickQuestion(q.text)} variant="outline" className="text-left justify-start text-sm">
@@ -236,7 +258,8 @@ export default function NeonestAi() {
                     {/* Action icons */}
                     <div
                       className={`absolute bottom-full mb-2 flex gap-1 bg-white p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
-                       ${m.role === "user" ? "right-0" : "left-0"}`}>
+                       ${m.role === "user" ? "right-0" : "left-0"}`}
+                    >
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -247,8 +270,19 @@ export default function NeonestAi() {
                           <TooltipContent>Copy to clipboard</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+                      {m.role === "assistant" && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div>
+                                <TextToSpeech text={m.content} />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>Listen to response</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                     </div>
-
                     <div className="prose prose-sm max-w-full text-sm">
                       <ReactMarkdown
                         components={{
@@ -263,16 +297,20 @@ export default function NeonestAi() {
                           em: ({ node, ...props }) => <em className="italic" {...props} />,
                           code: ({ node, ...props }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props} />,
                           blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-pink-300 pl-4 italic text-sm text-gray-600 my-2" {...props} />,
-                        }}>
+                        }}
+                      >
                         {m.content}
                       </ReactMarkdown>
                     </div>
-
                     <span className={`text-xs block mt-1 ${m.role === "user" ? "text-gray-300" : "text-pink-700"}`}>{formatTime(m.createdAt)}</span>
                   </div>
+                  {m.role === "assistant" && (
+                    <div className="flex justify-start mt-2">
+                      <TextToSpeech text={m.content} />
+                    </div>
+                  )}
                 </div>
               ))}
-
               {isSending && (
                 <div className="flex justify-start mt-3">
                   <div className="rounded-xl px-4 py-2 max-w-[80%] bg-gray-200 text-gray-800 flex items-center gap-2">
@@ -281,7 +319,6 @@ export default function NeonestAi() {
                   </div>
                 </div>
               )}
-
               <div ref={messagesEndRef} />
             </div>
           )}
@@ -293,14 +330,38 @@ export default function NeonestAi() {
                   scrollToBottom();
                   setShowNewMessageButton(false);
                 }}
-                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition">
+                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition"
+              >
                 ⬇ New Message
               </button>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="flex gap-2 pt-4 items-center">
-            <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask me about baby care..." className="flex-1 border-pink-300" disabled={isSending} />
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={isListening ? "Listening... Speak now..." : "Ask me about baby care..."}
+              className={`flex-1 ${isListening ? "border-green-500 bg-green-50" : "border-pink-300"}`}
+              disabled={isSending}
+            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <SpeechRecognition
+                      onTranscript={handleSpeechTranscript}
+                      isListening={isListening}
+                      setIsListening={setIsListening}
+                      disabled={isSending}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  Click to start voice input (requires internet connection)
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <Button type="submit" disabled={isSending || !input.trim()} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
               {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </Button>
@@ -339,14 +400,17 @@ export default function NeonestAi() {
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>Top Questions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {analytics.topQuestions?.map((q, i) => (
-              <button key={i} onClick={() => handleQuickQuestion(q.question)} className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 px-2 py-1 rounded transition">
+              <button
+                key={i}
+                onClick={() => handleQuickQuestion(q.question)}
+                className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 px-2 py-1 rounded transition"
+              >
                 <span>{q.question}</span>
                 <Badge variant="secondary">{q.count}</Badge>
               </button>

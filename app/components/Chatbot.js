@@ -1,6 +1,6 @@
 "use client"
 
-import { MessageCircle } from "lucide-react"
+import { MessageCircle, Mic } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
@@ -34,7 +34,7 @@ export default function Chatbot() {
             <MessageCircle className="w-5 h-5" /> 
           </button>
         </TooltipTrigger>
-        <TooltipContent side="bottom">Chat with NeoNest AI</TooltipContent>
+        <TooltipContent side="bottom">Chat with NeoNest AI (with voice support)</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )
