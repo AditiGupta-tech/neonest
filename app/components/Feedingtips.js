@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react";
-import { Info, AlertTriangle } from "lucide-react";
+import { Info, AlertTriangle, Baby, Utensils, Apple, Cookie } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import {
   Carousel,
@@ -46,31 +46,107 @@ const feedingCategories = [
   },
 ];
 
+const ageBasedTips = [
+  {
+    title: "0–3 Months",
+    icon: Baby,
+    tips: [
+      "⮞ Exclusive breastfeeding or formula feeding.",
+      "⮞ Feed every 2–3 hours, or 8–12 times per day.",
+      "⮞ Each feeding may take 20-40 minutes.",
+      "⮞ Watch for hunger cues: rooting, sucking motions.",
+      "⮞ No water or solid foods needed yet.",
+      "⮞ Expect 6-8 wet diapers daily.",
+      "⮞ Feed on demand, not by strict schedule.",
+      "⮞ Learn proper latching techniques.",
+      "⮞ Keep track of feeding times and sides.",
+      "⮞ Maintain proper feeding position.",
+    ],
+  },
+  {
+    title: "4–6 Months",
+    icon: Utensils,
+    tips: [
+      "⮞ Continue breast milk or formula as main nutrition.",
+      "⮞ May begin solid foods if showing readiness signs.",
+      "⮞ Start with single-grain iron-fortified cereals.",
+      "⮞ Introduce one new food at a time.",
+      "⮞ Wait 3-5 days between new foods.",
+      "⮞ Look for signs of food allergies.",
+      "⮞ Feed solids after milk/formula.",
+      "⮞ Start with 1-2 tablespoons per feeding.",
+      "⮞ Use proper consistency - very runny at first.",
+      "⮞ Never force feed - follow baby's cues.",
+    ],
+  },
+  {
+    title: "7–9 Months",
+    icon: Apple,
+    tips: [
+      "⮞ Introduce pureed fruits and vegetables.",
+      "⮞ Begin finger foods when ready.",
+      "⮞ Offer soft, small pieces of food.",
+      "⮞ Continue breast milk or formula.",
+      "⮞ Establish regular meal times.",
+      "⮞ Include protein-rich foods.",
+      "⮞ Watch for pincer grasp development.",
+      "⮞ Encourage self-feeding attempts.",
+      "⮞ Offer water in sippy cup.",
+      "⮞ Make mealtime interactive and fun.",
+    ],
+  },
+  {
+    title: "10–12 Months",
+    icon: Cookie,
+    tips: [
+      "⮞ Transition to more table foods.",
+      "⮞ Offer three meals plus snacks.",
+      "⮞ Continue breast milk or formula.",
+      "⮞ Introduce cup drinking.",
+      "⮞ Encourage self-feeding.",
+      "⮞ Offer variety of textures.",
+      "⮞ Include iron-rich foods.",
+      "⮞ Make food bite-sized.",
+      "⮞ Establish family meal routines.",
+      "⮞ Avoid foods that are choking hazards.",
+    ],
+  },
+];
+
 const Feedingtips = () => {
   const [selectedCategory, setSelectedCategory] = useState("General Feeding Tips");
-  const [api, setApi] = useState(null);
+  const [selectedAge, setSelectedAge] = useState("0–3 Months");
+  const [categoryApi, setCategoryApi] = useState(null);
+  const [ageApi, setAgeApi] = useState(null);
 
-  // Reset carousel to first slide when category changes
+  // Reset carousels when selections change
   useEffect(() => {
-    if (api) {
-      api.scrollTo(0);
+    if (categoryApi) {
+      categoryApi.scrollTo(0);
     }
-  }, [selectedCategory, api]);
+  }, [selectedCategory, categoryApi]);
+
+  useEffect(() => {
+    if (ageApi) {
+      ageApi.scrollTo(0);
+    }
+  }, [selectedAge, ageApi]);
 
   return (
-    <section id="feeding-tips" className="px-4 py-6 bg-white/50 rounded-lg">
+    <section id="feeding-tips" className="px-4 py-6 bg-white/50 rounded-lg space-y-12">
+      {/* General Tips Section */}
       <div className="container mx-auto">
         <div className="text-center mb-6">
           <h2 className="text-4xl font-bold text-gray-800 mb-2">Feeding Tips</h2>
-          <p className="text-lg text-gray-600">Guidance for nourishing your baby at every stage</p>
+          <p className="text-lg text-gray-600">Essential guidance for safe and healthy feeding</p>
         </div>
 
         {/* Category selection buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mb-4">
+        <div className="flex flex-wrap justify-center gap-3 mb-4">
           {feedingCategories.map((category) => (
             <label
               key={category.title}
-              className={`flex items-center space-x-2 cursor-pointer p-3 rounded-lg transition-all ${selectedCategory === category.title
+              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${selectedCategory === category.title
                   ? "bg-gradient-to-r from-pink-600 to-blue-600 text-white shadow-lg"
                   : "bg-white text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-blue-50 shadow-md"
                 }`}
@@ -83,15 +159,15 @@ const Feedingtips = () => {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="hidden"
               />
-              <category.icon className="w-5 h-5" />
+              <category.icon className="w-4 h-4" />
               <span className="text-sm font-medium">{category.title}</span>
             </label>
           ))}
         </div>
 
-        {/* Carousel for tips */}
+        {/* Carousel for category tips */}
         <div className="w-full px-4 sm:px-8 md:px-12 max-w-[95vw] sm:max-w-2xl mx-auto">
-          <Carousel className="w-full" setApi={setApi}>
+          <Carousel className="w-full" setApi={setCategoryApi}>
             <CarouselContent>
               {feedingCategories
                 .find((category) => category.title === selectedCategory)
@@ -105,10 +181,8 @@ const Feedingtips = () => {
 
                         <CardContent className="relative flex items-center justify-center min-h-[150px] p-4 sm:p-6">
                           <div className="relative w-full">
-                            {/* Border gradient */}
                             <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-400/20 via-purple-400/20 to-blue-400/20 blur" />
 
-                            {/* Tip content with enhanced styling */}
                             <div className="relative bg-white/80 rounded-lg p-3 sm:p-4 backdrop-blur-sm border border-pink-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
                               <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">
                                 {tip}
@@ -122,26 +196,95 @@ const Feedingtips = () => {
                 ))}
             </CarouselContent>
 
-            {/* Navigation buttons - simple, always at the bottom */}
             <div className="flex justify-center gap-8 mt-4">
               <CarouselPrevious className="static translate-y-0 bg-white hover:bg-gray-50" />
               <CarouselNext className="static translate-y-0 bg-white hover:bg-gray-50" />
             </div>
           </Carousel>
         </div>
+      </div>
 
-        {/* Statement */}
-        <div className="text-center text-gray-500 text-sm mt-2">
-          For more information, visit{" "}
-          <a href="/Resources" className="text-pink-600 hover:underline">
-            Resources
-          </a>{" "}
-          or{" "}
-          <a href="/Faqs" className="text-pink-600 hover:underline">
-            FAQs
-          </a>
-          .
+      {/* Age-Based Tips Section */}
+      <div className="container mx-auto">
+        <div className="text-center mb-6">
+          <h2 className="text-4xl font-bold text-gray-800 mb-2">Tips by Age</h2>
+          <p className="text-lg text-gray-600">Age-appropriate feeding guidance for your baby</p>
         </div>
+
+        {/* Age selection buttons */}
+        <div className="flex flex-wrap justify-center gap-3 mb-4">
+          {ageBasedTips.map((age) => (
+            <label
+              key={age.title}
+              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${selectedAge === age.title
+                  ? "bg-gradient-to-r from-pink-600 to-blue-600 text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-blue-50 shadow-md"
+                }`}
+            >
+              <input
+                type="radio"
+                name="age"
+                value={age.title}
+                checked={selectedAge === age.title}
+                onChange={(e) => setSelectedAge(e.target.value)}
+                className="hidden"
+              />
+              <age.icon className="w-4 h-4" />
+              <span className="text-sm font-medium">{age.title}</span>
+            </label>
+          ))}
+        </div>
+
+        {/* Carousel for age-based tips */}
+        <div className="w-full px-4 sm:px-8 md:px-12 max-w-[95vw] sm:max-w-2xl mx-auto">
+          <Carousel className="w-full" setApi={setAgeApi}>
+            <CarouselContent>
+              {ageBasedTips
+                .find((age) => age.title === selectedAge)
+                ?.tips.map((tip, index) => (
+                  <CarouselItem key={index}>
+                    <div className="p-0.5">
+                      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-pink-50 via-white to-blue-50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] transition-all duration-300">
+                        <div className="absolute inset-0 bg-gradient-to-br from-pink-200/40 to-blue-200/40" />
+                        <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-pink-300/30 to-transparent rounded-full -translate-x-16 -translate-y-16 blur-2xl" />
+                        <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-blue-300/30 to-transparent rounded-full translate-x-16 translate-y-16 blur-2xl" />
+
+                        <CardContent className="relative flex items-center justify-center min-h-[150px] p-4 sm:p-6">
+                          <div className="relative w-full">
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-400/20 via-purple-400/20 to-blue-400/20 blur" />
+
+                            <div className="relative bg-white/80 rounded-lg p-3 sm:p-4 backdrop-blur-sm border border-pink-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
+                              <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">
+                                {tip}
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+            </CarouselContent>
+
+            <div className="flex justify-center gap-8 mt-4">
+              <CarouselPrevious className="static translate-y-0 bg-white hover:bg-gray-50" />
+              <CarouselNext className="static translate-y-0 bg-white hover:bg-gray-50" />
+            </div>
+          </Carousel>
+        </div>
+      </div>
+
+      {/* Statement */}
+      <div className="text-center text-gray-500 text-sm mt-2">
+        For more information, visit{" "}
+        <a href="/Resources" className="text-pink-600 hover:underline">
+          Resources
+        </a>{" "}
+        or{" "}
+        <a href="/Faqs" className="text-pink-600 hover:underline">
+          FAQs
+        </a>
+        .
       </div>
     </section>
   );
