@@ -72,7 +72,7 @@ const Navbar = () => {
           <div className="bg-white px-6 py-5 rounded-xl shadow-lg text-center w-[320px]">
             <p className="text-gray-800 mb-3">
               Logged out successfully.{" "}
-              <Link href="/Login" className="text-pink-600 font-normal no-underline">
+              <Link href="/Login" onClick={() => setShowModal(false)} className="text-pink-600 font-normal no-underline">
                 Login
               </Link>{" "}
               again!
