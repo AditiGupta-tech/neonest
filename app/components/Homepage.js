@@ -21,7 +21,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter,
+ 
 } from "./ui/card";
 import { Button } from "./ui/Button";
 import Image from "next/image";
