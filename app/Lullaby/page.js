@@ -58,7 +58,6 @@ const formatTime = (seconds) => {
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 };
 
-
 // --- MAIN COMPONENT ---
 export default function LullabyPage() {
     const [allLullabies, setAllLullabies] = useState(initialLullabies);
@@ -69,12 +68,12 @@ export default function LullabyPage() {
     const [duration, setDuration] = useState(0);
     const [selectedLanguage, setSelectedLanguage] = useState('All');
     const [timerInput, setTimerInput] = useState('');
-    const [sleepTimerRemaining, setSleepTimerRemaining] = useState(null); // Stores remaining seconds for display
+    const [sleepTimerRemaining, setSleepTimerRemaining] = useState(null);
 
     const audioRef = useRef(null);
     const fileInputRef = useRef(null);
-    const sleepTimeoutIdRef = useRef(null); // Ref for the main sleep timeout
-    const countdownIntervalRef = useRef(null); // Ref for the countdown interval
+    const sleepTimeoutIdRef = useRef(null); 
+    const countdownIntervalRef = useRef(null);
 
     // Filter lullabies based on language
     const filteredLullabies = useMemo(() => {
@@ -84,9 +83,8 @@ export default function LullabyPage() {
         return allLullabies.filter(lullaby => lullaby.language === selectedLanguage);
     }, [selectedLanguage, allLullabies]);
 
-    // Effect to handle sleep timer logic
+    // sleep timer logic
     useEffect(() => {
-        // Cleanup function to clear any running timers when the component unmounts
         return () => {
             if (sleepTimeoutIdRef.current) clearTimeout(sleepTimeoutIdRef.current);
             if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
@@ -188,7 +186,7 @@ export default function LullabyPage() {
         if (file) {
             const newLullaby = {
                 id: allLullabies.length + 1,
-                title: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+                title: file.name.replace(/\.[^/.]+$/, ""),
                 artist: "Custom Upload",
                 language: "Custom",
                 audioSrc: URL.createObjectURL(file),
@@ -202,7 +200,6 @@ export default function LullabyPage() {
     };
 
     const handleSetTimer = () => {
-        // Clear any existing timers first
         if (sleepTimeoutIdRef.current) clearTimeout(sleepTimeoutIdRef.current);
         if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
 
@@ -235,7 +232,6 @@ export default function LullabyPage() {
     };
     
     const handleTimerInputChange = (e) => {
-        // Prevent negative values
         if (e.target.value === '' || parseInt(e.target.value, 10) >= 0) {
             setTimerInput(e.target.value);
         }
