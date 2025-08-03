@@ -71,8 +71,20 @@ export default function MilestoneTracker({ babyDOB }) {
     }
   };
 
- return (
-    <div className="w-full">
+  const allCompleted = Object.keys(milestones)
+    .filter((m) => parseInt(m) <= currentMonth)
+    .every((month) =>
+      milestones[month].every((task) => completed[`${month}:${task}`])
+    );
+
+  return (
+    <div className="w-full relative">
+      {allCompleted && (
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center z-10 pointer-events-none">
+          <PartyPopper className="w-20 h-20 text-purple-500 animate-bounce" />
+        </div>
+      )}
+
       <div
         ref={containerRef}
         className="flex overflow-x-auto gap-4 py-4 px-2 scroll-smooth snap-x snap-mandatory scrollbar-hide"
@@ -83,6 +95,7 @@ export default function MilestoneTracker({ babyDOB }) {
             display: none;
           }
         `}</style>
+
         {Array.from({ length: 12 }).map((_, i) => {
           const isCurrent = i === visibleMonth;
           const isPast = i < currentMonth;
@@ -96,7 +109,7 @@ export default function MilestoneTracker({ babyDOB }) {
               ref={(el) => (cardRefs.current[i] = el)}
               key={i}
               className={`min-w-[250px] sm:min-w-[300px] rounded-xl p-4 transition-all duration-300 shadow-md relative flex flex-col justify-between border-2 snap-start ${
-                isCurrent ? "scale-110 mx-2" : "scale-100"
+                isCurrent ? "scale-105 mx-2" : "scale-100"
               } ${
                 i === currentMonth
                   ? "bg-purple-100 border-purple-400"
@@ -121,7 +134,7 @@ export default function MilestoneTracker({ babyDOB }) {
                         className="flex items-center gap-2 cursor-pointer"
                         onClick={() => (i <= currentMonth) && toggleComplete(i, m)}
                       >
-                        <span className="w-2 h-2 rounded-full bg-purple-600"></span>
+                        <span className={`w-2 h-2 rounded-full ${completed[`${i}:${m}`] ? "bg-green-500" : "bg-purple-600"}`}></span>
                         {m}
                       </div>
                       {i <= currentMonth && (
@@ -177,8 +190,8 @@ export default function MilestoneTracker({ babyDOB }) {
 
                 {i < currentMonth && completedAll && (
                   <div className="absolute inset-0 flex justify-center items-center z-0">
-    <PartyPopper className="w-12 h-12 text-purple-700 opacity-50 animate-bounce" />
-  </div>
+                    <PartyPopper className="w-12 h-12 text-purple-700 opacity-50 animate-bounce" />
+                  </div>
                 )}
 
                 {i < currentMonth && !completedAll && (
