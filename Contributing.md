@@ -42,35 +42,45 @@ Here’s a quick overview of the contribution flow:
 
 1. **Star** and **Fork** the repo.
 
-2. Clone your fork:
+2. **Clone your fork**:
  ```bash
  git clone https://github.com/AditiGupta-tech/NeoNest.git
  ```
 
-3. **Create a new branch:**
+3. **Install dependencies**:
+ ```bash
+ npm install --legacy-peer-deps
+ ```
+
+4. **Create a new branch:**
  ```bash
  git checkout -b yourname/feature-name
  ```
 
-4. **Make your changes:**
+5. **Make your changes:**
  * Stick to the project structure.
- * Use helpful commit messages:
+ * Use helpful commit messages, eg:
  * `fix: corrected typo in LandingPage.jsx`
  * `feat: added baby sleep graph comparison`
 
-5. **Format your code:**
+6. **Format your code:**
  ```bash
  npm run lint
  ```
 
-6. **Test everything!** (Manual/automated if applicable)
+7. **Update `pnpm-lock.yaml` file using this command and push along with other commits:**
+ ```bash/cmd
+ pnpm install
+ ```
 
-7. **Push your branch:**
+8. **Test everything!** (Manual/automated if applicable)
+
+9. **Push your branch:**
  ```bash
  git push origin yourname/feature-name
  ```
 
-8. **Open a Pull Request (PR) from your fork:**
+10. **Open a Pull Request (PR) from your fork:**
  * Reference related issue(s): `Fixes #<issue-number>`
  * Add a clear title and summary.
 

@@ -252,8 +252,8 @@ export default function Page() {
     );
   }
 
-  return (
-    <div className="space-y-3 px-4 md:px-8 py-6 max-w-7xl mx-auto">
+return (
+    <div className="space-y-6 px-4 sm:px-6 md:px-8 py-6 max-w-7xl mx-auto">
       {/* Header and Add Item Button */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -293,7 +293,7 @@ export default function Page() {
         </h3>
       </div>
       {showEssentials && (
-        <div className="overflow-hidden transition-all duration-300 ease-in-out" style={{ maxHeight: showEssentials ? '500px' : '0' }}>
+        <div className={`transition-all duration-300 ease-in-out ${showEssentials ? 'max-h-[500px]' : 'max-h-0'} overflow-hidden`}>
           <Babyessentials onAddEssential={handleAddEssentialToInventory} />
         </div>
       )}
@@ -308,7 +308,7 @@ export default function Page() {
                   <AlertTriangle className="w-5 h-5 text-red-600" />
                   <span className="font-semibold text-red-800">Out of Stock ({outOfStockItems.length} items)</span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 overflow-auto">
                   {outOfStockItems.map((item) => (
                     <Badge key={item._id} variant="destructive">
                       {item.name}
@@ -326,7 +326,7 @@ export default function Page() {
                   <Bell className="w-5 h-5 text-yellow-600" />
                   <span className="font-semibold text-yellow-800">Low Stock Alert ({lowStockItems.length} items)</span>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 overflow-auto">
                   {lowStockItems.map((item) => (
                     <Badge key={item._id} className="bg-yellow-200 text-yellow-700">
                       {item.name} ({item.currentStock} left)
@@ -349,7 +349,7 @@ export default function Page() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium mb-2">Item Name</label>
                 <Input
@@ -481,7 +481,7 @@ export default function Page() {
       )}
 
       {/* Essentials List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {inventory.map((item) => {
           const stockStatus = getStockStatus(item)
           return (
@@ -571,14 +571,16 @@ export default function Page() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {lowStockItems.map((item) => (
-                <div key={item._id} className="flex items-center justify-between p-2 bg-white/50 rounded">
-                  <span>{item.name}</span>
-                  <Badge variant="outline">
-                    Need: {Math.max(item.minThreshold * 2 - item.currentStock, item.minThreshold)} {item.unit}
-                  </Badge>
-                </div>
-              ))}
+              <div className="flex flex-wrap gap-2 overflow-auto">
+                {lowStockItems.map((item) => (
+                  <div key={item._id} className="flex items-center justify-between p-2 bg-white/50 rounded">
+                    <span>{item.name}</span>
+                    <Badge variant="outline">
+                      Need: {Math.max(item.minThreshold * 2 - item.currentStock, item.minThreshold)} {item.unit}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
