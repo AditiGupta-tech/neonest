@@ -253,36 +253,86 @@ useEffect(() => {
       )}
 
       <div className={`${showWelcomeOverlay ? 'pointer-events-none' : ''}`}>
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="container mx-auto text-center max-w-6xl">
-            <div className="mb-10">
-              <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
-                Your Baby's First Year Journey
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Expert guidance, milestone tracking, and loving support for
-                parents navigating their baby's incredible first year of life.
-                Now with AI-powered chat support!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12"></div>
-              <div className="relative w-full max-w-2xl mx-auto">
-                <Image
-                  src="/happyBaby.png"
-                  alt="Happy baby with parents"
-                  width={500}
-                  height={500}
-                  className="mx-auto mt-8 rounded-2xl shadow-2xl w-full h-auto"
-                />
-                <div className="absolute -top-4 -left-4 w-20 h-20 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce shadow-md">
-                  <Heart className="w-9 h-9 text-yellow-600" />
-                </div>
-                <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center animate-pulse shadow-md">
-                  <Star className="w-7 h-7 text-blue-600" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Fullscreen Intro Section (Heading + Paragraph) */}
+<section className="h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4 sm:px-6 lg:px-8"
+  style={{
+    backgroundImage: `url('https://images.unsplash.com/photo-1570475735025-6cd1cd5c779d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+  }}
+>
+  <div className="text-center max-w-4xl mx-auto">
+    <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
+      Your Baby's First Year Journey
+    </h1>
+    <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+      Expert guidance, milestone tracking, and loving support for parents navigating their baby's incredible first year of life. Now with AI-powered chat support!
+    </p>
+  </div>
+</section>
+
+{/* Fullscreen Image Section (Appears on Scroll) */}
+<section className="h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4 sm:px-6 lg:px-8"
+  style={{
+    backgroundImage: `url('https://images.unsplash.com/photo-1608501712351-a4ca8dc996fb?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+  }}
+>
+
+  {/* Heading and Subheading */}
+  <div>
+  <h2 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-transparent bg-clip-text">
+    Cherished Moments ✨
+  </h2>
+  <p className="text-lg sm:text-xl text-gray-600 mt-2 max-w-2xl mx-auto">
+    Celebrating every smile, every cuddle, every heartbeat — captured in love.
+  </p>
+</div>
+
+
+  {/* Image Grid */}
+  <div className="relative w-full max-w-6xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Image 1 */}
+      <div className="relative">
+        <Image
+          src="/happyBaby.png"
+          alt="Happy baby with parents"
+          width={500}
+          height={500}
+          className="mx-auto rounded-2xl shadow-2xl w-full h-[350px] object-cover"
+        />
+        <div className="absolute -top-4 -left-4 w-20 h-20 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce shadow-md">
+          <Heart className="w-9 h-9 text-yellow-600" />
+        </div>
+      </div>
+
+      {/* Image 2 */}
+      <div>
+        <Image
+          src="/baby.jpg"
+          alt="Laughing baby"
+          width={500}
+          height={500}
+          className="mx-auto rounded-2xl shadow-2xl w-full h-[350px] object-cover"
+        />
+      </div>
+
+      {/* Image 3 */}
+      <div className="relative">
+        <Image
+          src="/mom-baby.jpg"
+          alt="Mom and baby"
+          width={500}
+          height={500}
+          className="mx-auto rounded-2xl shadow-2xl w-full h-[350px] object-cover"
+        />
+        <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center animate-pulse shadow-md">
+          <Star className="w-7 h-7 text-blue-600" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
         <section className="py-4 px-4 sm:px-6 lg:px-8 bg-white/80">
           <div className="container mx-auto max-w-6xl">
