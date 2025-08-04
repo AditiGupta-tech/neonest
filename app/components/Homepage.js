@@ -252,7 +252,14 @@ useEffect(() => {
         <div className="fixed inset-0 z-40 bg-black bg-opacity-20 backdrop-blur-sm transition-all duration-300"></div>
       )}
 
-      <div className={`${showWelcomeOverlay ? 'pointer-events-none' : ''}`}>
+      <div
+  className={`min-h-screen bg-cover bg-center bg-fixed ${showWelcomeOverlay ? 'pointer-events-none' : ''}`}
+  style={{
+    backgroundImage: `url('https://images.unsplash.com/photo-1570475735025-6cd1cd5c779d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0')`,
+  }}
+>
+
+
         {/* Fullscreen Intro Section (Heading + Paragraph) */}
 <section className="h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4 sm:px-6 lg:px-8"
   style={{
@@ -270,11 +277,8 @@ useEffect(() => {
 </section>
 
 {/* Fullscreen Image Section (Appears on Scroll) */}
-<section className="h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4 sm:px-6 lg:px-8"
-  style={{
-    backgroundImage: `url('https://images.unsplash.com/photo-1608501712351-a4ca8dc996fb?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
-  }}
->
+<section className="h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 bg-transparent
+ text-center space-y-10">
 
   {/* Heading and Subheading */}
   <div>
@@ -291,39 +295,39 @@ useEffect(() => {
   <div className="relative w-full max-w-6xl mx-auto">
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* Image 1 */}
-      <div className="relative">
-        <Image
-          src="/happyBaby.png"
-          alt="Happy baby with parents"
-          width={500}
-          height={500}
-          className="mx-auto rounded-2xl shadow-2xl w-full h-[350px] object-cover"
-        />
+    <div className="relative group">
+      <Image
+        src="/happyBaby.png"
+        alt="Happy baby with parents"
+        width={500}
+        height={500}
+        className="w-full h-[350px] object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-105"
+      />
         <div className="absolute -top-4 -left-4 w-20 h-20 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce shadow-md">
           <Heart className="w-9 h-9 text-yellow-600" />
         </div>
       </div>
 
       {/* Image 2 */}
-      <div>
-        <Image
-          src="/baby.jpg"
-          alt="Laughing baby"
-          width={500}
-          height={500}
-          className="mx-auto rounded-2xl shadow-2xl w-full h-[350px] object-cover"
-        />
-      </div>
+      <div className="relative group">
+      <Image
+        src="/baby.jpg"
+        alt="Laughing baby"
+        width={500}
+        height={500}
+        className="w-full h-[350px] object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-105"
+      />
+    </div>
 
       {/* Image 3 */}
-      <div className="relative">
-        <Image
-          src="/mom-baby.jpg"
-          alt="Mom and baby"
-          width={500}
-          height={500}
-          className="mx-auto rounded-2xl shadow-2xl w-full h-[350px] object-cover"
-        />
+      <div className="relative group">
+      <Image
+        src="/mom-baby.jpg"
+        alt="Mom and baby"
+        width={500}
+        height={500}
+        className="w-full h-[350px] object-cover rounded-2xl shadow-2xl transition-transform duration-500 group-hover:scale-105"
+      />
         <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center animate-pulse shadow-md">
           <Star className="w-7 h-7 text-blue-600" />
         </div>
@@ -334,7 +338,7 @@ useEffect(() => {
 
 
 
-        <section className="py-4 px-4 sm:px-6 lg:px-8 bg-white/80">
+        <section className="py-4 px-4 sm:px-6 lg:px-8 bg-transparent">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold mb-4 text-gray-800">
@@ -506,7 +510,7 @@ useEffect(() => {
           </div>
         </section>
 
-        <section className="px-4 sm:px-6 lg:px-8 bg-white/80 py-16">
+        <section className="px-4 sm:px-6 lg:px-8 bg-transparent py-16">
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
               <h2 className="text-3xl font-bold text-gray-800 text-center mt-6 md:text-left">
@@ -624,7 +628,7 @@ useEffect(() => {
         <NewSections />
 
         {/* Notification Demo Section */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-transparent">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
