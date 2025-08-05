@@ -144,7 +144,7 @@ export default function NeonestAi() {
       const res = await axios.post("/api/chat", {
         messages: updatedMessages,
         role,
-      });
+      },{headers:{Authorization: `Bearer ${token}`}});
       const finalMessages = [...updatedMessages, res.data];
       setChatHistory(role, finalMessages);
       await saveChatHistory(role, finalMessages, token);

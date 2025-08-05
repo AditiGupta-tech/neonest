@@ -27,6 +27,8 @@ import Image from "next/image";
 import NewSections from "./Newsections";
 import NotificationDemo from "./NotificationDemo";
 import { Toaster, toast } from 'sonner';
+import AutoTaskManager from "./AutoTaskManager";
+import { useAutoTask } from "../context/AutoChatContext";
 
 const Homepage = () => {
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
@@ -649,6 +651,9 @@ useEffect(() => {
             </section>
           </div>
         )}
+      </div>
+      <div>
+        <AutoTaskManager/>
       </div>
     </>
   );

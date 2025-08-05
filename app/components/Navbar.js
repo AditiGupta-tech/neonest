@@ -10,6 +10,8 @@ import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
 import { Menu, X } from "lucide-react";
 import NotificationBell from "./NotificationBell";
+import AutoTask from "./AutoTask";
+import { useAutoTask } from "../context/AutoChatContext";
 
 const tabs = [
   { label: "home", path: "/" },
@@ -28,7 +30,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { isAuth, logout } = useAuth();
-
+  const {isAutoTask,setAutoTask} = useAutoTask()
   const [showModal, setShowModal] = useState(false);
   const [progress, setProgress] = useState(100);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -114,6 +116,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-2">
               {isAuth && <NotificationBell />}
               <Chatbot />
+              <AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask}/>
               {!isAuth ? (
                 <>
                   <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">

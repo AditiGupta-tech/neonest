@@ -6,7 +6,7 @@ export async function POST(req) {
   await connectDB();
   const user = await authenticateToken(req);
   if (!user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-
+  console.log(req.headers,user)
   const userId = user.user.id;
   const { messages, role } = await req.json();
 
