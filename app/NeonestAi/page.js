@@ -1,37 +1,33 @@
 "use client";
-
 import { useState, useRef, useEffect, useMemo } from "react";
-import axios from "axios";
-import { Baby, Utensils, Clock, Heart } from "lucide-react";
-import { Card, CardContent } from "../components/ui/card";
-
-import SpeechRecognition from "../components/SpeechRecognition";
-import { fetchChatHistory, saveChatHistory } from "@/lib/chatService";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
-
+import SpeechRecognition from "../components/SpeechRecognition";
 import ChatHeader from "./(components)/ChatHeader";
 import ChatBody from "./(components)/ChatBody";
 import ChatInput from "./(components)/ChatInput";
 import ChatAnalytics from "./(components)/ChatAnalytics";
+import { createAxiosInstance } from "@/app/utils/axiosInstance";
+import ChatHistoryPanel from "./(components)/ChatHistoryPanel";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
-const quickQuestions = [
-  { icon: Baby, text: "When should my baby start crawling?", color: "pink" },
-  { icon: Utensils, text: "How do I introduce solid foods?", color: "purple" },
-  { icon: Clock, text: "What's a good sleep schedule for 6 months?", color: "blue" },
-  { icon: Heart, text: "Is my baby's crying normal?", color: "green" },
-];
-
-const roles = [
-  { label: "Pediatrician", value: "pediatrician" },
-  { label: "Baby", value: "baby" },
-  { label: "Motherly", value: "mother" },
-];
+import { ROLES } from "../utils/chat";
 
 export default function NeonestAi() {
+  const { token } = useAuth();
+  const axiosInstance = useMemo(() => createAxiosInstance(token), [token]);
+
   const [role, setRole] = useState("pediatrician");
-  const { chatHistory = {}, setChatHistory = () => {}, historyLoaded = {}, resetChatHistoryForRole = () => {} } = useChatStore((state) => state || {});
-  const messages = useMemo(() => chatHistory[role] || [], [chatHistory, role]);
+
+  useEffect(() => {
+    const savedRole = localStorage.getItem("neonest-active-role");
+    if (savedRole && savedRole !== role) setRole(savedRole);
+  }, []);
+
+  const [activeChatId, setActiveChatId] = useState(null);
+  const { isHistoryLoaded, chatHistory = {}, setChatHistory = () => {}, historyLoaded = {}, chatSessions = [], setChatSessions = () => {} } = useChatStore((state) => state || {});
+
+  const messages = useMemo(() => (activeChatId ? chatHistory[activeChatId] || [] : []), [chatHistory, activeChatId]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
@@ -55,14 +51,58 @@ export default function NeonestAi() {
 
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const { token } = useAuth();
 
-  const scrollToBottom = () => {
-    const el = chatContainerRef.current;
-    if (el) {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  useEffect(() => {
+    const savedRole = localStorage.getItem("neonest-active-role");
+    if (savedRole && savedRole !== role) setRole(savedRole);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("neonest-active-role", role);
+  }, [role]);
+
+  useEffect(() => {
+    async function fetchSessions() {
+      if (!token || !role) return;
+      setIsHistoryLoading(true);
+      try {
+        const res = await axiosInstance.get(`/api/chat/list?role=${role}`, { headers: { Authorization: `Bearer ${token}` } });
+        setChatSessions(Array.isArray(res.data) ? res.data : []);
+        let toSet = null;
+        if (Array.isArray(res.data) && res.data.length > 0) {
+          const lastId = localStorage.getItem("neonest-active-chat-id");
+          if (lastId && res.data.some((c) => c._id === lastId)) toSet = lastId;
+          else toSet = res.data[0]._id;
+        }
+        setActiveChatId(toSet);
+        if (toSet) localStorage.setItem("neonest-active-chat-id", toSet);
+        else localStorage.removeItem("neonest-active-chat-id");
+      } catch {
+        setChatSessions([]);
+        setActiveChatId(null);
+        localStorage.removeItem("neonest-active-chat-id");
+      } finally {
+        setIsHistoryLoading(false);
+      }
     }
-  };
+    fetchSessions();
+  }, [role, token]);
+
+  useEffect(() => {
+    async function fetchMessages() {
+      if (!activeChatId || historyLoaded[activeChatId]) return;
+      setIsHistoryLoading(true);
+      try {
+        const res = await axiosInstance.get(`/api/chat/history?id=${activeChatId}`, { headers: { Authorization: `Bearer ${token}` } });
+        setChatHistory(activeChatId, res.data.messages);
+      } catch {
+        setChatHistory(activeChatId, []);
+      } finally {
+        setIsHistoryLoading(false);
+      }
+    }
+    if (activeChatId) fetchMessages();
+  }, [activeChatId, token]);
 
   const isUserNearBottom = () => {
     const el = chatContainerRef.current;
@@ -72,22 +112,6 @@ export default function NeonestAi() {
     }
     return true;
   };
-
-  useEffect(() => {
-    if (historyLoaded[role]) return;
-    const loadHistory = async () => {
-      setIsHistoryLoading(true);
-      try {
-        const messages = await fetchChatHistory(role, token);
-        setChatHistory(role, messages);
-      } catch (error) {
-        setChatHistory(role, []);
-      } finally {
-        setIsHistoryLoading(false);
-      }
-    };
-    if (token) loadHistory();
-  }, [role, token, chatHistory, setChatHistory]);
 
   useEffect(() => {
     if (messages.length === 0 || isUserNearBottom()) {
@@ -111,19 +135,97 @@ export default function NeonestAi() {
   }, []);
 
   const handleRoleChange = (newRole) => {
-    resetChatHistoryForRole(newRole);
     setRole(newRole);
+    localStorage.setItem("neonest-active-role", newRole);
+    setActiveChatId(null);
+    localStorage.removeItem("neonest-active-chat-id");
     setInput("");
     setIsSending(false);
-    setTransitionMessage(`Switched to ${roles.find((r) => r.value === newRole)?.label} mode`);
+    setTransitionMessage(`Switched to ${ROLES.find((r) => r.value === newRole)?.label} mode`);
     setTimeout(() => setTransitionMessage(null), 1500);
-    scrollToBottom();
+  };
+
+  const handleSelectChat = async (chatId) => {
+    localStorage.setItem("neonest-active-chat-id", chatId);
+    if (isHistoryLoaded(chatId)) {
+      setActiveChatId(chatId);
+    } else {
+      setIsHistoryLoading(true);
+      try {
+        const res = await axiosInstance.get(`/api/chat/history?id=${chatId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setChatHistory(chatId, res.data.messages || []);
+        setActiveChatId(chatId);
+      } finally {
+        setIsHistoryLoading(false);
+      }
+    }
+  };
+
+  const handleTitleEdited = (chatId, newTitle) => {
+    setChatSessions((prev) => prev.map((c) => (c._id === chatId ? { ...c, title: newTitle } : c)));
+  };
+
+  const handleChatDeleted = (chatId) => {
+    setChatSessions((prev) => prev.filter((c) => c._id !== chatId));
+    const next = chatSessions.find((c) => c._id !== chatId);
+    if (activeChatId === chatId) {
+      if (next) {
+        setActiveChatId(next._id);
+        localStorage.setItem("neonest-active-chat-id", next._id);
+      } else {
+        setActiveChatId(null);
+        localStorage.removeItem("neonest-active-chat-id");
+      }
+    }
   };
 
   const handleSubmit = async (e = null, customInput = null) => {
     if (e) e.preventDefault();
     const finalInput = customInput !== null ? customInput : input;
     if (!finalInput.trim()) return;
+    setIsSending(true);
+
+    if (!activeChatId) {
+      try {
+        const res = await axiosInstance.post("/api/chat/new", { role, message: finalInput }, { headers: { Authorization: `Bearer ${token}` } });
+        const newChat = {
+          _id: res.data._id,
+          role: res.data.role,
+          title: res.data.title,
+          startedAt: res.data.startedAt,
+        };
+        setChatSessions((prev) => [newChat, ...prev]);
+        setActiveChatId(newChat._id);
+        localStorage.setItem("neonest-active-chat-id", newChat._id);
+        setChatHistory(newChat._id, []);
+        const newMessage = {
+          id: Date.now(),
+          role: "user",
+          content: finalInput,
+          createdAt: new Date().toISOString(),
+        };
+        const updatedMessages = [newMessage];
+        setChatHistory(newChat._id, updatedMessages);
+        setInput("");
+        const res2 = await axiosInstance.post(
+          "/api/chat",
+          {
+            chatId: newChat._id,
+            messages: updatedMessages,
+            role,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const finalMessages = [...updatedMessages, res2.data];
+        setChatHistory(newChat._id, finalMessages);
+      } finally {
+        setIsSending(false);
+      }
+      return;
+    }
+
     const newMessage = {
       id: Date.now(),
       role: "user",
@@ -131,28 +233,36 @@ export default function NeonestAi() {
       createdAt: new Date().toISOString(),
     };
     const updatedMessages = [...messages, newMessage];
-    setChatHistory(role, updatedMessages);
+    setChatHistory(activeChatId, updatedMessages);
     setInput("");
-    setIsSending(true);
     try {
-      const res = await axios.post("/api/chat", {
-        messages: updatedMessages,
-        role,
-      });
+      const res = await axiosInstance.post(
+        "/api/chat",
+        {
+          chatId: activeChatId,
+          messages: updatedMessages,
+          role,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       const finalMessages = [...updatedMessages, res.data];
-      setChatHistory(role, finalMessages);
-      await saveChatHistory(role, finalMessages, token);
-    } catch (err) {
+      setChatHistory(activeChatId, finalMessages);
+    } catch {
       const errorMsg = {
         id: Date.now() + 1,
         role: "system",
         content: "Oops! Something went wrong. Please try again.",
         createdAt: new Date().toISOString(),
       };
-      setChatHistory(role, [...updatedMessages, errorMsg]);
+      setChatHistory(activeChatId, [...updatedMessages, errorMsg]);
     } finally {
       setIsSending(false);
     }
+  };
+
+  const scrollToBottom = () => {
+    const el = chatContainerRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   };
 
   const handleQuickQuestion = (question) => {
@@ -164,61 +274,84 @@ export default function NeonestAi() {
     setInput(transcript);
   };
 
-  const formatTime = (isoString) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const handleNewChat = () => {
+    setActiveChatId(null);
+    localStorage.removeItem("neonest-active-chat-id");
+    setInput("");
+    setTransitionMessage("Started a new chat");
+    setTimeout(() => setTransitionMessage(null), 1500);
   };
 
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
       alert("Copied to clipboard!");
-    } catch (err) {
+    } catch {
       alert("Failed to copy!");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 space-y-10">
-      <Card className="max-w-4xl mx-auto">
-        <ChatHeader role={role} roles={roles} handleRoleChange={handleRoleChange} />
-        <CardContent className="space-y-6 p-6 relative">
-          <ChatBody
-            transitionMessage={transitionMessage}
-            messages={messages}
-            formatTime={formatTime}
-            chatContainerRef={chatContainerRef}
-            quickQuestions={quickQuestions}
-            handleQuickQuestion={handleQuickQuestion}
-            isHistoryLoading={isHistoryLoading}
-            isSending={isSending}
-            showNewMessageButton={showNewMessageButton}
-            scrollToBottom={scrollToBottom}
-            setShowNewMessageButton={setShowNewMessageButton}
-            copyToClipboard={copyToClipboard}
-            isListening={isListening}
-            messagesEndRef={messagesEndRef}
-            input={input}
-            SpeechRecognition={SpeechRecognition}
-            handleSpeechTranscript={handleSpeechTranscript}
-            setIsListening={setIsListening}
-          />
-
-          <ChatInput
-            input={input}
-            setInput={setInput}
-            handleSubmit={handleSubmit}
-            isListening={isListening}
-            isSending={isSending}
-            setIsListening={setIsListening}
-            SpeechRecognition={SpeechRecognition}
-            handleSpeechTranscript={handleSpeechTranscript}
-          />
-        </CardContent>
-      </Card>
-
-      <div className="max-w-4xl mx-auto space-y-4">
-        <ChatAnalytics analytics={analytics} handleQuickQuestion={handleQuickQuestion} />
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="w-full rounded-lg border bg-white shadow overflow-hidden">
+          <ChatHeader role={role} handleRoleChange={handleRoleChange} />
+          <ResizablePanelGroup direction="horizontal" className="w-full">
+            <ResizablePanel defaultSize={25} minSize={16} maxSize={33}>
+              <ChatHistoryPanel
+                role={role}
+                chatSessions={chatSessions}
+                activeChatId={activeChatId}
+                isLoading={isHistoryLoading}
+                onSelectChat={handleSelectChat}
+                onNewChat={handleNewChat}
+                onChatDeleted={handleChatDeleted}
+                onTitleEdited={handleTitleEdited}
+                token={token}
+              />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={75} minSize={50}>
+              <div className="h-full flex flex-col">
+                <div className="flex-1 overflow-y-auto px-4">
+                  <ChatBody
+                    transitionMessage={transitionMessage}
+                    messages={messages}
+                    chatContainerRef={chatContainerRef}
+                    handleQuickQuestion={handleQuickQuestion}
+                    isHistoryLoading={isHistoryLoading}
+                    isSending={isSending}
+                    showNewMessageButton={showNewMessageButton}
+                    scrollToBottom={scrollToBottom}
+                    setShowNewMessageButton={setShowNewMessageButton}
+                    copyToClipboard={copyToClipboard}
+                    isListening={isListening}
+                    messagesEndRef={messagesEndRef}
+                    input={input}
+                    SpeechRecognition={SpeechRecognition}
+                    handleSpeechTranscript={handleSpeechTranscript}
+                    setIsListening={setIsListening}
+                  />
+                </div>
+                <div className="border-t p-4">
+                  <ChatInput
+                    input={input}
+                    setInput={setInput}
+                    handleSubmit={handleSubmit}
+                    isListening={isListening}
+                    isSending={isSending}
+                    setIsListening={setIsListening}
+                    SpeechRecognition={SpeechRecognition}
+                    handleSpeechTranscript={handleSpeechTranscript}
+                  />
+                </div>
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
+        <div className="mt-8">
+          <ChatAnalytics analytics={analytics} handleQuickQuestion={handleQuickQuestion} />
+        </div>
       </div>
     </div>
   );

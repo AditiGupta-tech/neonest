@@ -6,7 +6,7 @@ import { Loader2, Send } from "lucide-react";
 
 export default function ChatInput({ input, setInput, handleSubmit, isListening, isSending, setIsListening, SpeechRecognition, handleSpeechTranscript }) {
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 pt-4 items-center">
+    <form onSubmit={handleSubmit} className="flex gap-2 items-center">
       <Input
         value={input}
         onChange={(e) => setInput(e.target.value)}

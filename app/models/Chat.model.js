@@ -28,11 +28,19 @@ const chatSchema = new mongoose.Schema(
       enum: ["pediatrician", "baby", "mother"],
       required: true,
     },
+    title: {
+      type: String,
+      required: true,
+    },
+    startedAt: {
+      type: Date,
+      default: Date.now,
+    },
     messages: [messageSchema],
   },
   { timestamps: true }
 );
 
-const Chat = mongoose.models.Chat || mongoose.model("Chat", chatSchema);
+const ChatModel = mongoose.models.Chat || mongoose.model("Chat", chatSchema);
 
-export default Chat;
+export default ChatModel;

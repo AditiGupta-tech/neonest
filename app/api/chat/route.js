@@ -1,12 +1,26 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
+import ChatModel from "@/app/models/Chat.model";
+import { authenticateToken } from "@/lib/auth";
+import connectDB from "@/lib/connectDB";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API)
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
 
 export async function POST(req) {
   try {
-    const { messages, role } = await req.json()
+    console.log("HEADERS", req.headers.get("authorization"));
 
-let systemInstruction = `You are a helpful and friendly AI assistant. You help parents understand and solve their queries. Incase you are unable to answer, politely tell them you may not be able to help them efficiently here and ask them to seek help from resources by suggesting them some English/hindi youtube videos, articles, journals. Respond in the same language the user uses.`; 
+    await connectDB();
+    const user = await authenticateToken(req);
+    if (!user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+
+    if (!user || !user.user || !user.user.id) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    }
+    const userId = user.user.id;
+
+    const { chatId, messages, role } = await req.json();
+
+    let systemInstruction = `You are a helpful and friendly AI assistant. You help parents understand and solve their queries. Incase you are unable to answer, politely tell them you may not be able to help them efficiently here and ask them to seek help from resources by suggesting them some English/hindi youtube videos, articles, journals. Respond in the same language the user uses.`;
 
     // Role based prompts and answer instructions
     if (role === "parenting expert") {
@@ -60,7 +74,7 @@ let systemInstruction = `You are a helpful and friendly AI assistant. You help p
       2. Key nutritional guidelines or food introductions, often in bullet points.
       3. A section on "Foods to Avoid" or "Safety Tips."
       4. A concluding remark emphasizing professional consultation.`;
-    }else if (role === "baby") {
+    } else if (role === "baby") {
       systemInstruction = `You are NeoNest AI, who can understand and who knows every emotion a baby aged in 0-12 months feels, like discomfort during teething or reasons of various types of cries. Talk to the user and help them understand why their baby might be behaving in a particular way. Seek clarification if needed.
       
       Structure your answer with:
@@ -68,8 +82,7 @@ let systemInstruction = `You are a helpful and friendly AI assistant. You help p
       2. Common causes.
       3. How to deal with the baby and comfort the baby.
       4. A concluding remark emphasizing professional consultation.`;
-    }
-    else if (role === "nani") {
+    } else if (role === "nani") {
       systemInstruction = `You are NeoNest AI, an experienced lady who has taken care of many children and is probably an aged woman, act like a grandmother figure. Understand user's emotions, communicate positivity, motivation and tips to feel relaxed and not overwhelm or overstress in the parenting process.
       
       Structure your answer with:
@@ -80,13 +93,12 @@ let systemInstruction = `You are a helpful and friendly AI assistant. You help p
     }
     // --- End of AI Persona Definitions ---
 
-
     const chatMessages = messages.map((m) => ({
       role: m.role === "user" ? "user" : "model",
       parts: [{ text: m.content }],
-    }))
+    }));
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const result = await model.generateContent({
       contents: [
@@ -100,21 +112,39 @@ let systemInstruction = `You are a helpful and friendly AI assistant. You help p
         },
         ...chatMessages,
       ],
-    })
+    });
 
-    const response = await result.response
-    const reply = response.text()
+    const response = await result.response;
+    const reply = response.text();
 
-    return Response.json({
+    const assistantMessage = {
       id: Date.now(),
       role: "assistant",
       content: reply,
       createdAt: new Date().toISOString(),
-    })
+    };
+
+    // --- Save the conversation ---
+    let chat;
+    if (chatId) {
+      chat = await ChatModel.findOne({ _id: chatId, userId });
+      if (!chat) return new Response(JSON.stringify({ error: "Chat not found" }), { status: 404 });
+      chat.messages = [...messages, assistantMessage];
+      await chat.save();
+    } else {
+      chat = new ChatModel({
+        userId,
+        role,
+        messages: [...messages, assistantMessage],
+      });
+      await chat.save();
+    }
+
+    return Response.json(assistantMessage);
   } catch (err) {
-    console.error("Gemini error:", err)
+    console.error("Gemini error:", err);
     return new Response(JSON.stringify({ error: "Gemini API error" }), {
       status: 500,
-    })
+    });
   }
 }

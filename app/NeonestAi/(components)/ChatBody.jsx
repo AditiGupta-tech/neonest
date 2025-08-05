@@ -1,17 +1,15 @@
 "use client";
 import ReactMarkdown from "react-markdown";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/app/components/ui/tooltip";
-import { Loader2, Copy } from "lucide-react";
-
+import { Loader2, Copy, ChevronDown, Info } from "lucide-react";
+import { QUICKQUESTIONS, formatTime } from "@/app/utils/chat";
 import { Button } from "@/app/components/ui/Button";
 import TextToSpeech from "@/app/components/TextToSpeech";
 
 export default function ChatBody({
   transitionMessage,
   messages,
-  formatTime,
   chatContainerRef,
-  quickQuestions,
   handleQuickQuestion,
   isHistoryLoading,
   isSending,
@@ -35,10 +33,13 @@ export default function ChatBody({
       )}
 
       {messages.length === 0 && (
-        <div className="text-center space-y-4">
-          <p className="text-sm text-gray-500 mt-2">AI advice is not a substitute for professional medical consultation.</p>
+        <div className="text-center pt-2 space-y-4">
+          <p className="flex items-center justify-center text-sm text-gray-500 mt-2">
+            <Info className="w-4 h-4 mr-2 text-blue-400 shrink-0" />
+            <span>AI advice is not a substitute for professional medical consultation.</span>
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {quickQuestions.map((q, idx) => (
+            {QUICKQUESTIONS?.map((q, idx) => (
               <Button key={idx} onClick={() => handleQuickQuestion(q.text)} variant="outline" className="text-left justify-start text-sm">
                 <q.icon className={`w-4 h-4 mr-2 text-${q.color}-500`} />
                 {q.text}
@@ -49,7 +50,7 @@ export default function ChatBody({
       )}
 
       {isHistoryLoading ? (
-        <div className="space-y-4 max-h-[600px] min-h-[500px] overflow-y-auto pr-2 py-4">
+        <div className="space-y-4 max-h-[500px] min-h-[500px] overflow-y-auto pr-2 py-4">
           {[1, 2, 3].map((_, i) => (
             <div key={i} className={`flex ${i % 2 === 0 ? "justify-start" : "justify-end"} animate-pulse`}>
               <div className={`rounded-xl px-4 py-3 min-w-[60%] ${i % 2 === 0 ? "bg-gray-200" : "bg-gradient-to-r from-pink-300 to-purple-300"}`}>
@@ -60,7 +61,7 @@ export default function ChatBody({
           ))}
         </div>
       ) : (
-        <div ref={chatContainerRef} className="space-y-4 max-h-[600px] overflow-y-auto pr-2 pb-4">
+        <div ref={chatContainerRef} className="relative space-y-4 min-h-[500px] max-h-[500px] overflow-y-auto px-4 pt-12 pb-4">
           {messages.map((m, index) => (
             <div key={`${m.id || index}-${index}`} className={`flex mt-3 group ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className={`relative rounded-xl px-4 py-3 max-w-[80%] ${m.role === "user" ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white" : "bg-gray-200 text-gray-800"}`}>
@@ -131,16 +132,15 @@ export default function ChatBody({
       )}
 
       {showNewMessageButton && (
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => {
-              scrollToBottom();
-              setShowNewMessageButton(false);
-            }}
-            className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition">
-            ⬇ New Message
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            scrollToBottom();
+            setShowNewMessageButton(false);
+          }}
+          className="absolute left-1/2 bottom-20 z-20 flex gap-2 items-center text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-lg hover:bg-pink-700 transition focus:outline-none"
+          style={{ boxShadow: "0 6px 24px 0 rgba(233, 30, 99, 0.18)" }}>
+          <ChevronDown size={16} className="text-white" /> New Message
+        </button>
       )}
     </>
   );

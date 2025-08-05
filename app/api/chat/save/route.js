@@ -8,19 +8,18 @@ export async function POST(req) {
   if (!user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
 
   const userId = user.user.id;
-  const { messages, role } = await req.json();
+  const { chatId, messages, role } = await req.json();
 
   try {
-    let chat = await Chat.findOne({ userId, role });
-
-    if (!chat) {
-      chat = new Chat({ userId, role, messages });
+    let chat;
+    if (chatId) {
+      chat = await Chat.findOneAndUpdate({ _id: chatId, userId }, { messages }, { new: true });
     } else {
-      chat.messages = messages;
+      chat = new Chat({ userId, role, messages });
+      await chat.save();
     }
 
-    await chat.save();
-    return Response.json({ success: true });
+    return Response.json({ success: true, messages: chat.messages, _id: chat?._id });
   } catch (error) {
     console.error("Save chat error:", error);
     return new Response(JSON.stringify({ error: "Save failed" }), { status: 500 });
