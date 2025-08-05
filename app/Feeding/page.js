@@ -9,6 +9,7 @@ import Feedingtips from "../components/Feedingtips";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
+import LoginPrompt from "../components/LoginPrompt";
 
 export default function Page() {
   useEffect(() => {
@@ -27,23 +28,19 @@ export default function Page() {
     notes: "",
   });
 
-  useEffect(() => {
-    if (!isAuth) {
-      router.push("/Login");
-    }
-  }, []);
+  // Show login prompt if user is not authenticated
+  if (!isAuth) {
+    return <LoginPrompt sectionName="feeding schedule" />;
+  }
 
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const res = await axios.get("/api/feeding", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setSchedules(res.data.feed || []);
-      } catch (err) {
-        console.error("Error fetching feeds:", err);
+        const response = await axios.get('/api/schedules');
+        setSchedules(response.data);
+      } catch (error) {
+        console.error(error);
+        setError('Failed to load schedules. Please try again later.');
       }
     };
 

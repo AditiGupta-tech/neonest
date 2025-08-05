@@ -7,6 +7,8 @@ import Input from "../components/ui/Input";
 import Badge from "../components/ui/Badge";
 import Babyessentials from "../components/Babyessentials"; 
 import { Plus, Package, AlertTriangle, Edit, Trash2, Bell, Save, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react"; 
+import { useAuth } from "../context/AuthContext";
+import LoginPrompt from "../components/LoginPrompt"; 
 
 const itemCategories = [
   { id: "diapering", name: "Diapers & Wipes", icon: "🍼" }, 
@@ -23,6 +25,7 @@ const itemCategories = [
 ];
 
 export default function Page() {
+  const { isAuth, isLoading } = useAuth();
   const [inventory, setInventory] = useState([]);
   const [isAddingItem, setIsAddingItem] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -35,7 +38,7 @@ export default function Page() {
     notes: "",
   });
   const [showEssentials, setShowEssentials] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInventoryLoading, setIsInventoryLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Get auth token from localStorage
@@ -46,7 +49,7 @@ export default function Page() {
   // Fetch inventory from API
   const fetchInventory = async () => {
     try {
-      setIsLoading(true);
+      setIsInventoryLoading(true);
       const token = getAuthToken();
       if (!token) throw new Error('No authentication token found');
       
@@ -65,14 +68,16 @@ export default function Page() {
       setError(err.message);
       console.error('Error fetching inventory:', err);
     } finally {
-      setIsLoading(false);
+      setIsInventoryLoading(false);
     }
   };
 
   useEffect(() => {
     document.title = "Essentials | NeoNest";
+    if (isAuth) {
     fetchInventory();
-  }, []);
+    }
+  }, [isAuth]);
 
   // Add new item
   const addItem = async () => {
@@ -223,7 +228,7 @@ export default function Page() {
     setEditingItem(null); 
   };
 
-  if (isLoading) {
+  if (isInventoryLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
@@ -250,6 +255,23 @@ export default function Page() {
         </div>
       </div>
     );
+  }
+
+  // Show loading state during hydration to prevent mismatch
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login prompt if user is not authenticated
+  if (!isAuth) {
+    return <LoginPrompt sectionName="essentials tracker" />;
   }
 
 return (
