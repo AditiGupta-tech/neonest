@@ -32,6 +32,26 @@ const faqCategories = [
           "Newborns typically need to feed every 2-3 hours, or 8-12 times per day. Follow your baby's hunger cues rather than strict schedules.",
       },
       {
+        question: "How do I know if my baby is getting enough milk?",
+        answer:
+          "Look for 6-8 wet diapers a day, steady weight gain, and a baby who seems content after feeding. Your pediatrician will track their growth at checkups.",
+      },
+      {
+        question: "When can my baby have water?",
+        answer:
+          "It's best to wait until your baby is around 6 months old and starting solids. Breast milk or formula provides all the hydration they need before then.",
+      },
+      {
+        question: "What's the difference between spit-up and vomit?",
+        answer:
+          "Spit-up is a gentle flow of milk from your baby's mouth, while vomit is more forceful and involves a larger volume. Frequent, forceful vomiting warrants a call to the doctor.",
+      },
+      {
+        question: "How should I store expressed breast milk?",
+        answer:
+          "Store breast milk in clean bottles or bags. It can be kept at room temperature for up to 4 hours, in the fridge for up to 4 days, or in the freezer for about 6 months.",
+      },
+      {
         question: "What foods should I avoid giving my baby?",
         answer:
           "Avoid honey (before 12 months), whole nuts, hard candies, popcorn, and foods that are choking hazards. Also avoid cow's milk as a drink before 12 months.",
@@ -50,6 +70,11 @@ const faqCategories = [
           "Newborns sleep 14-17 hours per day, while 6-12 month olds need 12-16 hours including naps. Sleep patterns vary greatly between babies.",
       },
       {
+        question: "What is a good bedtime routine?",
+        answer:
+          "A simple, calming routine can help signal it's time to sleep. Try a warm bath, a gentle massage, reading a short story, or singing a lullaby.",
+      },
+      {
         question: "When will my baby sleep through the night?",
         answer:
           "Most babies can sleep through the night (6-8 hours) by 3-6 months, but this varies. Some may take longer, and that's completely normal.",
@@ -58,6 +83,16 @@ const faqCategories = [
         question: "Is it safe for my baby to sleep on their stomach?",
         answer:
           "No, always place babies on their back to sleep to reduce the risk of SIDS. Once they can roll over on their own, it's okay if they choose to sleep on their stomach.",
+      },
+      {
+        question: "When should I stop swaddling my baby?",
+        answer:
+          "Stop swaddling when your baby shows signs of rolling over, which is usually around 2-4 months. Transition to a sleep sack for safety.",
+      },
+      {
+        question: "How do I handle sleep regressions?",
+        answer:
+          "Sleep regressions are normal and often linked to growth spurts or developmental milestones. Stick to your routine, offer extra comfort, and it should pass in a few weeks.",
       },
     ],
   },
@@ -73,9 +108,24 @@ const faqCategories = [
           "Most babies start crawling between 6-10 months. Some babies skip crawling entirely and go straight to walking, which is also normal.",
       },
       {
+        question: "Why is tummy time important?",
+        answer:
+          "Tummy time helps strengthen your baby's neck and shoulder muscles, which are crucial for rolling over and crawling. It also helps prevent a flat spot on their head.",
+      },
+      {
+        question: "How can I help with teething pain?",
+        answer:
+          "Offer a solid, chilled teething toy or a cool, wet washcloth. Gently massaging their gums with a clean finger can also provide relief.",
+      },
+      {
         question: "When do babies typically say their first words?",
         answer:
           "First words usually appear between 10-14 months. 'Mama' and 'dada' are often among the first words, though they may not be used meaningfully at first.",
+      },
+      {
+        question: "Should I worry if my baby isn't hitting milestones?",
+        answer:
+          "Babies develop at their own pace, and there's a wide range of normal. However, if you have concerns about a significant delay, always discuss it with your pediatrician.",
       },
       {
         question: "How can I encourage my baby's development?",
@@ -93,12 +143,27 @@ const faqCategories = [
       {
         question: "When should I call the pediatrician?",
         answer:
-          "Call for fever over 100.4°F (38°C), difficulty breathing, persistent vomiting, signs of dehydration, or if you're concerned about any changes in behavior.",
+          "Call for fever over 100.4°F (38°C) in a newborn, difficulty breathing, persistent vomiting, signs of dehydration, or if you're concerned about any changes in behavior.",
+      },
+      {
+        question: "How often should I bathe my baby?",
+        answer:
+          "A full bath 2-3 times a week is usually enough for a baby in the first year. Too much bathing can dry out their sensitive skin.",
+      },
+      {
+        question: "What should I do for a diaper rash?",
+        answer:
+          "Change diapers frequently, clean the area gently with water, and allow it to air dry. Apply a thick layer of zinc oxide diaper cream for protection.",
+      },
+      {
+        question: "How do I care for the umbilical cord stump?",
+        answer:
+          "Keep the stump clean and dry until it falls off on its own, usually within 1-2 weeks. Fold the diaper down to expose it to air and give sponge baths until it has healed.",
       },
       {
         question: "How often should my baby have checkups?",
         answer:
-          "Regular checkups are typically at birth, 3-5 days, 2 weeks, 2 months, 4 months, 6 months, 9 months, and 12 months during the first year.",
+          "Regular checkups are typically at birth, 3-5 days, 2 weeks, and then at 2, 4, 6, 9, and 12 months during the first year.",
       },
       {
         question: "What vaccines does my baby need?",
