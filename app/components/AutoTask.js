@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import {SparkleIcon} from "lucide-react";
 
 import {

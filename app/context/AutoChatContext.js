@@ -1,8 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState} from "react";
 import { useAuth } from "./AuthContext";
-import { useRouter } from "next/router";
 
 const AutoTaskContext = createContext();
 
@@ -20,34 +19,45 @@ export const AutoTaskProvider = ({ children }) => {
   const [isAutoTask, setAutoTask] = useState(false)
   const { isAuth } = useAuth();
 
-const getResponse= async (data)=>{
+
+  const setNewUpdates=(newUpdates)=>
+  {
+    setUpdates(newUpdates)
+  }
+
+  const getResponse= async (data)=>{
     try{
         setIsLoading(true)
 
         const formData = new FormData()
 
-        if(!isAuth||!data.message||data.message==="") return;
+        if(!isAuth||!data.message||data.message==="") {window.alert("Authentication Required"); return};
 
         formData.append("message",data.message)
 
-        if(data.file){
+        if(data.file)
+        {
           formData.append("file",data.file)
         }
 
         const token = localStorage.getItem('token')
         const response = await fetch("api/AutoTask/",{
-            method:"POST",
-            headers:{
-                Authorization:`Bearer ${token}`
-            },
-            body: formData
+          method:"POST",
+          headers:{
+            Authorization:`Bearer ${token}`
+          },
+          body: formData
         })
 
         const response_data = await response.json()
 
-        setUpdates(response_data)
+        if(Array.isArray(response_data["message"]))
+          setUpdates([...response_data["message"],...updates])
+        else
+          setUpdates([response_data["message"],...updates])
 
-        for(let localData of response_data["message"]){
+        for(let localData of response_data["message"])
+        {
           if(localData.actionName==="growth"){
             const prevGrowth = localStorage.getItem("growthLogs")
             const logs = prevGrowth?JSON.parse(prevGrowth):[]
@@ -63,22 +73,28 @@ const getResponse= async (data)=>{
             localStorage.setItem("importantMedicalContacts", newContString);
           }
         }
-        return response_data
-    }catch(err){
+      return response_data
+    }
+    catch(err)
+    {
         console.log(err)
         return {}
-    }finally{
-        setIsLoading(false)
+    }
+    finally
+    {
+      setIsLoading(false)
     }
   }
   
 
-  const value = {
+  const value = 
+  {
     updates,
     isLoading,
     isAutoTask,
     getResponse,
-    setAutoTask
+    setAutoTask,
+    setNewUpdates
   };
 
   return (

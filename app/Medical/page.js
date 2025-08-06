@@ -7,6 +7,8 @@ import { Button } from "../components/ui/Button"
 import ImportantContacts from "../components/ImportantContacts "
 import Badge from "../components/ui/Badge"
 import {Plus,Shield,Calendar,AlertTriangle,CheckCircle,Clock,Upload,FileText,Edit,Trash2,Bell,Save,} from "lucide-react"
+import { useAuth } from "../context/AuthContext"
+import LoginPrompt from "../components/LoginPrompt"
 
 
 function getVaccineStatus(vaccine) {
@@ -51,6 +53,7 @@ const staticStandardVaccines = [
 ];
 
 export default function VaccineTracker({ babyId }) {
+  const { isAuth } = useAuth()
   const [vaccines, setVaccines] = useState([])
   const [babyBirthDate, setBabyBirthDate] = useState("")
   const [isAddingVaccine, setIsAddingVaccine] = useState(false)
@@ -68,9 +71,11 @@ export default function VaccineTracker({ babyId }) {
 
   useEffect(() => {
     document.title = "Medical | NeoNest"
+    if (isAuth) {
     fetchVaccines()
     // fetchBabyBirthDate() 
-  }, [])
+    }
+  }, [isAuth])
 
   const fetchVaccines = async () => {
     try {
@@ -211,6 +216,11 @@ export default function VaccineTracker({ babyId }) {
     return vaccine.status !== "completed" && scheduled < today
   })
 
+
+  // Show login prompt if user is not authenticated
+  if (!isAuth) {
+    return <LoginPrompt sectionName="medical records" />;
+  }
 
   return (
     <div className="p-6 md:p-6 md:mx-20 lg:mx-0 w-full space-y-6 mx-auto">

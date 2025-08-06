@@ -29,6 +29,10 @@ const saveFeeding=async (task,user)=>{
     }
     catch(err){
         console.log(err)
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Feeding"}
     }
 }
 const saveMemory = async (task,user,uploadData)=>{
@@ -54,7 +58,10 @@ const saveMemory = async (task,user,uploadData)=>{
     }
     catch(err){
         console.log(err)
-        return {}
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Memory"}
     }
 
 }
@@ -81,20 +88,27 @@ const saveEssentials = async (task,user)=>{
     }
     catch(err){
         console.log(err)
-        return {}
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Essentials"}
     }
 
 }
 const saveDoctorContact = async (task,user)=>{
     const {name,category,type,value,description} = task.values;
-
-    if(!name || !category || !type || !value){
-        throw Error("Some fields are empty in Doctors Contact")
+    try{
+        if(!name || !category || !type || !value){
+            throw Error("Some fields are empty in Doctors Contact")
+        }
+        return task
+    }catch(err){
+        console.log(err)
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Contact"}
     }
-    const contactConfig = {
-        name,category,type,value,description
-    }
-    return task
 }
 
 const saveNotification = async (task,user)=>{
@@ -125,14 +139,17 @@ const saveNotification = async (task,user)=>{
     }
     catch(err){
         console.log(err)
-        return {}
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Notifications"}
     }
 
 }
 const saveSleep = async (task,user)=>{
     const {babyName,time,type,duration,mood,notes,date} = task.values;
 
-    if(!babyName || !time || !type || !duration || !date){
+    if(!time || !type || !duration || !date){
         throw Error("Some fields are empty in Sleep")
     }
     const sleepConfig = {
@@ -153,7 +170,10 @@ const saveSleep = async (task,user)=>{
     }
     catch(err){
         console.log(err)
-        return {}
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Sleep"}
     }
 
 }
@@ -182,24 +202,31 @@ const saveVaccination = async (task,user)=>{
     }
     catch(err){
         console.log(err)
-        return {}
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Vaccine"
+        }
     }
 
 }
 const saveGrowth = async (task,user)=>{
     const {date,height,weight,head,comment} = task.values;
-
-    if(!date || !(height || weight || head)){
-        throw Error("Some fields are empty in Growth")
+    try{
+        if(!date || !(height || weight || head))
+        {
+            throw Error("Some fields are empty in Growth")
+        }
+        return task
     }
-    const growthConfig = {
-        date,
-        height,
-        weight,
-        head,
-        comment
+    catch(err)
+    {
+        console.log(err)
+        return {
+            isAction:false,
+            request:"other",
+            actionName:"Growth"}
     }
-    return task
 }
 
 export {

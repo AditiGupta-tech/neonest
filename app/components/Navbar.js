@@ -171,6 +171,16 @@ const Navbar = () => {
             </div>
           )}
         </div>
+            <div className="md:hidden absolute flex justify-end w-full flex-col">
+              {pathname!=="/NeonestAi" &&
+                <div className="m-4 flex justify-end">
+                  <Chatbot/>
+                </div>
+              }
+              {pathname==="/"&&<div className="m-4  flex justify-end">
+                <AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask}/>
+              </div>}
+            </div>
       </header>
     </>
   );
