@@ -25,10 +25,11 @@ import { Button } from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Badge from "../components/ui/Badge";
 import { useAuth } from "../context/AuthContext";
+import LoginPrompt from "../components/LoginPrompt";
 
 
 export default function MemoriesCommunityBlog() {
-  const { token } = useAuth();
+  const { token, isAuth } = useAuth();
   const [memories, setMemories] = useState([]);
   const [isAddingMemory, setIsAddingMemory] = useState(false);
   const [editingMemory, setEditingMemory] = useState(null);
@@ -51,8 +52,10 @@ export default function MemoriesCommunityBlog() {
 
   useEffect(() => {
     document.title = "Memories, Community & Blogs | NeoNest";
+    if (isAuth && token) {
     fetchMemories();
-  }, [token]);
+    }
+  }, [isAuth, token]);
 
   const fetchMemories = async () => {
     try {
@@ -183,6 +186,11 @@ export default function MemoriesCommunityBlog() {
     setFileToUpload(null);
     setPreviewFile(null);
   };
+
+  // Show login prompt if user is not authenticated
+  if (!isAuth) {
+    return <LoginPrompt sectionName="memories and community" />;
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto px-4 py-8">

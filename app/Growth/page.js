@@ -7,9 +7,13 @@ import Input from "../components/ui/Input";
 import InteractionWithBaby from "../components/InteractionWithBaby";
 import MilestoneTracker from "../components/MilestoneTracker";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
+import { useAuth } from "../context/AuthContext";
+import LoginPrompt from "../components/LoginPrompt";
 
 
 export default function GrowthPage() {
+  const { isAuth } = useAuth();
+  
   useEffect(() => {
     document.title = "Growth | NeoNest";
   }, []);
@@ -117,6 +121,11 @@ export default function GrowthPage() {
     const entryDate = new Date(dateStr);
     return Math.max(0, (entryDate.getFullYear() - birthDate.getFullYear()) * 12 + (entryDate.getMonth() - birthDate.getMonth()));
   };
+
+  // Show login prompt if user is not authenticated
+  if (!isAuth) {
+    return <LoginPrompt sectionName="growth tracking" />;
+  }
 
   return (
     <div className="container max-w-6xl mx-auto px-4 sm:px-6 space-y-6">

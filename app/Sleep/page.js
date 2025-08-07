@@ -15,8 +15,11 @@ import Input from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
 import Sleeptips from "../components/Sleeptips";
+import { useAuth } from "../context/AuthContext";
+import LoginPrompt from "../components/LoginPrompt";
 
 export default function Page() {
+  const { isAuth, token } = useAuth();
   const [schedules, setSchedules] = useState([]);
   const [isAddingSchedule, setIsAddingSchedule] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState(null);
@@ -29,12 +32,11 @@ export default function Page() {
     notes: "",
   });
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
   useEffect(() => {
     document.title = "Sleep | NeoNest";
+    if (isAuth) {
     const fetchLogs = async () => {
       try {
         const res = await axios.get("/api/sleep", { headers });
@@ -46,7 +48,8 @@ export default function Page() {
       }
     };
     fetchLogs();
-  }, []);
+    }
+  }, [isAuth]);
 
   const addSchedule = async () => {
     if (!newSchedule.time || !newSchedule.duration) return;
@@ -120,6 +123,11 @@ export default function Page() {
   const todaySchedules = schedules
     .filter((s) => s.date === today)
     .sort((a, b) => a.time.localeCompare(b.time));
+
+  // Show login prompt if user is not authenticated
+  if (!isAuth) {
+    return <LoginPrompt sectionName="sleep tracking" />;
+  }
 
   if (loading) {
     return (
