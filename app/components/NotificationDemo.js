@@ -141,14 +141,14 @@ const NotificationDemo = () => {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-pink-100 rounded-full">
-          <Bell className="text-pink-600" size={24} />
+        <div className="p-3 bg-pink-100 dark:bg-pink-900/30 rounded-full">
+          <Bell className="text-pink-600 dark:text-pink-400" size={24} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Notification Demo</h2>
-          <p className="text-gray-600">Test different types of notifications</p>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Notification Demo</h2>
+          <p className="text-gray-600 dark:text-gray-300">Test different types of notifications</p>
         </div>
       </div>
 
@@ -158,15 +158,15 @@ const NotificationDemo = () => {
           return (
             <div
               key={notification.type}
-              className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className={`p-2 rounded-full ${notification.color} text-white`}>
                   <IconComponent size={20} />
                 </div>
-                <h3 className="font-semibold text-gray-900">{notification.title}</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100">{notification.title}</h3>
               </div>
-              <p className="text-sm text-gray-600 mb-4">{notification.description}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{notification.description}</p>
               <Button
                 onClick={() => handleCreateNotification(notification.type)}
                 disabled={isLoading}
@@ -189,9 +189,9 @@ const NotificationDemo = () => {
         })}
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <h3 className="font-semibold text-blue-900 mb-2">How it works:</h3>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+        <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">How it works:</h3>
+        <ul className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
           <li>• Click any button above to create a test notification</li>
           <li>• Notifications will appear in the bell icon in the navbar</li>
           <li>• You can mark them as read, delete them, or click to navigate</li>

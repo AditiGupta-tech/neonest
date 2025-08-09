@@ -16,8 +16,8 @@ const NewsletterContent = () => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-6 flex-1 min-w-[300px]">
-      <h2 className="text-xl font-semibold mb-4 text-center">Subscribe to Our Newsletter</h2>
+    <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 flex-1 min-w-[300px]">
+      <h2 className="text-xl font-semibold mb-4 text-center text-gray-900 dark:text-gray-100">Subscribe to Our Newsletter</h2>
       {!subscribed ? (
         <form onSubmit={handleSubscribe} className="flex flex-col gap-4">
           <input
@@ -25,7 +25,7 @@ const NewsletterContent = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className="flex-grow px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             required
           />
           <button
@@ -36,8 +36,8 @@ const NewsletterContent = () => {
           </button>
         </form>
       ) : (
-        <p className="text-green-600 text-center font-medium">
-          Thank you for subscribing! We’ll send updates to your email.
+        <p className="text-green-600 dark:text-green-400 text-center font-medium">
+          Thank you for subscribing! We'll send updates to your email.
         </p>
       )}
     </div>
@@ -56,10 +56,10 @@ const AppStatsContent = () => {
     <div className="flex-1 min-w-[300px]"> 
       <div className="grid grid-cols-2 md:grid-cols-2 gap-6 text-center">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white shadow-md rounded-xl p-6">
+          <div key={index} className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
             <div className="mb-2 flex justify-center text-2xl">{stat.icon}</div>
-            <h3 className="text-lg font-semibold">{stat.value}</h3>
-            <p className="text-sm text-gray-600">{stat.label}</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{stat.value}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300">{stat.label}</p>
           </div>
         ))}
       </div>

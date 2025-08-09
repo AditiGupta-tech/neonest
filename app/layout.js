@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import GoToTop from "./components/GoToTop";
 import { AuthProvider } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { ThemeProvider } from "next-themes";
 // import Chatbot from "./components/Chatbot";
 
 const geistSans = Geist({
@@ -25,19 +26,25 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`w-screen flex flex-col min-h-screen overflow-x-hidden ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-
-          <NotificationProvider>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-            <GoToTop />
-          </NotificationProvider>
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <NotificationProvider>
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+              <GoToTop />
+            </NotificationProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

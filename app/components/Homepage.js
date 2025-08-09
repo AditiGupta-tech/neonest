@@ -284,97 +284,97 @@ useEffect(() => {
           </div>
         </section>
 
-        <section className="py-4 px-4 sm:px-6 lg:px-8 bg-white/80">
+        <section className="py-4 px-4 sm:px-6 lg:px-8 bg-white/80 dark:bg-gray-900/50">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4 text-gray-800">
+              <h2 className="text-4xl font-bold mb-4 text-gray-800 dark:text-gray-100">
                 Everything You Need in One Place
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl text-gray-600 dark:text-gray-300">
                 Comprehensive tools to support your parenting journey
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Utensils className="w-6 h-6 text-pink-600" />
+                  <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Utensils className="w-6 h-6 text-pink-600 dark:text-pink-400" />
                   </div>
-                  <CardTitle className="group-hover:text-pink-600 transition-colors text-xl font-semibold">
+                  <CardTitle className="group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Feeding Schedule
                   </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
+                  <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
                     Track feeding times, amounts, and create custom schedules
                   </CardDescription>
                 </CardHeader>
               </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Package className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <CardTitle className="group-hover:text-blue-600 transition-colors text-xl font-semibold">
+                  <CardTitle className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Inventory Tracker
                   </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
+                  <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
                     Monitor baby essentials and get low stock alerts
                   </CardDescription>
                 </CardHeader>
               </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Camera className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Camera className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
-                  <CardTitle className="group-hover:text-purple-600 transition-colors text-xl font-semibold">
+                  <CardTitle className="group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Memory Vault
                   </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
+                  <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
                     Capture precious moments and share with community
                   </CardDescription>
                 </CardHeader>
               </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Shield className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
-                  <CardTitle className="group-hover:text-green-600 transition-colors text-xl font-semibold">
+                  <CardTitle className="group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Vaccine Tracker
                   </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
+                  <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
                     Track vaccinations and upload medical records
                   </CardDescription>
                 </CardHeader>
               </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <PlayCircle className="w-6 h-6 text-orange-600" />
+                  <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <PlayCircle className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                   </div>
-                  <CardTitle className="group-hover:text-orange-600 transition-colors text-xl font-semibold">
+                  <CardTitle className="group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Parent Resources
                   </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
+                  <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
                     Videos, articles, and expert advice
                   </CardDescription>
                 </CardHeader>
               </Card>
 
-              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
+              <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm cursor-pointer border-none rounded-xl p-4">
                 <CardHeader className="p-0 mb-4">
-                  <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <HelpCircle className="w-6 h-6 text-teal-600" />
+                  <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <HelpCircle className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                   </div>
-                  <CardTitle className="group-hover:text-teal-600 transition-colors text-xl font-semibold">
+                  <CardTitle className="group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
                     FAQs
                   </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm">
+                  <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
                     Quick answers to common baby care questions
                   </CardDescription>
                 </CardHeader>
@@ -389,10 +389,10 @@ useEffect(() => {
         >
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4 text-gray-8000 leading-tight">
+              <h2 className="text-4xl font-bold mb-4 text-gray-800 dark:text-gray-100 leading-tight">
                 Why Mothers Trust NeoNest
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 From sleepless nights to first giggles, NeoNest supports every
                 step of your parenting journey. Here's why thousands of parents
                 trust us.
@@ -434,7 +434,7 @@ useEffect(() => {
                           ? "border-pink-400 mr-8"
                           : "border-blue-400 ml-8"
                       }
-                      bg-white/90 backdrop-blur-sm
+                      bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
                       transition-all duration-300 hover:shadow-2xl
                     `}
                   >
@@ -442,11 +442,11 @@ useEffect(() => {
                       <div className="w-10 h-10 rounded-full bg-purple-400 flex items-center justify-center shadow-md">
                         <feature.icon className="w-5 h-5 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-800">
+                      <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
                         {feature.title}
                       </h3>
                     </div>
-                    <p className="text-gray-700 text-base leading-relaxed">
+                    <p className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
                       {feature.desc}
                     </p>
                   </div>
@@ -456,16 +456,16 @@ useEffect(() => {
           </div>
         </section>
 
-        <section className="px-4 sm:px-6 lg:px-8 bg-white/80 py-16">
+        <section className="px-4 sm:px-6 lg:px-8 bg-white/80 dark:bg-gray-900/50 py-16">
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-              <h2 className="text-3xl font-bold text-gray-800 text-center mt-6 md:text-left">
+              <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mt-6 md:text-left">
                 Read how NeoNest helped parents
               </h2>
               <div className="text-center md:text-right">
                 <Button
                   variant="outline"
-                  className="text-pink-600 border-pink-400 font-semibold hover:bg-pink-50 px-6 py-2 rounded-full"
+                  className="text-pink-600 border-pink-400 font-semibold hover:bg-pink-50 dark:hover:bg-pink-900/20 px-6 py-2 rounded-full"
                   onClick={handleAddReviewClick}
                 >
                   + Add Your Review
@@ -475,20 +475,20 @@ useEffect(() => {
 
             <div className="grid sm:grid-cols-2 gap-6">
               {userReview && (
-                <Card className="bg-white/90 border border-green-300 shadow-lg p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+                <Card className="bg-white/90 dark:bg-gray-800/90 border border-green-300 dark:border-green-700 shadow-lg p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
                   <CardHeader className="p-0 mb-3">
-                    <CardTitle className="text-lg text-gray-800 font-semibold">
+                    <CardTitle className="text-lg text-gray-800 dark:text-gray-100 font-semibold">
                       {userReview.name}
                     </CardTitle>
-                    <CardDescription className="text-sm text-green-600">
+                    <CardDescription className="text-sm text-green-600 dark:text-green-400">
                       #{userReview.tag}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <p className="text-gray-700 text-base mb-3">
+                    <p className="text-gray-700 dark:text-gray-300 text-base mb-3">
                       {userReview.content}
                     </p>
-                    <div className="text-xs text-gray-500 mb-2">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                       Tags:{" "}
                       {userReview.keywords.map((word) => `"${word}"`).join(", ")}
                     </div>
@@ -507,21 +507,21 @@ useEffect(() => {
                 return (
                   <Card
                     key={index}
-                    className="bg-white/90 border border-gray-200 shadow-md p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
+                    className="bg-white/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 shadow-md p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl"
                   >
                     <CardHeader className="p-0 mb-3">
-                      <CardTitle className="text-lg text-gray-800 font-semibold">
+                      <CardTitle className="text-lg text-gray-800 dark:text-gray-100 font-semibold">
                         {review.name}
                       </CardTitle>
-                      <CardDescription className="text-sm text-pink-600">
+                      <CardDescription className="text-sm text-pink-600 dark:text-pink-400">
                         #{review.tag}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <p className="text-gray-700 text-base mb-3">
+                      <p className="text-gray-700 dark:text-gray-300 text-base mb-3">
                         {review.content}
                       </p>
-                      <div className="text-xs text-gray-500 mb-2">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                         Popular tags:{" "}
                         {review.keywords.map((word) => `"${word}"`).join(", ")}
                       </div>
@@ -530,8 +530,8 @@ useEffect(() => {
                         <div
                           className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
                             reaction.helpful
-                              ? "text-green-600"
-                              : "text-gray-400 hover:text-green-500"
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-gray-400 dark:text-gray-500 hover:text-green-500"
                           }`}
                           onClick={() => handleReaction(index, "helpful")}
                         >
@@ -543,8 +543,8 @@ useEffect(() => {
                         <div
                           className={`cursor-pointer flex items-center gap-1 transition-colors duration-200 ${
                             reaction.notHelpful
-                              ? "text-red-600"
-                              : "text-gray-400 hover:text-red-500"
+                              ? "text-red-600 dark:text-red-400"
+                              : "text-gray-400 dark:text-gray-500 hover:text-red-500"
                           }`}
                           onClick={() => handleReaction(index, "notHelpful")}
                         >
@@ -574,14 +574,14 @@ useEffect(() => {
         <NewSections />
 
         {/* Notification Demo Section */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 Smart Notifications System
               </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Experience our intelligent notification system that keeps you informed about feeding times, 
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Experience our intelligent notification system that keeps you informed about feeding times,
                 sleep schedules, vaccines, milestones, and more. Test it out below!
               </p>
             </div>
@@ -593,23 +593,23 @@ useEffect(() => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 animate-fadeIn">
             <section
               ref={reviewRef}
-              className="bg-yellow-50 border border-yellow-300 rounded-xl p-6 shadow-2xl max-w-lg w-full transform transition-all duration-300 scale-100 opacity-100 animate-slideUp relative"
+              className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-xl p-6 shadow-2xl max-w-lg w-full transform transition-all duration-300 scale-100 opacity-100 animate-slideUp relative"
             >
               <button
                 onClick={handleDismissReview}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                className="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200"
                 aria-label="Dismiss feedback modal"
               >
                 <X size={24} />
               </button>
 
               {feedbackSubmitted ? (
-                <div className="text-center text-green-700 font-semibold text-lg py-4">
+                <div className="text-center text-green-700 dark:text-green-400 font-semibold text-lg py-4">
                   ✅ Thank you for your feedback!
                 </div>
               ) : (
                 <>
-                  <h3 className="text-2xl font-bold text-yellow-800 mb-4 text-center">
+                  <h3 className="text-2xl font-bold text-yellow-800 dark:text-yellow-200 mb-4 text-center">
                     Help us make NeoNest better!
                   </h3>
                   <div className="flex justify-center gap-2 mb-4">
@@ -620,7 +620,7 @@ useEffect(() => {
                         className={`w-10 h-10 text-3xl transition-colors duration-200 ${
                           selectedRating >= star
                             ? "text-yellow-500"
-                            : "text-gray-300 hover:text-yellow-400"
+                            : "text-gray-300 dark:text-gray-600 hover:text-yellow-400"
                         }`}
                       >
                         ★
@@ -632,7 +632,7 @@ useEffect(() => {
                     placeholder="Share your thoughts about NeoNest..."
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 text-base resize-y focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 text-base resize-y focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none bg-white dark:bg-gray-800 dark:text-gray-100"
                     autoFocus
                   ></textarea>
                   <div className="flex justify-center mt-5">
