@@ -12,10 +12,6 @@ import { useRouter } from "next/navigation";
 import LoginPrompt from "../components/LoginPrompt";
 
 export default function Page() {
-  useEffect(() => {
-    document.title = "Feeding | NeoNest";
-  }, []);
-
   const router = useRouter();
   const { isAuth, token } = useAuth();
   const [schedules, setSchedules] = useState([]);
@@ -27,25 +23,46 @@ export default function Page() {
     amount: "",
     notes: "",
   });
-
-  // Show login prompt if user is not authenticated
-  if (!isAuth) {
-    return <LoginPrompt sectionName="feeding schedule" />;
-  }
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Feeding | NeoNest";
+
     const fetchSchedules = async () => {
+      if (!isAuth) {
+        setLoading(false);
+        return;
+      }
       try {
-        const response = await axios.get('/api/schedules');
-        setSchedules(response.data);
+        setLoading(true);
+        const response = await axios.get('/api/feeding', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        if (response.data && Array.isArray(response.data.feed)) {
+          setSchedules(response.data.feed);
+        } else {
+          setSchedules([]);
+        }
+
       } catch (error) {
         console.error(error);
         setError('Failed to load schedules. Please try again later.');
+        setSchedules([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchSchedules();
-  }, []);
+  }, [isAuth, token]);
+
+  if (!isAuth) {
+    return <LoginPrompt sectionName="feeding schedule" />;
+  }
 
   const handleAddSchedule = async () => {
     try {
@@ -60,14 +77,14 @@ export default function Page() {
         }
       );
 
-      console.log(res.data)
       if (res.data.feed) {
-        setSchedules((prev) => [...prev, res.data.feed]);
+        setSchedules((prev) => [res.data.feed, ...prev]);
       }
       setNewSchedule({ time: "", type: "Breastfeeding", amount: "", notes: "" });
       setIsAddingSchedule(false);
     } catch (err) {
       console.error("Error adding feed:", err);
+      setError('Failed to add feeding log.');
     }
   };
 
@@ -87,6 +104,7 @@ export default function Page() {
       setEditingSchedule(null);
     } catch (err) {
       console.error("Error updating feed:", err);
+      setError('Failed to update feeding log.');
     }
   };
 
@@ -101,6 +119,7 @@ export default function Page() {
       setSchedules((prev) => prev.filter((s) => s._id !== id));
     } catch (err) {
       console.error("Error deleting feed:", err);
+      setError('Failed to delete feeding log.');
     }
   };
 
@@ -169,7 +188,10 @@ export default function Page() {
             </p>
           </div>
           <Button
-            onClick={() => setIsAddingSchedule(true)}
+            onClick={() => {
+              setIsAddingSchedule(true);
+              setEditingSchedule(null); 
+            }}
             className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white w-full sm:w-auto min-h-[44px] sm:min-h-[40px] text-sm sm:text-base px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-md"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-bounce-gentle" />
@@ -290,7 +312,12 @@ export default function Page() {
             </Badge>
           </h3>
 
-          {todaySchedules.length === 0 ? (
+          {/* Display loading or error messages */}
+          {loading ? (
+            <div className="text-center py-8 sm:py-12 text-gray-500">Loading...</div>
+          ) : error ? (
+            <div className="text-center py-8 sm:py-12 text-red-500">{error}</div>
+          ) : todaySchedules.length === 0 ? (
             <div className="text-center py-8 sm:py-12 text-gray-500">
               <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 bg-gradient-to-r from-gray-300 to-gray-400 rounded-full flex items-center justify-center animate-pulse">
                 <Utensils className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
@@ -340,7 +367,10 @@ export default function Page() {
                     </div>
                     <div className="flex gap-2 sm:gap-3 self-end sm:self-auto">
                       <Button 
-                        onClick={() => setEditingSchedule(s)} 
+                        onClick={() => {
+                          setEditingSchedule(s);
+                          setIsAddingSchedule(false);
+                        }} 
                         className="text-sm min-h-[44px] sm:min-h-[40px] px-3 sm:px-4 py-2 border border-pink-300 rounded-lg hover:bg-pink-50 transition-all duration-300 hover:border-pink-400 hover:scale-105"
                       >
                         <Edit className="w-4 h-4 text-pink-600" />
