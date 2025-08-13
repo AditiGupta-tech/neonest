@@ -28,7 +28,8 @@ export default function Resources() {
 
     const matchesCategory =
       selectedCategory === "all" ||
-      resource.type.toLowerCase() === selectedCategory.toLowerCase();
+      resource.type?.toLowerCase() === selectedCategory.toLowerCase() ||
+  resource.category?.toLowerCase() === selectedCategory.toLowerCase();
 
     return matchesSearch && matchesCategory;
   });
@@ -88,10 +89,11 @@ export default function Resources() {
       }
       size="sm"
       className={`rounded-xl text-sm ${
-        selectedCategory === category.name.toLowerCase()
-          ? "bg-pink-100 text-pink-700 font-semibold border-pink-300"
-          : "text-gray-600 border-gray-200 hover:bg-gray-100"
-      }`}
+  selectedCategory === category.id
+    ? "bg-pink-100 text-pink-700 font-semibold border-pink-300"
+    : "text-gray-600 border-gray-200 hover:bg-gray-100"
+}`}
+
     >
       {category.name}
     </Button>

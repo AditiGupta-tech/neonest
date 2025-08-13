@@ -1,5 +1,9 @@
 export const categories = [
   { id: "all", name: "All" },
+  { id: "feeding", name: "Feeding & Nutrition" },
+  { id: "sleep", name: "Sleep & Rest" },
+  { id: "development", name: "Development" },
+  { id: "health", name: "Health & Safety" },
   { id: "blog", name: "Blogs" },
   { id: "video", name: "Videos" },
   { id: "podcast", name: "Podcasts" },
@@ -198,8 +202,69 @@ export const resourcesData = {
   ],
 
   articles: [
-    {
-      id: 16,
+    
+      {
+    id: 16,
+    title: "Introducing Solids: A Step-by-Step Guide",
+    description: "Learn when and how to introduce solid foods to your baby, with tips for making the transition smooth",
+    url: "https://www.betterhealth.vic.gov.au/health/healthyliving/eating-tips-for-babies",
+    author: "Dr. Emily Parker",
+    type: "feeding & Nutrition",
+    readTime: "8 min read",
+    publishDate: "2024-03-15",
+    category: "feeding",
+    tags: ["weaning", "nutrition", "first foods"]
+  },
+  {
+    id: 17,
+    title: "Establishing Healthy Sleep Habits",
+    description: "Practical advice for helping your baby develop good sleep patterns from the start",
+    url: "https://www.nationwidechildrens.org/family-resources-education/health-wellness-and-safety-resources/helping-hands/healthy-sleep-habits-for-infants-and-toddlers",
+    author: "Sleep Consultant Team",
+    type: "article",
+    readTime: "10 min read",
+    publishDate: "2024-02-28",
+    category: "sleep",
+    tags: ["sleep training", "routine", "newborn"]
+  },
+  {
+    id: 18,
+    title: "Baby-Proofing Your Home: The Complete Checklist",
+    description: "Essential safety measures to protect your curious crawler and toddler",
+    url: "https://www.thebump.com/a/checklist-babyproofing-part-1",
+    author: "Safety First Organization",
+    type: "article",
+    readTime: "12 min read",
+    publishDate: "2024-01-20",
+    category: "health",
+    tags: ["safety", "childproofing", "home"]
+  },
+  {
+    id: 19,
+    title: "Understanding Developmental Milestones",
+    description: "What to expect in your baby's first year of growth and development",
+    url: "https://www.cdc.gov/ncbddd/actearly/milestones/index.html",
+    author: "Dr. Michael Chen",
+    type: "article",
+    readTime: "15 min read",
+    publishDate: "2023-12-10",
+    category: "development",
+    tags: ["growth", "milestones", "first year"]
+  },
+  {
+    id: 20,
+    title: "The Importance of Tummy Time",
+    description: "How tummy time helps your baby's development and ways to make it enjoyable",
+    url: "https://safetosleep.nichd.nih.gov/reduce-risk/tummy-time",
+    author: "Pediatric Physical Therapists",
+    type: "article",
+    readTime: "7 min read",
+    publishDate: "2024-02-15",
+    category: "development",
+    tags: ["motor skills", "play", "development"]
+  },
+  {
+      id: 21,
       title: "WHO Newborn Health Guidelines",
       description: "Official recommendations for newborn care.",
       author: "WHO",
@@ -211,7 +276,7 @@ export const resourcesData = {
       url: "https://www.who.int/publications/i/item/9789241504843",
     },
     {
-      id: 17,
+      id: 22,
       title: "CDC Pregnancy and Vaccines",
       description: "Important vaccine recommendations for expecting mothers.",
       author: "CDC",
@@ -223,7 +288,7 @@ export const resourcesData = {
       url: "https://www.cdc.gov/vaccines/pregnancy/index.html",
     },
     {
-      id: 18,
+      id: 23,
       title: "Postpartum Depression Facts",
       description: "Recognizing and managing postpartum depression.",
       author: "Mayo Clinic",
@@ -235,7 +300,7 @@ export const resourcesData = {
       url: "https://medlineplus.gov/ency/article/007215.htm#:~:text=Symptoms&text=Feelings%20of%20anxiety%2C%20irritation%2C%20tearfulness,Trouble%20sleeping",
     },
     {
-      id: 19,
+      id: 24,
       title: "Breastfeeding Benefits",
       description: "Health benefits for both mother and baby.",
       author: "UNICEF",
@@ -247,7 +312,7 @@ export const resourcesData = {
       url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10631302/",
     },
     {
-      id: 20,
+      id: 25,
       title: "Mindful Parenting Guide",
       description: "How to be a more present and calm parent.",
       author: "Greater Good Science Center",
@@ -262,7 +327,7 @@ export const resourcesData = {
 
   toolkits: [
     {
-      id: 21,
+      id: 26,
       title: "UNICEF Early Childhood Toolkit",
       description: "Practical guidance for early childhood development.",
       author: "UNICEF",
@@ -274,7 +339,7 @@ export const resourcesData = {
       url: "https://www.unicef.org/early-childhood-development",
     },
     {
-      id: 22,
+      id: 27,
       title: "WHO Breastfeeding Toolkit",
       description: "Comprehensive breastfeeding best practices.",
       author: "WHO",
@@ -286,7 +351,7 @@ export const resourcesData = {
       url: "https://www.who.int/health-topics/breastfeeding",
     },
     {
-      id: 23,
+      id: 28,
       title: "CDC Parenting Resources",
       description: "Guides to help parents manage child development stages.",
       author: "CDC",
@@ -298,7 +363,7 @@ export const resourcesData = {
       url: "https://www.cdc.gov/parents/index.html",
     },
     {
-      id: 24,
+      id: 29,
       title: "Postpartum Care Plan",
       description: "Checklist and guide for mothers after childbirth.",
       author: "March of Dimes",
@@ -310,7 +375,7 @@ export const resourcesData = {
       url: "https://newmomhealth.com/healthcare/postpartum-toolkit-materials/",
     },
     {
-      id: 25,
+      id: 30,
       title: "Pregnancy Planning Toolkit",
       description: "Step-by-step pregnancy preparation guide.",
       author: "Planned Parenthood",
