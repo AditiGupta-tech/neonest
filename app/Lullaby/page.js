@@ -20,8 +20,8 @@ const initialLullabies = [
         title: "Chanda Hai Tu",
         artist: "Traditional",
         language: "Hindi",
-        audioSrc: "/ChandaHaiTu.mp3",
-        coverArt: "linear-gradient(to top, #d299c2 0%, #fef9d7 100%)",
+        audioSrc: "/chandaHaiTu.mp3",
+        coverArt: "linear-gradient(to top, #d299c2 0% , #fe9d7 100%)",
     },
     {
         id: 3,
@@ -44,7 +44,7 @@ const initialLullabies = [
         title: "Baa Baa Black Sheep",
         artist: "Jane Doe",
         language: "English",
-        audioSrc: "/BaaBaaBlackSheep.mp3",
+        audioSrc: "/babaBlackSheep.mp3",
         coverArt: "linear-gradient(to right, #4facfe 0%, #00f2fe 100%)",
     },
 ];
@@ -423,4 +423,5 @@ export default function LullabyPage() {
             </div>
         </div>
     );
+
 }
