@@ -5,14 +5,12 @@ import { useNotifications } from "../context/NotificationContext";
 import { Bell, Filter, Trash2, Check, ExternalLink, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Button } from "../components/ui/Button";
 
 const NotificationsPage = () => {
   const { notifications, markAsRead, deleteNotification, markAllAsRead, isLoading } = useNotifications();
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter and search optimized with useMemo
   const filteredNotifications = useMemo(() => {
     return notifications.filter(notification => {
       const matchesFilter =
@@ -95,20 +93,27 @@ const NotificationsPage = () => {
             </div>
           </div>
 
-          {/* Always show Mark All & Delete All */}
+          {/* Top-right icons: Delete All & Mark All Read */}
           <div className="flex items-center gap-2">
             {notifications.filter(n => !n.isRead).length > 0 && (
-              <Button onClick={markAllAsRead} className="bg-pink-500 hover:bg-pink-600 text-white">
-                <Check size={16} className="mr-2" /> Mark all read
-              </Button>
+              <button
+                onClick={markAllAsRead}
+                className="p-2 text-gray-400 hover:text-green-600 transition-colors"
+                title="Mark all as read"
+              >
+                <Check size={20} />
+              </button>
             )}
-            <Button
-              onClick={handleDeleteAll}
-              className={`bg-red-500 hover:bg-red-600 text-white ${notifications.length === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-              disabled={notifications.length === 0}
-            >
-              <Trash2 size={16} className="mr-2" /> Delete All
-            </Button>
+
+            {notifications.length > 0 && (
+              <button
+                onClick={handleDeleteAll}
+                className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                title="Delete all notifications"
+              >
+                <Trash2 size={20} />
+              </button>
+            )}
           </div>
         </div>
 
