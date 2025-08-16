@@ -188,6 +188,8 @@ const NotificationsPage = () => {
                             <span className="capitalize">{notification.type.replace("_", " ")}</span>
                           </div>
                         </div>
+
+                        {/* Bin and optional X icons */}
                         <div className="flex items-center gap-2 ml-4">
                           {notification.actionUrl && (
                             <Link href={notification.actionUrl} className="p-2 text-gray-400 hover:text-pink-600 transition-colors">
@@ -195,12 +197,28 @@ const NotificationsPage = () => {
                             </Link>
                           )}
                           {!notification.isRead && (
-                            <button onClick={() => handleMarkAsRead(notification._id)} className="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Mark as read">
+                            <button
+                              onClick={() => handleMarkAsRead(notification._id)}
+                              className="p-2 text-gray-400 hover:text-green-600 transition-colors"
+                              title="Mark as read"
+                            >
                               <Check size={16} />
                             </button>
                           )}
-                          <button onClick={() => handleDelete(notification._id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete notification">
+                          {/* BIN ICON */}
+                          <button
+                            onClick={() => handleDelete(notification._id)}
+                            className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                            title="Delete notification"
+                          >
                             <Trash2 size={16} />
+                          </button>
+                          {/* Optional X ICON */}
+                          <button
+                            className="p-2 text-gray-400 hover:text-gray-700 transition-colors"
+                            title="Close"
+                          >
+                            X
                           </button>
                         </div>
                       </div>
