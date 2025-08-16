@@ -13,9 +13,7 @@ export async function POST(req) {
 
     if (!type || !title || !message || !scheduledFor) {
       return Response.json(
-        {
-          error: "Please provide type, title, message, and scheduledFor",
-        },
+        { error: "Please provide type, title, message, and scheduledFor" },
         { status: 422 }
       );
     }
@@ -23,14 +21,9 @@ export async function POST(req) {
     const user = await authenticateToken(req);
     const userId = user.user.id;
     const userExists = await User.findById(userId);
-    
+
     if (!userExists) {
-      return Response.json(
-        {
-          error: "User not found",
-        },
-        { status: 400 }
-      );
+      return Response.json({ error: "User not found" }, { status: 400 });
     }
 
     const newNotification = new Notification({
@@ -48,20 +41,12 @@ export async function POST(req) {
     await newNotification.save();
 
     return Response.json(
-      {
-        success: "Notification created successfully!",
-        notification: newNotification,
-      },
+      { success: "Notification created successfully!", notification: newNotification },
       { status: 201 }
     );
   } catch (error) {
     console.log(error);
-    return Response.json(
-      {
-        error: "Failed to create notification",
-      },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to create notification" }, { status: 500 });
   }
 }
 
@@ -91,21 +76,12 @@ export async function GET(req) {
       .limit(limit);
 
     return Response.json(
-      {
-        success: "Notifications fetched successfully",
-        notifications,
-        count: notifications.length,
-      },
+      { success: "Notifications fetched successfully", notifications, count: notifications.length },
       { status: 200 }
     );
   } catch (error) {
     console.log(error);
-    return Response.json(
-      {
-        error: "Failed to fetch notifications",
-      },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to fetch notifications" }, { status: 500 });
   }
 }
 
@@ -116,12 +92,7 @@ export async function PATCH(req) {
     const { notificationId, isRead, isSent } = body;
 
     if (!notificationId) {
-      return Response.json(
-        {
-          error: "Notification ID is required",
-        },
-        { status: 422 }
-      );
+      return Response.json({ error: "Notification ID is required" }, { status: 422 });
     }
 
     const user = await authenticateToken(req);
@@ -138,77 +109,48 @@ export async function PATCH(req) {
     );
 
     if (!updatedNotification) {
-      return Response.json(
-        {
-          error: "Notification not found",
-        },
-        { status: 404 }
-      );
+      return Response.json({ error: "Notification not found" }, { status: 404 });
     }
 
-    return Response.json(
-      {
-        success: "Notification updated successfully",
-        notification: updatedNotification,
-      },
-      { status: 200 }
-    );
+    return Response.json({ success: "Notification updated successfully", notification: updatedNotification }, { status: 200 });
   } catch (error) {
     console.log(error);
-    return Response.json(
-      {
-        error: "Failed to update notification",
-      },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to update notification" }, { status: 500 });
   }
 }
 
-// Delete a notification
+// Delete single or all notifications
 export async function DELETE(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const notificationId = searchParams.get("id");
-
-    if (!notificationId) {
-      return Response.json(
-        {
-          error: "Notification ID is required",
-        },
-        { status: 422 }
-      );
-    }
-
     const user = await authenticateToken(req);
     const userId = user.user.id;
+    const { searchParams } = new URL(req.url);
+    const notificationId = searchParams.get("id");
+    const deleteAll = searchParams.get("all") === "true";
 
-    const deletedNotification = await Notification.findOneAndDelete({
-      _id: notificationId,
-      babyId: userId,
-    });
-
-    if (!deletedNotification) {
+    if (deleteAll) {
+      // Delete all notifications
+      const result = await Notification.deleteMany({ babyId: userId });
       return Response.json(
-        {
-          error: "Notification not found",
-        },
-        { status: 404 }
+        { success: "All notifications deleted successfully", deletedCount: result.deletedCount },
+        { status: 200 }
       );
     }
 
-    return Response.json(
-      {
-        success: "Notification deleted successfully",
-      },
-      { status: 200 }
-    );
+    // Delete single notification
+    if (!notificationId) {
+      return Response.json({ error: "Notification ID is required" }, { status: 422 });
+    }
+
+    const deletedNotification = await Notification.findOneAndDelete({ _id: notificationId, babyId: userId });
+
+    if (!deletedNotification) {
+      return Response.json({ error: "Notification not found" }, { status: 404 });
+    }
+
+    return Response.json({ success: "Notification deleted successfully" }, { status: 200 });
   } catch (error) {
     console.log(error);
-    return Response.json(
-      {
-        error: "Failed to delete notification",
-      },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to delete notification(s)" }, { status: 500 });
   }
-} 
+}
