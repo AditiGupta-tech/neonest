@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useNotifications } from "../context/NotificationContext";
-import { Bell, Filter, Trash2, Check, ExternalLink, Calendar, AlertCircle } from "lucide-react";
+import { Bell, Filter, Trash2, Check, ExternalLink, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Button } from "../components/ui/Button";
@@ -12,34 +12,32 @@ const NotificationsPage = () => {
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredNotifications = notifications.filter(notification => {
-    const matchesFilter = filter === "all" || 
-      (filter === "unread" && !notification.isRead) ||
-      (filter === "read" && notification.isRead) ||
-      notification.type === filter;
-    
-    const matchesSearch = notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      notification.message.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesFilter && matchesSearch;
-  });
+  // Filter and search optimized with useMemo
+  const filteredNotifications = useMemo(() => {
+    return notifications.filter(notification => {
+      const matchesFilter =
+        filter === "all" ||
+        (filter === "unread" && !notification.isRead) ||
+        (filter === "read" && notification.isRead) ||
+        (filter !== "all" && filter !== "read" && filter !== "unread" && notification.type === filter);
+
+      const matchesSearch =
+        notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        notification.message.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [notifications, filter, searchTerm]);
 
   const getNotificationIcon = (type) => {
     switch (type) {
-      case "feeding_reminder":
-        return "🍼";
-      case "sleep_reminder":
-        return "😴";
-      case "vaccine_reminder":
-        return "💉";
-      case "milestone_celebration":
-        return "🎉";
-      case "essentials_alert":
-        return "📦";
-      case "weather_alert":
-        return "🌤️";
-      default:
-        return "🔔";
+      case "feeding_reminder": return "🍼";
+      case "sleep_reminder": return "😴";
+      case "vaccine_reminder": return "💉";
+      case "milestone_celebration": return "🎉";
+      case "essentials_alert": return "📦";
+      case "weather_alert": return "🌤️";
+      default: return "🔔";
     }
   };
 
@@ -50,7 +48,6 @@ const NotificationsPage = () => {
       medium: "bg-blue-100 text-blue-800",
       low: "bg-green-100 text-green-800",
     };
-    
     return (
       <span className={`px-2 py-1 text-xs font-medium rounded-full ${colors[priority]}`}>
         {priority}
@@ -58,17 +55,15 @@ const NotificationsPage = () => {
     );
   };
 
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString();
-  };
+  const formatTime = (dateString) => new Date(dateString).toLocaleString();
 
-  const handleMarkAsRead = async (notificationId) => {
-    await markAsRead(notificationId);
-  };
+  const handleMarkAsRead = async (id) => await markAsRead(id);
+  const handleDelete = async (id) => await deleteNotification(id);
 
-  const handleDelete = async (notificationId) => {
-    await deleteNotification(notificationId);
+  const handleDeleteAll = async () => {
+    if (confirm("Are you sure you want to delete all notifications?")) {
+      await Promise.all(notifications.map(n => deleteNotification(n._id)));
+    }
   };
 
   if (isLoading) {
@@ -101,12 +96,13 @@ const NotificationsPage = () => {
             </div>
             <div className="flex items-center gap-2">
               {notifications.filter(n => !n.isRead).length > 0 && (
-                <Button
-                  onClick={markAllAsRead}
-                  className="bg-pink-500 hover:bg-pink-600 text-white"
-                >
-                  <Check size={16} className="mr-2" />
-                  Mark all read
+                <Button onClick={markAllAsRead} className="bg-pink-500 hover:bg-pink-600 text-white">
+                  <Check size={16} className="mr-2" /> Mark all read
+                </Button>
+              )}
+              {notifications.length > 0 && (
+                <Button onClick={handleDeleteAll} className="bg-red-500 hover:bg-red-600 text-white">
+                  <Trash2 size={16} className="mr-2" /> Delete All
                 </Button>
               )}
             </div>
@@ -116,15 +112,13 @@ const NotificationsPage = () => {
         {/* Filters and Search */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <input
-                type="text"
-                placeholder="Search notifications..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Search notifications..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            />
             <div className="flex items-center gap-2">
               <Filter size={16} className="text-gray-500" />
               <select
@@ -160,27 +154,22 @@ const NotificationsPage = () => {
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
-              {filteredNotifications.map((notification) => (
+            <AnimatePresence>
+              {filteredNotifications.map(notification => (
                 <motion.div
                   key={notification._id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`p-6 hover:bg-gray-50 transition-colors duration-200 ${
-                    !notification.isRead ? "bg-blue-50" : ""
-                  }`}
+                  exit={{ opacity: 0, y: -20 }}
+                  className={`p-6 hover:bg-gray-50 transition-colors duration-200 ${!notification.isRead ? "bg-blue-50" : ""}`}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 text-3xl">
-                      {getNotificationIcon(notification.type)}
-                    </div>
+                    <div className="flex-shrink-0 text-3xl">{getNotificationIcon(notification.type)}</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className={`text-lg font-medium ${
-                              !notification.isRead ? "text-gray-900" : "text-gray-700"
-                            }`}>
+                            <h3 className={`text-lg font-medium ${!notification.isRead ? "text-gray-900" : "text-gray-700"}`}>
                               {notification.title}
                             </h3>
                             {getPriorityBadge(notification.priority)}
@@ -201,27 +190,16 @@ const NotificationsPage = () => {
                         </div>
                         <div className="flex items-center gap-2 ml-4">
                           {notification.actionUrl && (
-                            <Link
-                              href={notification.actionUrl}
-                              className="p-2 text-gray-400 hover:text-pink-600 transition-colors"
-                            >
+                            <Link href={notification.actionUrl} className="p-2 text-gray-400 hover:text-pink-600 transition-colors">
                               <ExternalLink size={16} />
                             </Link>
                           )}
                           {!notification.isRead && (
-                            <button
-                              onClick={() => handleMarkAsRead(notification._id)}
-                              className="p-2 text-gray-400 hover:text-green-600 transition-colors"
-                              title="Mark as read"
-                            >
+                            <button onClick={() => handleMarkAsRead(notification._id)} className="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Mark as read">
                               <Check size={16} />
                             </button>
                           )}
-                          <button
-                            onClick={() => handleDelete(notification._id)}
-                            className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                            title="Delete notification"
-                          >
+                          <button onClick={() => handleDelete(notification._id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete notification">
                             <Trash2 size={16} />
                           </button>
                         </div>
@@ -230,7 +208,7 @@ const NotificationsPage = () => {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </AnimatePresence>
           )}
         </div>
       </div>
@@ -238,4 +216,4 @@ const NotificationsPage = () => {
   );
 };
 
-export default NotificationsPage; 
+export default NotificationsPage;
