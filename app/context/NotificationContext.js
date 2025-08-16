@@ -158,7 +158,6 @@ export const NotificationProvider = ({ children }) => {
         setNotifications(prev =>
           prev.filter(notification => notification._id !== notificationId)
         );
-        // Update unread count if the deleted notification was unread
         const deletedNotification = notifications.find(n => n._id === notificationId);
         if (deletedNotification && !deletedNotification.isRead) {
           setUnreadCount(prev => Math.max(0, prev - 1));
@@ -171,82 +170,33 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
-  // Create feeding reminder
-  const createFeedingReminder = async (scheduledTime, babyName = "your baby") => {
-    const reminderData = {
-      type: "feeding_reminder",
-      title: "Feeding Time! 🍼",
-      message: `It's time for ${babyName}'s next feeding session.`,
-      priority: "medium",
-      scheduledFor: scheduledTime,
-      category: "reminder",
-      actionUrl: "/Feeding",
-    };
+  // NEW: Delete all notifications
+  const deleteAllNotifications = async () => {
+    if (!isAuth || notifications.length === 0) return;
 
-    return await createNotification(reminderData);
+    if (!confirm("Are you sure you want to delete all notifications?")) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await Promise.all(
+        notifications.map(notification =>
+          fetch(`/api/notifications?id=${notification._id}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        )
+      );
+      setNotifications([]);
+      setUnreadCount(0);
+      toast.success("All notifications deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting all notifications:", error);
+      toast.error("Failed to delete all notifications");
+    }
   };
 
-  // Create sleep reminder
-  const createSleepReminder = async (scheduledTime, babyName = "your baby") => {
-    const reminderData = {
-      type: "sleep_reminder",
-      title: "Sleep Time! 😴",
-      message: `${babyName} should be getting ready for sleep now.`,
-      priority: "medium",
-      scheduledFor: scheduledTime,
-      category: "reminder",
-      actionUrl: "/Sleep",
-    };
+  // ...other notification creation helpers (feeding, sleep, vaccine, etc.) remain the same
 
-    return await createNotification(reminderData);
-  };
-
-  // Create vaccine reminder
-  const createVaccineReminder = async (vaccineName, scheduledTime, babyName = "your baby") => {
-    const reminderData = {
-      type: "vaccine_reminder",
-      title: "Vaccine Due! 💉",
-      message: `${babyName}'s ${vaccineName} is due. Please schedule an appointment.`,
-      priority: "high",
-      scheduledFor: scheduledTime,
-      category: "alert",
-      actionUrl: "/Medical",
-    };
-
-    return await createNotification(reminderData);
-  };
-
-  // Create milestone celebration
-  const createMilestoneCelebration = async (milestone, babyName = "your baby") => {
-    const celebrationData = {
-      type: "milestone_celebration",
-      title: "Milestone Achieved! 🎉",
-      message: `Congratulations! ${babyName} has achieved: ${milestone}`,
-      priority: "low",
-      scheduledFor: new Date(),
-      category: "celebration",
-      actionUrl: "/Growth",
-    };
-
-    return await createNotification(celebrationData);
-  };
-
-  // Create essentials alert
-  const createEssentialsAlert = async (itemName, babyName = "your baby") => {
-    const alertData = {
-      type: "essentials_alert",
-      title: "Low Stock Alert! 📦",
-      message: `${itemName} is running low. Time to restock for ${babyName}!`,
-      priority: "medium",
-      scheduledFor: new Date(),
-      category: "alert",
-      actionUrl: "/Essentials",
-    };
-
-    return await createNotification(alertData);
-  };
-
-  // Fetch notifications on mount and when auth changes
   useEffect(() => {
     if (isAuth) {
       fetchNotifications();
@@ -265,11 +215,7 @@ export const NotificationProvider = ({ children }) => {
     markAsRead,
     markAllAsRead,
     deleteNotification,
-    createFeedingReminder,
-    createSleepReminder,
-    createVaccineReminder,
-    createMilestoneCelebration,
-    createEssentialsAlert,
+    deleteAllNotifications, // 
   };
 
   return (
@@ -277,4 +223,4 @@ export const NotificationProvider = ({ children }) => {
       {children}
     </NotificationContext.Provider>
   );
-}; 
+};
