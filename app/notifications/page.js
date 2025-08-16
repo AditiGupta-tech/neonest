@@ -61,6 +61,7 @@ const NotificationsPage = () => {
   const handleDelete = async (id) => await deleteNotification(id);
 
   const handleDeleteAll = async () => {
+    if (notifications.length === 0) return;
     if (confirm("Are you sure you want to delete all notifications?")) {
       await Promise.all(notifications.map(n => deleteNotification(n._id)));
     }
@@ -81,31 +82,33 @@ const NotificationsPage = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-pink-100 rounded-full">
-                <Bell className="text-pink-600" size={24} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
-                <p className="text-gray-600">
-                  {notifications.length} total • {notifications.filter(n => !n.isRead).length} unread
-                </p>
-              </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-pink-100 rounded-full">
+              <Bell className="text-pink-600" size={24} />
             </div>
-            <div className="flex items-center gap-2">
-              {notifications.filter(n => !n.isRead).length > 0 && (
-                <Button onClick={markAllAsRead} className="bg-pink-500 hover:bg-pink-600 text-white">
-                  <Check size={16} className="mr-2" /> Mark all read
-                </Button>
-              )}
-              {notifications.length > 0 && (
-                <Button onClick={handleDeleteAll} className="bg-red-500 hover:bg-red-600 text-white">
-                  <Trash2 size={16} className="mr-2" /> Delete All
-                </Button>
-              )}
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+              <p className="text-gray-600">
+                {notifications.length} total • {notifications.filter(n => !n.isRead).length} unread
+              </p>
             </div>
+          </div>
+
+          {/* Always show Mark All & Delete All */}
+          <div className="flex items-center gap-2">
+            {notifications.filter(n => !n.isRead).length > 0 && (
+              <Button onClick={markAllAsRead} className="bg-pink-500 hover:bg-pink-600 text-white">
+                <Check size={16} className="mr-2" /> Mark all read
+              </Button>
+            )}
+            <Button
+              onClick={handleDeleteAll}
+              className={`bg-red-500 hover:bg-red-600 text-white ${notifications.length === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+              disabled={notifications.length === 0}
+            >
+              <Trash2 size={16} className="mr-2" /> Delete All
+            </Button>
           </div>
         </div>
 
@@ -147,7 +150,7 @@ const NotificationsPage = () => {
               <Bell size={48} className="mx-auto text-gray-300 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No notifications found</h3>
               <p className="text-gray-600">
-                {searchTerm || filter !== "all" 
+                {searchTerm || filter !== "all"
                   ? "Try adjusting your search or filters"
                   : "You're all caught up! We'll notify you about important updates."
                 }
@@ -188,8 +191,6 @@ const NotificationsPage = () => {
                             <span className="capitalize">{notification.type.replace("_", " ")}</span>
                           </div>
                         </div>
-
-                        {/* Bin and optional X icons */}
                         <div className="flex items-center gap-2 ml-4">
                           {notification.actionUrl && (
                             <Link href={notification.actionUrl} className="p-2 text-gray-400 hover:text-pink-600 transition-colors">
@@ -197,28 +198,12 @@ const NotificationsPage = () => {
                             </Link>
                           )}
                           {!notification.isRead && (
-                            <button
-                              onClick={() => handleMarkAsRead(notification._id)}
-                              className="p-2 text-gray-400 hover:text-green-600 transition-colors"
-                              title="Mark as read"
-                            >
+                            <button onClick={() => handleMarkAsRead(notification._id)} className="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Mark as read">
                               <Check size={16} />
                             </button>
                           )}
-                          {/* BIN ICON */}
-                          <button
-                            onClick={() => handleDelete(notification._id)}
-                            className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                            title="Delete notification"
-                          >
+                          <button onClick={() => handleDelete(notification._id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete notification">
                             <Trash2 size={16} />
-                          </button>
-                          {/* Optional X ICON */}
-                          <button
-                            className="p-2 text-gray-400 hover:text-gray-700 transition-colors"
-                            title="Close"
-                          >
-                            X
                           </button>
                         </div>
                       </div>
