@@ -5,6 +5,8 @@ import Navbar from "./components/Navbar";
 import GoToTop from "./components/GoToTop";
 import { AuthProvider } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { AutoTaskProvider } from "./context/AutoTaskContext";
+import AutoTaskManager from "./components/AutoTaskManager";
 // import Chatbot from "./components/Chatbot";
 
 const geistSans = Geist({
@@ -30,13 +32,15 @@ export default function RootLayout({ children }) {
         className={`w-screen flex flex-col min-h-screen overflow-x-hidden ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-
-          <NotificationProvider>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-            <GoToTop />
-          </NotificationProvider>
+          <AutoTaskProvider>
+            <NotificationProvider>
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <AutoTaskManager/>
+              <Footer />
+              <GoToTop />
+            </NotificationProvider>
+          </AutoTaskProvider>
         </AuthProvider>
       </body>
     </html>
