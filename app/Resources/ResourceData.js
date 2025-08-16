@@ -1,9 +1,12 @@
-export const categories = [
+export const parentingCategories = [
   { id: "all", name: "All" },
   { id: "feeding", name: "Feeding & Nutrition" },
   { id: "sleep", name: "Sleep & Rest" },
   { id: "development", name: "Development" },
   { id: "health", name: "Health & Safety" },
+];
+
+export const contentCategories = [
   { id: "blog", name: "Blogs" },
   { id: "video", name: "Videos" },
   { id: "podcast", name: "Podcasts" },
@@ -11,6 +14,7 @@ export const categories = [
   { id: "toolkit", name: "Toolkits" },
 ];
 
+// updated
 export const resourcesData = {
   blogs: [
     {

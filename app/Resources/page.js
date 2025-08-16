@@ -6,7 +6,7 @@ import { Button } from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
 import Input from "../components/ui/Input";
 import { Search, Filter, Clock, ExternalLink } from "lucide-react";
-import { resourcesData, categories } from "./ResourceData";
+import { resourcesData, parentingCategories, contentCategories } from "./ResourceData";
 
 export default function Resources() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -73,32 +73,68 @@ export default function Resources() {
       </div>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap items-center gap-4 bg-white rounded-xl shadow-sm p-4">
-  <div className="flex items-center gap-2">
-    <Filter className="w-4 h-4 text-gray-600" />
-    <span className="text-sm font-medium text-gray-600">Category:</span>
-  </div>
-  {categories.map((category) => (
-    <Button
-      key={category.id}
-      variant="outline"
-      onClick={() =>
-        setSelectedCategory((prev) =>
-          prev === category.id ? "all" : category.id
-        )
-      }
-      size="sm"
-      className={`rounded-xl text-sm ${
-  selectedCategory === category.id
-    ? "bg-pink-100 text-pink-700 font-semibold border-pink-300"
-    : "text-gray-600 border-gray-200 hover:bg-gray-100"
-}`}
+<div className="flex flex-col gap-4 bg-white rounded-xl shadow-sm p-4">
 
-    >
-      {category.name}
-    </Button>
-  ))}
+  {/* Parenting Topics */}
+  <div>
+    <div className="flex items-center gap-2 mb-2">
+      <Filter className="w-4 h-4 text-gray-600" />
+      <span className="text-sm font-medium text-gray-600">Parenting Topics:</span>
+    </div>
+    <div className="flex flex-wrap gap-2">
+      {parentingCategories.map((category) => (
+        <Button
+          key={category.id}
+          variant="outline"
+          onClick={() =>
+            setSelectedCategory((prev) =>
+              prev === category.id ? "all" : category.id
+            )
+          }
+          size="sm"
+          className={`rounded-xl text-sm ${
+            selectedCategory === category.id
+              ? "bg-pink-100 text-pink-700 font-semibold border-pink-300"
+              : "text-gray-600 border-gray-200 hover:bg-gray-100"
+          }`}
+        >
+          {category.name}
+        </Button>
+      ))}
+    </div>
+  </div>
+
+  {/* Content Types */}
+  <div>
+    <div className="flex items-center gap-2 mb-2">
+      <Filter className="w-4 h-4 text-gray-600" />
+      <span className="text-sm font-medium text-gray-600">Content Types:</span>
+    </div>
+    <div className="flex flex-wrap gap-2">
+      {contentCategories.map((category) => (
+        <Button
+          key={category.id}
+          variant="outline"
+          onClick={() =>
+            setSelectedCategory((prev) =>
+              prev === category.id ? "all" : category.id
+            )
+          }
+          size="sm"
+          className={`rounded-xl text-sm ${
+            selectedCategory === category.id
+              ? "bg-pink-100 text-pink-700 font-semibold border-pink-300"
+              : "text-gray-600 border-gray-200 hover:bg-gray-100"
+          }`}
+        >
+          {category.name}
+        </Button>
+      ))}
+    </div>
+  </div>
+
 </div>
+
 
       {/* Resources Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
