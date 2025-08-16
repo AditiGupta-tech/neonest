@@ -8,11 +8,18 @@ import Link from "next/link";
 import { Button } from "../components/ui/Button";
 
 const NotificationsPage = () => {
-  const { notifications, markAsRead, deleteNotification, markAllAsRead, isLoading } = useNotifications();
+  const {
+    notifications,
+    markAsRead,
+    deleteNotification,
+    markAllAsRead,
+    deleteAllNotifications,
+    isLoading
+  } = useNotifications();
+
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter and search optimized with useMemo
   const filteredNotifications = useMemo(() => {
     return notifications.filter(notification => {
       const matchesFilter =
@@ -57,16 +64,6 @@ const NotificationsPage = () => {
 
   const formatTime = (dateString) => new Date(dateString).toLocaleString();
 
-  const handleMarkAsRead = async (id) => await markAsRead(id);
-  const handleDelete = async (id) => await deleteNotification(id);
-
-  const handleDeleteAll = async () => {
-    if (notifications.length === 0) return;
-    if (confirm("Are you sure you want to delete all notifications?")) {
-      await Promise.all(notifications.map(n => deleteNotification(n._id)));
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -95,28 +92,22 @@ const NotificationsPage = () => {
             </div>
           </div>
 
-          {/* Top-right buttons */}
+          {/* Always show Mark All & Delete All */}
           <div className="flex items-center gap-2">
-            {/* Mark all as read only if there are unread notifications */}
-            {notifications.filter(n => !n.isRead).length > 0 && (
-              <button
-                onClick={markAllAsRead}
-                className="p-2 text-gray-400 hover:text-green-600 transition-colors"
-                title="Mark all as read"
-              >
-                <Check size={20} />
-              </button>
-            )}
+            <Button
+              onClick={markAllAsRead}
+              className="bg-pink-500 hover:bg-pink-600 text-white"
+            >
+              <Check size={16} className="mr-2" /> Mark all read
+            </Button>
 
-            {/* Delete all bin always visible */}
-            <button
-              onClick={handleDeleteAll}
-              className={`p-2 transition-colors ${notifications.length === 0 ? "text-gray-300 cursor-not-allowed" : "text-gray-400 hover:text-red-600"}`}
-              title="Delete all notifications"
+            <Button
+              onClick={deleteAllNotifications}
+              className={`bg-red-500 hover:bg-red-600 text-white ${notifications.length === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={notifications.length === 0}
             >
-              <Trash2 size={20} />
-            </button>
+              <Trash2 size={16} className="mr-2" /> Delete All
+            </Button>
           </div>
         </div>
 
@@ -206,11 +197,11 @@ const NotificationsPage = () => {
                             </Link>
                           )}
                           {!notification.isRead && (
-                            <button onClick={() => handleMarkAsRead(notification._id)} className="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Mark as read">
+                            <button onClick={() => markAsRead(notification._id)} className="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Mark as read">
                               <Check size={16} />
                             </button>
                           )}
-                          <button onClick={() => handleDelete(notification._id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete notification">
+                          <button onClick={() => deleteNotification(notification._id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Delete notification">
                             <Trash2 size={16} />
                           </button>
                         </div>
