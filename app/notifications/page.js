@@ -5,12 +5,14 @@ import { useNotifications } from "../context/NotificationContext";
 import { Bell, Filter, Trash2, Check, ExternalLink, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { Button } from "../components/ui/Button";
 
 const NotificationsPage = () => {
   const { notifications, markAsRead, deleteNotification, markAllAsRead, isLoading } = useNotifications();
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Filter and search optimized with useMemo
   const filteredNotifications = useMemo(() => {
     return notifications.filter(notification => {
       const matchesFilter =
@@ -93,8 +95,9 @@ const NotificationsPage = () => {
             </div>
           </div>
 
-          {/* Top-right icons: Delete All & Mark All Read */}
+          {/* Top-right buttons */}
           <div className="flex items-center gap-2">
+            {/* Mark all as read only if there are unread notifications */}
             {notifications.filter(n => !n.isRead).length > 0 && (
               <button
                 onClick={markAllAsRead}
@@ -105,15 +108,15 @@ const NotificationsPage = () => {
               </button>
             )}
 
-            {notifications.length > 0 && (
-              <button
-                onClick={handleDeleteAll}
-                className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                title="Delete all notifications"
-              >
-                <Trash2 size={20} />
-              </button>
-            )}
+            {/* Delete all bin always visible */}
+            <button
+              onClick={handleDeleteAll}
+              className={`p-2 transition-colors ${notifications.length === 0 ? "text-gray-300 cursor-not-allowed" : "text-gray-400 hover:text-red-600"}`}
+              title="Delete all notifications"
+              disabled={notifications.length === 0}
+            >
+              <Trash2 size={20} />
+            </button>
           </div>
         </div>
 
