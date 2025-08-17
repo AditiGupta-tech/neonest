@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Calendar, BarChart3, Pencil, Trash2 } from "lucide-react";
+import { Plus, Baby,Calendar, BarChart3, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import InteractionWithBaby from "../components/InteractionWithBaby";
@@ -9,7 +9,6 @@ import MilestoneTracker from "../components/MilestoneTracker";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, CartesianGrid } from "recharts";
 import { useAuth } from "../context/AuthContext";
 import LoginPrompt from "../components/LoginPrompt";
-
 
 export default function GrowthPage() {
   const { isAuth } = useAuth();
@@ -192,7 +191,13 @@ export default function GrowthPage() {
       
 <div className="space-y-6">
       <div className="bg-white p-3 sm:p-4 rounded-lg shadow">
-        <h3 className="text-xl font-semibold mb-4">Developmental Milestones</h3>
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4 text-center sm:text-left">
+        <Baby className="w-6 h-6 sm:w-8 sm:h-8 text-pink-500" />
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+          Developmental Tracker
+        </h1>
+        {/* <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-purple-500" /> */}
+      </div>
         <MilestoneTracker babyDOB={babyDOB} />
       </div>
 
