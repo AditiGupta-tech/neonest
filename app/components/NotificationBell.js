@@ -1,5 +1,3 @@
-// NotificationBell.js
-
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -10,7 +8,7 @@ import Link from "next/link";
 
 const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { notifications, unreadCount, markAsRead, deleteNotification, markAllAsRead, deleteAllNotifications } = useNotifications(); // 1. Import deleteAllNotifications
+  const { notifications, unreadCount, markAsRead, deleteNotification, markAllAsRead, deleteAllNotifications } = useNotifications();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -101,6 +99,13 @@ const NotificationBell = () => {
                   </button>
                 )}
                 <button
+                    onClick={deleteAllNotifications}
+                    className="text-gray-400 hover:text-red-600"
+                    title="Delete All Notifications"
+                >
+                    <Trash2 size={16} />
+                </button>
+                <button
                   onClick={() => setIsOpen(false)}
                   className="text-gray-400 hover:text-gray-600"
                 >
@@ -183,21 +188,10 @@ const NotificationBell = () => {
 
               {/* Footer Always Visible */}
               {notifications.length > 0 && (
-                <div className="p-3 border-t border-gray-100 bg-gray-50 shrink-0 flex justify-between items-center">
-                  <button
-                    onClick={() => {
-                      // 2. Add an onClick handler to call the deleteAllNotifications function
-                      if (window.confirm("Are you sure you want to delete all notifications?")) {
-                        deleteAllNotifications();
-                      }
-                    }}
-                    className="text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1"
-                  >
-                    <Trash2 size={16} /> Delete All
-                  </button>
+                <div className="p-3 border-t border-gray-100 bg-gray-50 shrink-0">
                   <Link
                     href="/notifications"
-                    className="text-sm text-pink-600 hover:text-pink-700 font-medium"
+                    className="text-sm text-pink-600 hover:text-pink-700 font-medium text-center block"
                     onClick={() => setIsOpen(false)}
                   >
                     View all notifications
