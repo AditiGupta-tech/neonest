@@ -171,29 +171,32 @@ export const NotificationProvider = ({ children }) => {
   };
 
   // NEW: Delete all notifications
-  const deleteAllNotifications = async () => {
-    if (!isAuth || notifications.length === 0) return;
+ // New, correct, and efficient code
+ const deleteAllNotifications = async () => {
+   if (!isAuth || notifications.length === 0) return;
 
-    if (!confirm("Are you sure you want to delete all notifications?")) return;
+   if (!confirm("Are you sure you want to delete all notifications?")) return;
 
-    try {
-      const token = localStorage.getItem("token");
-      await Promise.all(
-        notifications.map(notification =>
-          fetch(`/api/notifications?id=${notification._id}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
-          })
-        )
-      );
-      setNotifications([]);
-      setUnreadCount(0);
-      toast.success("All notifications deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting all notifications:", error);
-      toast.error("Failed to delete all notifications");
-    }
-  };
+   try {
+     const token = localStorage.getItem("token");
+     const response = await fetch(`/api/notifications?all=true`, {
+       method: "DELETE",
+       headers: { Authorization: `Bearer ${token}` },
+     });
+
+     if (response.ok) {
+       setNotifications([]);
+       setUnreadCount(0);
+       toast.success("All notifications deleted successfully!");
+     } else {
+       const error = await response.json();
+       toast.error(error.error || "Failed to delete all notifications");
+     }
+   } catch (error) {
+     console.error("Error deleting all notifications:", error);
+     toast.error("Failed to delete all notifications");
+   }
+ };
 
   // ...other notification creation helpers (feeding, sleep, vaccine, etc.) remain the same
 
