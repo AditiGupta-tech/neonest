@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Button } from "./ui/Button";
 import { notificationService } from "../utils/notificationService";
-import { useNotifications } from "../context/NotificationContext";
 import { 
   Bell, 
   Baby, 
@@ -21,45 +20,46 @@ const NotificationDemo = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { fetchNotifications } = useNotifications();
 
-  const handleCreateNotification = async (type, data) => {
+  const handleCreateNotification = async (type) => {
     setIsLoading(true);
     try {
       let notification;
-      
+      const babyId = "baby123"; // Dummy babyId for the demo
+
       switch (type) {
         case "feeding":
           notification = await notificationService.createFeedingReminder(
-            new Date(Date.now() + 5 * 60 * 1000), "Baby", "formula"
+            new Date(Date.now() + 5 * 60 * 1000), babyId, "formula"
           );
           break;
         case "sleep":
           notification = await notificationService.createSleepReminder(
-            new Date(Date.now() + 10 * 60 * 1000), "Baby"
+            new Date(Date.now() + 10 * 60 * 1000), babyId
           );
           break;
         case "vaccine":
           notification = await notificationService.createVaccineReminder(
-            "DTaP Vaccine", new Date(Date.now() + 24 * 60 * 60 * 1000), "Baby"
+            "DTaP Vaccine", new Date(Date.now() + 24 * 60 * 60 * 1000), babyId
           );
           break;
         case "milestone":
           notification = await notificationService.createMilestoneCelebration(
-            "First Smile", "Baby"
+            "First Smile", babyId
           );
           break;
         case "essentials":
           notification = await notificationService.createEssentialsAlert(
-            "Diapers", "Baby"
+            "Diapers", babyId
           );
           break;
         case "weather":
           notification = await notificationService.createWeatherReminder(
-            { message: "It's going to rain today!" }, "Baby"
+            { message: "It's going to rain today!" }, babyId
           );
           break;
         case "appointment":
           notification = await notificationService.createAppointmentReminder(
-            "Pediatrician Checkup", new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), "Baby"
+            "Pediatrician Checkup", new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), babyId
           );
           break;
         default:
@@ -69,6 +69,8 @@ const NotificationDemo = () => {
       if (notification) {
         notificationService.showToast("Notification created successfully!", "success");
         await fetchNotifications();
+      } else {
+        notificationService.showToast("Failed to create notification. Check console for details.", "error");
       }
     } catch (error) {
       console.error("Error creating notification:", error);
