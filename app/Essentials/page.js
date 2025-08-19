@@ -5,23 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Badge from "../components/ui/Badge";
-import Babyessentials from "../components/Babyessentials"; 
-import { Plus, Package, AlertTriangle, Edit, Trash2, Bell, Save, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react"; 
+import Babyessentials from "../components/Babyessentials";
+import { Plus, Package, AlertTriangle, Edit, Trash2, Bell, Save, ShoppingCart, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import LoginPrompt from "../components/LoginPrompt"; 
+import LoginPrompt from "../components/LoginPrompt";
 
 const itemCategories = [
-  { id: "diapering", name: "Diapers & Wipes", icon: "🍼" }, 
+  { id: "diapering", name: "Diapers & Wipes", icon: "🍼" },
   { id: "feeding", name: "Feeding Supplies", icon: "🍼" },
   { id: "clothing", name: "Clothing", icon: "👕" },
   { id: "health", name: "Health & Safety", icon: "🏥" },
-  { id: "playtime", name: "Toys & Books", icon: "🧸" }, 
+  { id: "playtime", name: "Toys & Books", icon: "🧸" },
   { id: "bathing", name: "Bathing", icon: "🛁" },
   { id: "sleeping", name: "Sleeping", icon: "😴" },
   { id: "travel", name: "Travel", icon: "✈️" },
   { id: "traditional", name: "Traditional Items", icon: "🪔" },
   { id: "cleaning", name: "Cleaning Supplies", icon: "🧼" },
-  { id: "others", name: "Others", icon: "📦" }, 
+  { id: "others", name: "Others", icon: "📦" },
 ];
 
 export default function Page() {
@@ -43,7 +43,7 @@ export default function Page() {
 
   // Get auth token from localStorage
   const getAuthToken = () => {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   };
 
   // Fetch inventory from API
@@ -51,22 +51,22 @@ export default function Page() {
     try {
       setIsInventoryLoading(true);
       const token = getAuthToken();
-      if (!token) throw new Error('No authentication token found');
-      
-      const response = await fetch('/api/essentials', {
+      if (!token) throw new Error("No authentication token found");
+
+      const response = await fetch("/api/essentials", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
-      if (!response.ok) throw new Error('Failed to fetch inventory');
-      
+
+      if (!response.ok) throw new Error("Failed to fetch inventory");
+
       const data = await response.json();
       setInventory(data);
       setError(null);
     } catch (err) {
       setError(err.message);
-      console.error('Error fetching inventory:', err);
+      console.error("Error fetching inventory:", err);
     } finally {
       setIsInventoryLoading(false);
     }
@@ -75,7 +75,7 @@ export default function Page() {
   useEffect(() => {
     document.title = "Essentials | NeoNest";
     if (isAuth) {
-    fetchInventory();
+      fetchInventory();
     }
   }, [isAuth]);
 
@@ -84,33 +84,33 @@ export default function Page() {
     if (newItem.name && newItem.currentStock && newItem.minThreshold) {
       try {
         const token = getAuthToken();
-        if (!token) throw new Error('No authentication token found');
-        
-        const response = await fetch('/api/essentials', {
-          method: 'POST',
+        if (!token) throw new Error("No authentication token found");
+
+        const response = await fetch("/api/essentials", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify(newItem)
+          body: JSON.stringify(newItem),
         });
-        
-        if (!response.ok) throw new Error('Failed to add item');
-        
+
+        if (!response.ok) throw new Error("Failed to add item");
+
         const addedItem = await response.json();
         setInventory([...inventory, addedItem]);
-        setNewItem({ 
-          name: "", 
-          category: "diapering", 
-          currentStock: "", 
-          minThreshold: "", 
-          unit: "pieces", 
-          notes: "" 
+        setNewItem({
+          name: "",
+          category: "diapering",
+          currentStock: "",
+          minThreshold: "",
+          unit: "pieces",
+          notes: "",
         });
         setIsAddingItem(false);
       } catch (err) {
         setError(err.message);
-        console.error('Error adding item:', err);
+        console.error("Error adding item:", err);
       }
     }
   };
@@ -119,27 +119,25 @@ export default function Page() {
   const updateItem = async (id, updatedItem) => {
     try {
       const token = getAuthToken();
-      if (!token) throw new Error('No authentication token found');
-      
+      if (!token) throw new Error("No authentication token found");
+
       const response = await fetch(`/api/essentials/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedItem)
+        body: JSON.stringify(updatedItem),
       });
-      
-      if (!response.ok) throw new Error('Failed to update item');
-      
+
+      if (!response.ok) throw new Error("Failed to update item");
+
       const updatedItemData = await response.json();
-      setInventory(inventory.map(item => 
-        item._id === id ? updatedItemData : item
-      ));
+      setInventory(inventory.map((item) => (item._id === id ? updatedItemData : item)));
       setEditingItem(null);
     } catch (err) {
       setError(err.message);
-      console.error('Error updating item:', err);
+      console.error("Error updating item:", err);
     }
   };
 
@@ -147,21 +145,21 @@ export default function Page() {
   const deleteItem = async (id) => {
     try {
       const token = getAuthToken();
-      if (!token) throw new Error('No authentication token found');
-      
+      if (!token) throw new Error("No authentication token found");
+
       const response = await fetch(`/api/essentials/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
-      if (!response.ok) throw new Error('Failed to delete item');
-      
-      setInventory(inventory.filter(item => item._id !== id));
+
+      if (!response.ok) throw new Error("Failed to delete item");
+
+      setInventory(inventory.filter((item) => item._id !== id));
     } catch (err) {
       setError(err.message);
-      console.error('Error deleting item:', err);
+      console.error("Error deleting item:", err);
     }
   };
 
@@ -169,26 +167,24 @@ export default function Page() {
   const updateStock = async (id, newStock) => {
     try {
       const token = getAuthToken();
-      if (!token) throw new Error('No authentication token found');
-      
+      if (!token) throw new Error("No authentication token found");
+
       const response = await fetch(`/api/essentials/stock/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ currentStock: newStock })
+        body: JSON.stringify({ currentStock: newStock }),
       });
-      
-      if (!response.ok) throw new Error('Failed to update stock');
-      
+
+      if (!response.ok) throw new Error("Failed to update stock");
+
       const updatedItem = await response.json();
-      setInventory(inventory.map(item => 
-        item._id === id ? updatedItem : item
-      ));
+      setInventory(inventory.map((item) => (item._id === id ? updatedItem : item)));
     } catch (err) {
       setError(err.message);
-      console.error('Error updating stock:', err);
+      console.error("Error updating stock:", err);
     }
   };
 
@@ -197,8 +193,7 @@ export default function Page() {
 
   const getStockStatus = (item) => {
     if (item.currentStock === 0) return { status: "out", color: "bg-red-400 text-red-700", text: "Out of Stock" };
-    if (item.currentStock <= item.minThreshold)
-      return { status: "low", color: "bg-yellow-500 text-yellow-700 ", text: "Low Stock" };
+    if (item.currentStock <= item.minThreshold) return { status: "low", color: "bg-yellow-500 text-yellow-700 ", text: "Low Stock" };
     return { status: "good", color: "bg-green-500 text-green-700", text: "In Stock" };
   };
 
@@ -208,32 +203,27 @@ export default function Page() {
   };
 
   const handleAddEssentialToInventory = (essentialName, essentialCategory) => {
-    const validCategories = [
-      "clothing", "traditional", "health", "diapering", "feeding", 
-      "bathing", "sleeping", "playtime", "travel", "cleaning"
-    ];
-    const categoryToShow = validCategories.includes(essentialCategory)
-      ? essentialCategory
-      : "others";
+    const validCategories = ["clothing", "traditional", "health", "diapering", "feeding", "bathing", "sleeping", "playtime", "travel", "cleaning"];
+    const categoryToShow = validCategories.includes(essentialCategory) ? essentialCategory : "others";
 
     setNewItem({
       name: essentialName,
-      category: categoryToShow, 
-      currentStock: "", 
-      minThreshold: "", 
+      category: categoryToShow,
+      currentStock: "",
+      minThreshold: "",
       unit: "pieces",
       notes: "",
     });
-    setIsAddingItem(true); 
-    setEditingItem(null); 
+    setIsAddingItem(true);
+    setEditingItem(null);
   };
 
   if (isInventoryLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p>Loading your baby essentials...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-gray-500 mx-auto mb-4"></div>
+          <p className="text-2xl font-bold">Loading your baby essentials...</p>
         </div>
       </div>
     );
@@ -246,10 +236,7 @@ export default function Page() {
           <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-red-700 mb-2">Error Loading Data</h2>
           <p className="text-red-600 mb-4">{error}</p>
-          <Button 
-            onClick={fetchInventory}
-            className="bg-red-600 hover:bg-red-700"
-          >
+          <Button onClick={fetchInventory} className="bg-red-600 hover:bg-red-700">
             Retry
           </Button>
         </div>
@@ -274,20 +261,15 @@ export default function Page() {
     return <LoginPrompt sectionName="essentials tracker" />;
   }
 
-return (
+  return (
     <div className="space-y-6 px-4 sm:px-6 md:px-8 py-6 max-w-7xl mx-auto">
       {/* Header and Add Item Button */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-gray-800 mb-1">Baby Essentials Tracker</h2>
-          <p className="text-gray-600 text-sm">
-            Keep track of diapers, formula, and other baby essentials
-          </p>
+          <p className="text-gray-600 text-sm">Keep track of diapers, formula, and other baby essentials</p>
         </div>
-        <Button
-          onClick={() => setIsAddingItem(true)}
-          className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-        >
+        <Button onClick={() => setIsAddingItem(true)} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
           <Plus className="w-4 h-4 mr-2" />
           Add Item
         </Button>
@@ -300,8 +282,7 @@ return (
           <Button
             variant="outline"
             onClick={() => setShowEssentials(!showEssentials)}
-            className="flex items-center gap-1 font-semibold text-pink-600 border-pink-300 hover:text-pink-700 hover:bg-pink-50 hover:border-pink-400"
-          >
+            className="flex items-center gap-1 font-semibold text-pink-600 border-pink-300 hover:text-pink-700 hover:bg-pink-50 hover:border-pink-400">
             {showEssentials ? (
               <>
                 Hide Essentials <ChevronUp className="w-4 h-4 ml-1" />
@@ -315,7 +296,7 @@ return (
         </h3>
       </div>
       {showEssentials && (
-        <div className={`transition-all duration-300 ease-in-out ${showEssentials ? 'max-h-[500px]' : 'max-h-0'} overflow-hidden`}>
+        <div className={`transition-all duration-300 ease-in-out ${showEssentials ? "max-h-[500px]" : "max-h-0"} overflow-hidden`}>
           <Babyessentials onAddEssential={handleAddEssentialToInventory} />
         </div>
       )}
@@ -379,9 +360,9 @@ return (
                   value={editingItem ? editingItem.name : newItem.name}
                   onChange={(e) => {
                     if (editingItem) {
-                      setEditingItem({ ...editingItem, name: e.target.value })
+                      setEditingItem({ ...editingItem, name: e.target.value });
                     } else {
-                      setNewItem({ ...newItem, name: e.target.value })
+                      setNewItem({ ...newItem, name: e.target.value });
                     }
                   }}
                 />
@@ -393,12 +374,11 @@ return (
                   value={editingItem ? editingItem.category : newItem.category}
                   onChange={(e) => {
                     if (editingItem) {
-                      setEditingItem({ ...editingItem, category: e.target.value })
+                      setEditingItem({ ...editingItem, category: e.target.value });
                     } else {
-                      setNewItem({ ...newItem, category: e.target.value })
+                      setNewItem({ ...newItem, category: e.target.value });
                     }
-                  }}
-                >
+                  }}>
                   {itemCategories.map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.name}
@@ -414,9 +394,9 @@ return (
                   value={editingItem ? editingItem.currentStock : newItem.currentStock}
                   onChange={(e) => {
                     if (editingItem) {
-                      setEditingItem({ ...editingItem, currentStock: e.target.value })
+                      setEditingItem({ ...editingItem, currentStock: e.target.value });
                     } else {
-                      setNewItem({ ...newItem, currentStock: e.target.value })
+                      setNewItem({ ...newItem, currentStock: e.target.value });
                     }
                   }}
                 />
@@ -429,9 +409,9 @@ return (
                   value={editingItem ? editingItem.minThreshold : newItem.minThreshold}
                   onChange={(e) => {
                     if (editingItem) {
-                      setEditingItem({ ...editingItem, minThreshold: e.target.value })
+                      setEditingItem({ ...editingItem, minThreshold: e.target.value });
                     } else {
-                      setNewItem({ ...newItem, minThreshold: e.target.value })
+                      setNewItem({ ...newItem, minThreshold: e.target.value });
                     }
                   }}
                 />
@@ -443,12 +423,11 @@ return (
                   value={editingItem ? editingItem.unit : newItem.unit}
                   onChange={(e) => {
                     if (editingItem) {
-                      setEditingItem({ ...editingItem, unit: e.target.value })
+                      setEditingItem({ ...editingItem, unit: e.target.value });
                     } else {
-                      setNewItem({ ...newItem, unit: e.target.value })
+                      setNewItem({ ...newItem, unit: e.target.value });
                     }
-                  }}
-                >
+                  }}>
                   <option value="pieces">Pieces</option>
                   <option value="bottles">Bottles</option>
                   <option value="packs">Packs</option>
@@ -464,27 +443,24 @@ return (
                   value={editingItem ? editingItem.notes : newItem.notes}
                   onChange={(e) => {
                     if (editingItem) {
-                      setEditingItem({ ...editingItem, notes: e.target.value })
+                      setEditingItem({ ...editingItem, notes: e.target.value });
                     } else {
-                      setNewItem({ ...newItem, notes: e.target.value })
+                      setNewItem({ ...newItem, notes: e.target.value });
                     }
                   }}
                 />
               </div>
             </div>
             <div className="flex gap-2">
-              <Button
-                onClick={editingItem ? () => updateItem(editingItem._id, editingItem) : addItem}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-              >
+              <Button onClick={editingItem ? () => updateItem(editingItem._id, editingItem) : addItem} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
                 <Save className="w-4 h-4 mr-2" />
                 {editingItem ? "Update" : "Add"} Item
               </Button>
               <Button
                 variant="outline"
                 onClick={() => {
-                  setIsAddingItem(false)
-                  setEditingItem(null)
+                  setIsAddingItem(false);
+                  setEditingItem(null);
                   setNewItem({
                     name: "",
                     category: "diapering",
@@ -492,9 +468,8 @@ return (
                     minThreshold: "",
                     unit: "pieces",
                     notes: "",
-                  })
-                }}
-              >
+                  });
+                }}>
                 Cancel
               </Button>
             </div>
@@ -505,7 +480,7 @@ return (
       {/* Essentials List */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {inventory.map((item) => {
-          const stockStatus = getStockStatus(item)
+          const stockStatus = getStockStatus(item);
           return (
             <Card key={item._id} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
@@ -514,9 +489,7 @@ return (
                     <span className="text-2xl">{getCategoryIcon(item.category)}</span>
                     <div>
                       <CardTitle className="text-lg">{item.name}</CardTitle>
-                      <p className="text-sm text-gray-500">
-                        {itemCategories.find((cat) => cat.id === item.category)?.name}
-                      </p>
+                      <p className="text-sm text-gray-500">{itemCategories.find((cat) => cat.id === item.category)?.name}</p>
                     </div>
                   </div>
                   <Badge className={stockStatus.color}>{stockStatus.text}</Badge>
@@ -526,12 +499,7 @@ return (
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Current Stock:</span>
                   <div className="flex items-center gap-2">
-                    <Input
-                      type="number"
-                      value={item.currentStock}
-                      onChange={(e) => updateStock(item._id, e.target.value)}
-                      className="w-20 h-8 text-center"
-                    />
+                    <Input type="number" value={item.currentStock} onChange={(e) => updateStock(item._id, e.target.value)} className="w-20 h-8 text-center" />
                     <span className="text-sm text-gray-500">{item.unit}</span>
                   </div>
                 </div>
@@ -550,18 +518,13 @@ return (
                     <Edit className="w-3 h-3 mr-1" />
                     Edit
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => deleteItem(item._id)}
-                    className="text-red-600 hover:text-red-700"
-                  >
+                  <Button size="sm" variant="outline" onClick={() => deleteItem(item._id)} className="text-red-600 hover:text-red-700">
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -571,10 +534,7 @@ return (
             <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
             <h3 className="text-lg font-semibold text-gray-600 mb-2">No items in inventory</h3>
             <p className="text-gray-500 mb-4">Start tracking your baby essentials to get low stock alerts</p>
-            <Button
-              onClick={() => setIsAddingItem(true)}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-            >
+            <Button onClick={() => setIsAddingItem(true)} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
               <Plus className="w-4 h-4 mr-2" />
               Add Your First Item
             </Button>
@@ -608,5 +568,5 @@ return (
         </Card>
       )}
     </div>
-  )
+  );
 }
