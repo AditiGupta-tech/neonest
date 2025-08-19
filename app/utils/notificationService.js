@@ -1,3 +1,5 @@
+// notificationService.js
+
 import { toast } from "sonner";
 
 // Notification service for creating different types of notifications
@@ -43,40 +45,6 @@ export class NotificationService {
     } catch (error) {
       console.error("Error creating notification:", error);
       return null;
-    }
-  }
-
-  // DELETE ALL NOTIFICATIONS
-  
-  async deleteAllNotifications() {
-    try {
-      const token = this.getToken();
-      if (!token) {
-        console.warn("No auth token found for deleting notifications");
-        return null;
-      }
-
-      const response = await fetch(`${this.baseUrl}/delete-all`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        this.showToast("All notifications deleted successfully", "success");
-        return true;
-      } else {
-        const error = await response.json();
-        console.error("Failed to delete all notifications:", error);
-        this.showToast("Failed to delete notifications", "error");
-        return false;
-      }
-    } catch (error) {
-      console.error("Error deleting notifications:", error);
-      this.showToast("Error deleting notifications", "error");
-      return false;
     }
   }
 
