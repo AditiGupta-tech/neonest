@@ -7,6 +7,8 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 export default function LoginPage() {
   useEffect(() => {
@@ -62,6 +64,10 @@ export default function LoginPage() {
     const value = e.target.value;
     setPassword(value);
     if (passwordTouched) validatePassword(value);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
 
   const isFormValid = useMemo(() => {
