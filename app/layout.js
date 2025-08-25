@@ -30,7 +30,7 @@ export const metadata = {
     siteName: "NeoNest",
     images: [
       {
-        url: "/favicon.ico",
+        url: "/logoFooter.png",
         width: 512,
         height: 512,
         alt: "NeoNest Logo",
@@ -42,13 +42,13 @@ export const metadata = {
     card: "summary_large_image",
     title: "NeoNest - Your AI-Powered Baby Care Assistant",
     description: "All-in-one platform for new parents: feeding, sleep, growth, vaccines, and more.",
-    images: ["/favicon.ico"],
+    images: ["/logoFooter.png"],
     site: "@neonestbabycare",
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: "/logoFooter.png",
+    shortcut: "/logoFooter.png",
+    apple: "/logoFooter.png",
   },
 };
 
