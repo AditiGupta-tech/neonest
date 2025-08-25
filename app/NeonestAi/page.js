@@ -29,13 +29,10 @@ const roles = [
 ];
 
 export default function NeonestAi() {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const clearChatHistory = useChatStore((state) => state.clearChatHistory);
   const [role, setRole] = useState("pediatrician");
-  const {
-    chatHistory = {},
-    setChatHistory = () => {},
-    historyLoaded = {},
-    resetChatHistoryForRole = () => {},
-  } = useChatStore((state) => state || {});
+  const { chatHistory = {}, setChatHistory = () => {}, historyLoaded = {}, resetChatHistoryForRole = () => {} } = useChatStore((state) => state || {});
   const messages = useMemo(() => chatHistory[role] || [], [chatHistory, role]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -121,7 +118,7 @@ export default function NeonestAi() {
     setRole(newRole);
     setInput("");
     setIsSending(false);
-    setTransitionMessage(`Switched to ${roles.find(r => r.value === newRole)?.label} mode`);
+    setTransitionMessage(`Switched to ${roles.find((r) => r.value === newRole)?.label} mode`);
     setTimeout(() => setTransitionMessage(null), 1500);
     scrollToBottom();
   };
@@ -198,8 +195,7 @@ export default function NeonestAi() {
                 <select
                   value={role}
                   onChange={(e) => handleRoleChange(e.target.value)}
-                  className="border px-3 py-1 rounded-md text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                >
+                  className="border px-3 py-1 rounded-md text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
                   {roles.map((r) => (
                     <option key={r.value} value={r.value}>
                       {r.label}
@@ -217,17 +213,13 @@ export default function NeonestAi() {
         <CardContent className="space-y-6 p-6 relative">
           {transitionMessage && (
             <div className="absolute top-0 left-0 right-0 flex justify-center z-20">
-              <span className="bg-pink-200 text-pink-900 px-6 py-2 rounded-lg shadow-lg font-semibold text-base">
-                {transitionMessage}
-              </span>
+              <span className="bg-pink-200 text-pink-900 px-6 py-2 rounded-lg shadow-lg font-semibold text-base">{transitionMessage}</span>
             </div>
           )}
 
           {messages.length === 0 && (
             <div className="text-center space-y-4">
-              <p className="text-sm text-gray-500 mt-2">
-                AI advice is not a substitute for professional medical consultation.
-              </p>
+              <p className="text-sm text-gray-500 mt-2">AI advice is not a substitute for professional medical consultation.</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {quickQuestions.map((q, idx) => (
                   <Button key={idx} onClick={() => handleQuickQuestion(q.text)} variant="outline" className="text-left justify-start text-sm">
@@ -258,8 +250,7 @@ export default function NeonestAi() {
                     {/* Action icons */}
                     <div
                       className={`absolute bottom-full mb-2 flex gap-1 bg-white p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
-                       ${m.role === "user" ? "right-0" : "left-0"}`}
-                    >
+                       ${m.role === "user" ? "right-0" : "left-0"}`}>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -297,8 +288,7 @@ export default function NeonestAi() {
                           em: ({ node, ...props }) => <em className="italic" {...props} />,
                           code: ({ node, ...props }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props} />,
                           blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-pink-300 pl-4 italic text-sm text-gray-600 my-2" {...props} />,
-                        }}
-                      >
+                        }}>
                         {m.content}
                       </ReactMarkdown>
                     </div>
@@ -330,14 +320,18 @@ export default function NeonestAi() {
                   scrollToBottom();
                   setShowNewMessageButton(false);
                 }}
-                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition"
-              >
+                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition">
                 ⬇ New Message
               </button>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex gap-2 pt-4 items-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+            className="flex gap-2 pt-4 items-center">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -346,26 +340,50 @@ export default function NeonestAi() {
               disabled={isSending}
             />
             <TooltipProvider>
+              <button
+                type="button" // important: ensures it does NOT submit the form
+                onClick={() => setShowConfirm(true)}
+                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-3 py-2 rounded ml-2">
+                Clear Chat
+              </button>
+
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div>
-                    <SpeechRecognition
-                      onTranscript={handleSpeechTranscript}
-                      isListening={isListening}
-                      setIsListening={setIsListening}
-                      disabled={isSending}
-                    />
+                    <SpeechRecognition onTranscript={handleSpeechTranscript} isListening={isListening} setIsListening={setIsListening} disabled={isSending} />
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="top">
-                  Click to start voice input (requires internet connection)
-                </TooltipContent>
+                <TooltipContent side="top">Click to start voice input (requires internet connection)</TooltipContent>
               </Tooltip>
             </TooltipProvider>
+
             <Button type="submit" disabled={isSending || !input.trim()} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
               {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </Button>
           </form>
+
+          {/* Confirm Modal */}
+          {showConfirm && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-6 rounded shadow-lg w-80">
+                <h3 className="text-lg font-semibold mb-4">Confirm Clear Chat</h3>
+                <p className="mb-4">This will remove all messages from this chat. Are you sure?</p>
+                <div className="flex justify-end gap-2">
+                  <button onClick={() => setShowConfirm(false)} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearChatHistory("user");
+                      setShowConfirm(false);
+                    }}
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -406,11 +424,7 @@ export default function NeonestAi() {
           </CardHeader>
           <CardContent className="space-y-2">
             {analytics.topQuestions?.map((q, i) => (
-              <button
-                key={i}
-                onClick={() => handleQuickQuestion(q.question)}
-                className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 px-2 py-1 rounded transition"
-              >
+              <button key={i} onClick={() => handleQuickQuestion(q.question)} className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 px-2 py-1 rounded transition">
                 <span>{q.question}</span>
                 <Badge variant="secondary">{q.count}</Badge>
               </button>
