@@ -13,7 +13,7 @@ MONGODB_URI=mongodb://localhost:27017/neonest
 JWT_SECRET=your-super-secret-jwt-key-here
 
 # Google Gemini API (for AI features)
-GEMINI_API_KEY=your-gemini-api-key-here
+GEMINI_API_KEY=
 ```
 
 ## How to Get These Values
