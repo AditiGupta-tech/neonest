@@ -266,8 +266,8 @@ export default function Page() {
       {/* Header and Add Item Button */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-1">Baby Essentials Tracker</h2>
-          <p className="text-gray-600 text-sm">Keep track of diapers, formula, and other baby essentials</p>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-1">Baby Essentials Tracker</h2>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">Keep track of diapers, formula, and other baby essentials</p>
         </div>
         <Button onClick={() => setIsAddingItem(true)} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
           <Plus className="w-4 h-4 mr-2" />
@@ -278,11 +278,11 @@ export default function Page() {
       {/* "See Essentials" Toggle */}
       <div className="border-t pt-6 mt-6">
         <h3 className="text-xl font-semibold text-black mb-1 flex items-center justify-between">
-          <span>Not sure what to add? Start with these essentials:</span>
+          <span className="dark:text-gray-200">Not sure what to add? Start with these essentials:</span>
           <Button
             variant="outline"
             onClick={() => setShowEssentials(!showEssentials)}
-            className="flex items-center gap-1 font-semibold text-pink-600 border-pink-300 hover:text-pink-700 hover:bg-pink-50 hover:border-pink-400">
+            className="flex items-center gap-1 font-semibold text-pink-600 border-pink-300 dark:bg-gray-800 hover:text-pink-700 hover:bg-pink-50 hover:border-pink-400">
             {showEssentials ? (
               <>
                 Hide Essentials <ChevronUp className="w-4 h-4 ml-1" />
@@ -305,7 +305,7 @@ export default function Page() {
       {(lowStockItems.length > 0 || outOfStockItems.length > 0) && (
         <div className="space-y-3">
           {outOfStockItems.length > 0 && (
-            <Card className="bg-red-50 border-red-200">
+            <Card className="bg-red-50 dark:bg-red-200 border-red-200">
               <CardContent className="pt-4">
                 <div className="flex items-center gap-2 mb-2">
                   <AlertTriangle className="w-5 h-5 text-red-600" />
@@ -323,7 +323,7 @@ export default function Page() {
           )}
 
           {lowStockItems.length > 0 && (
-            <Card className="bg-yellow-50 border-yellow-200">
+            <Card className="bg-yellow-50 dark:bg-yellow-200 border-yellow-200">
               <CardContent className="pt-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Bell className="w-5 h-5 text-yellow-600" />
@@ -344,19 +344,20 @@ export default function Page() {
 
       {/* Add/Edit Item */}
       {(isAddingItem || editingItem) && (
-        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+        <Card className="bg-blue-50 dark:bg-gray-600  border-blue-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center dark:text-gray-200 gap-2">
               <Package className="w-5 h-5 text-blue-600" />
               {editingItem ? "Edit Item" : "Add New Item"}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 dark:text-gray-200 ">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium mb-2">Item Name</label>
                 <Input
                   placeholder="e.g., Newborn Diapers"
+                  className="dark:bg-gray-700"
                   value={editingItem ? editingItem.name : newItem.name}
                   onChange={(e) => {
                     if (editingItem) {
@@ -370,7 +371,7 @@ export default function Page() {
               <div>
                 <label className="block text-sm font-medium mb-2">Category</label>
                 <select
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 dark:bg-gray-700 border border-gray-300 rounded-md"
                   value={editingItem ? editingItem.category : newItem.category}
                   onChange={(e) => {
                     if (editingItem) {
@@ -391,6 +392,7 @@ export default function Page() {
                 <Input
                   type="number"
                   placeholder="0"
+                  className="dark:bg-gray-700"
                   value={editingItem ? editingItem.currentStock : newItem.currentStock}
                   onChange={(e) => {
                     if (editingItem) {
@@ -406,6 +408,7 @@ export default function Page() {
                 <Input
                   type="number"
                   placeholder="5"
+                  className="dark:bg-gray-700"
                   value={editingItem ? editingItem.minThreshold : newItem.minThreshold}
                   onChange={(e) => {
                     if (editingItem) {
@@ -419,7 +422,7 @@ export default function Page() {
               <div>
                 <label className="block text-sm font-medium mb-2">Unit</label>
                 <select
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 dark:bg-gray-700 border border-gray-300 rounded-md"
                   value={editingItem ? editingItem.unit : newItem.unit}
                   onChange={(e) => {
                     if (editingItem) {
@@ -440,6 +443,7 @@ export default function Page() {
                 <label className="block text-sm font-medium mb-2">Notes</label>
                 <Input
                   placeholder="Optional notes"
+                  className="dark:bg-gray-700"
                   value={editingItem ? editingItem.notes : newItem.notes}
                   onChange={(e) => {
                     if (editingItem) {
@@ -482,7 +486,7 @@ export default function Page() {
         {inventory.map((item) => {
           const stockStatus = getStockStatus(item);
           return (
-            <Card key={item._id} className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
+            <Card key={item._id} className="bg-white/80 dark:bg-gray-700 dark:text-gray-200 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
@@ -497,15 +501,15 @@ export default function Page() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Current Stock:</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-200">Current Stock:</span>
                   <div className="flex items-center gap-2">
-                    <Input type="number" value={item.currentStock} onChange={(e) => updateStock(item._id, e.target.value)} className="w-20 h-8 text-center" />
-                    <span className="text-sm text-gray-500">{item.unit}</span>
+                    <Input type="number" value={item.currentStock} onChange={(e) => updateStock(item._id, e.target.value)} className="w-20 h-8 text-center dark:bg-gray-800" />
+                    <span className="text-sm text-gray-500 dark:text-gray-200">{item.unit}</span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Alert when below:</span>
+                  <span className="text-gray-600 dark:text-gray-200">Alert when below:</span>
                   <span className="font-medium">
                     {item.minThreshold} {item.unit}
                   </span>
@@ -515,8 +519,8 @@ export default function Page() {
 
                 <div className="flex gap-2">
                   <Button size="sm" variant="outline" onClick={() => setEditingItem(item)} className="flex-1">
-                    <Edit className="w-3 h-3 mr-1" />
-                    Edit
+                    <Edit className="w-3 h-3 mr-1 dark:text-gray-200" />
+                    <span className="dark:text-gray-200">Edit</span>
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => deleteItem(item._id)} className="text-red-600 hover:text-red-700">
                     <Trash2 className="w-3 h-3" />
@@ -544,7 +548,7 @@ export default function Page() {
 
       {/* Shopping List */}
       {lowStockItems.length > 0 && (
-        <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-orange-200">
+        <Card className="bg-orange-50 dark:bg-gray-700 dark:text-gray-200 border-orange-200">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ShoppingCart className="w-5 h-5 text-orange-600" />
@@ -552,10 +556,10 @@ export default function Page() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
+            <div className="space-y-2  ">
               <div className="flex flex-wrap gap-2 overflow-auto">
                 {lowStockItems.map((item) => (
-                  <div key={item._id} className="flex items-center justify-between p-2 bg-white/50 rounded">
+                  <div key={item._id} className="flex items-center justify-between p-2 bg-white/50 dark:text-gray-100 rounded">
                     <span>{item.name}</span>
                     <Badge variant="outline">
                       Need: {Math.max(item.minThreshold * 2 - item.currentStock, item.minThreshold)} {item.unit}

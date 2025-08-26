@@ -1,29 +1,28 @@
-"use client"
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
-import Input from "../components/ui/Input"
-import { Button } from "../components/ui/Button"
-import ImportantContacts from "../components/ImportantContacts "
-import Badge from "../components/ui/Badge"
-import {Plus,Shield,Calendar,AlertTriangle,CheckCircle,Clock,Upload,FileText,Edit,Trash2,Bell,Save,} from "lucide-react"
-import { useAuth } from "../context/AuthContext"
-import LoginPrompt from "../components/LoginPrompt"
-
+"use client";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import Input from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
+import ImportantContacts from "../components/ImportantContacts ";
+import Badge from "../components/ui/Badge";
+import { Plus, Shield, Calendar, AlertTriangle, CheckCircle, Clock, Upload, FileText, Edit, Trash2, Bell, Save } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import LoginPrompt from "../components/LoginPrompt";
 
 function getVaccineStatus(vaccine) {
-  const today = new Date()
-  const scheduled = new Date(vaccine.scheduledDate)
-  const daysDiff = Math.ceil((scheduled - today) / (1000 * 60 * 60 * 24))
+  const today = new Date();
+  const scheduled = new Date(vaccine.scheduledDate);
+  const daysDiff = Math.ceil((scheduled - today) / (1000 * 60 * 60 * 24));
 
   if (vaccine.status === "completed") {
-    return { status: "completed", color: "bg-green-400 text-green-700", text: "Completed", icon: CheckCircle }
+    return { status: "completed", color: "bg-green-400 text-green-700", text: "Completed", icon: CheckCircle };
   } else if (daysDiff < 0) {
-    return { status: "overdue", color: "bg-red-400 text-red-700", text: "Overdue", icon: AlertTriangle }
+    return { status: "overdue", color: "bg-red-400 text-red-700", text: "Overdue", icon: AlertTriangle };
   } else if (daysDiff <= 7) {
-    return { status: "due", color: "bg-yellow-400 text-yellow-700", text: "Due Soon", icon: Bell }
+    return { status: "due", color: "bg-yellow-400 text-yellow-700", text: "Due Soon", icon: Bell };
   } else {
-    return { status: "scheduled", color: "bg-blue-400 text-blue-700", text: "Scheduled", icon: Clock }
+    return { status: "scheduled", color: "bg-blue-400  text-blue-700", text: "Scheduled", icon: Clock };
   }
 }
 
@@ -53,169 +52,149 @@ const staticStandardVaccines = [
 ];
 
 export default function VaccineTracker({ babyId }) {
-  const { isAuth } = useAuth()
-  const [vaccines, setVaccines] = useState([])
-  const [babyBirthDate, setBabyBirthDate] = useState("")
-  const [isAddingVaccine, setIsAddingVaccine] = useState(false)
-  const [editingVaccine, setEditingVaccine] = useState(null)
+  const { isAuth } = useAuth();
+  const [vaccines, setVaccines] = useState([]);
+  const [babyBirthDate, setBabyBirthDate] = useState("");
+  const [isAddingVaccine, setIsAddingVaccine] = useState(false);
+  const [editingVaccine, setEditingVaccine] = useState(null);
   const [newVaccine, setNewVaccine] = useState({
     name: "",
     scheduledDate: "",
     completedDate: "",
     status: "scheduled",
     notes: "",
-    document: null, 
-  })
+    document: null,
+  });
 
-  const getAuthToken = () => localStorage.getItem("token")
+  const getAuthToken = () => localStorage.getItem("token");
 
   useEffect(() => {
-    document.title = "Medical | NeoNest"
+    document.title = "Medical | NeoNest";
     if (isAuth) {
-    fetchVaccines()
-    // fetchBabyBirthDate() 
+      fetchVaccines();
+      // fetchBabyBirthDate()
     }
-  }, [isAuth])
+  }, [isAuth]);
 
   const fetchVaccines = async () => {
     try {
-      const token = getAuthToken()
+      const token = getAuthToken();
       const res = await axios.get("/api/vaccine", {
         headers: { Authorization: `Bearer ${token}` },
-      })
-      setVaccines(res.data)
+      });
+      setVaccines(res.data);
     } catch (error) {
-      console.error("Error fetching vaccines:", error)
+      console.error("Error fetching vaccines:", error);
     }
-  }
+  };
 
   const initializeStandardSchedule = async () => {
-    if (!babyBirthDate) return; 
+    if (!babyBirthDate) return;
 
     try {
-      const token = getAuthToken()
-      await axios.patch(
-        "/api/vaccine/initialize-schedule", 
-        { babyId, birthDate: babyBirthDate },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      fetchVaccines()
+      const token = getAuthToken();
+      await axios.patch("/api/vaccine/initialize-schedule", { babyId, birthDate: babyBirthDate }, { headers: { Authorization: `Bearer ${token}` } });
+      fetchVaccines();
     } catch (error) {
-      console.error("Error initializing schedule:", error)
+      console.error("Error initializing schedule:", error);
     }
-  }
+  };
 
   const addVaccine = async () => {
     if (!newVaccine.name || !newVaccine.scheduledDate) {
-      alert("Vaccine name and scheduled date are required.")
-      return
+      alert("Vaccine name and scheduled date are required.");
+      return;
     }
 
     try {
-      const token = getAuthToken()
-      await axios.post(
-        "/api/vaccine",
-        { ...newVaccine, babyId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      setIsAddingVaccine(false)
-      setNewVaccine({ name: "", scheduledDate: "", completedDate: "", status: "scheduled", notes: "", document: null })
-      fetchVaccines() 
+      const token = getAuthToken();
+      await axios.post("/api/vaccine", { ...newVaccine, babyId }, { headers: { Authorization: `Bearer ${token}` } });
+      setIsAddingVaccine(false);
+      setNewVaccine({ name: "", scheduledDate: "", completedDate: "", status: "scheduled", notes: "", document: null });
+      fetchVaccines();
     } catch (error) {
-      console.error("Error adding vaccine:", error)
+      console.error("Error adding vaccine:", error);
     }
-  }
+  };
 
   const updateVaccine = async () => {
-    if (!editingVaccine) return
+    if (!editingVaccine) return;
 
     try {
-      const token = getAuthToken()
-      await axios.put( 
-        `/api/vaccine/${editingVaccine._id}`, 
-        { ...editingVaccine, babyId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      setEditingVaccine(null)
-      fetchVaccines() 
+      const token = getAuthToken();
+      await axios.put(`/api/vaccine/${editingVaccine._id}`, { ...editingVaccine, babyId }, { headers: { Authorization: `Bearer ${token}` } });
+      setEditingVaccine(null);
+      fetchVaccines();
     } catch (error) {
-      console.error("Error updating vaccine:", error)
+      console.error("Error updating vaccine:", error);
     }
-  }
+  };
 
   const deleteVaccine = async (id) => {
     try {
-      const token = getAuthToken()
-      await axios.delete(
-        `/api/vaccine/${id}`, 
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      fetchVaccines() 
+      const token = getAuthToken();
+      await axios.delete(`/api/vaccine/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchVaccines();
     } catch (error) {
-      console.error("Error deleting vaccine:", error)
+      console.error("Error deleting vaccine:", error);
     }
-  }
+  };
 
   const markAsCompleted = async (id) => {
-  try {
-    const token = getAuthToken();
-    await axios.patch(
-      `/api/vaccine`,
-      {
-        vaccineId: id,
-        newStatus: "completed"
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
+    try {
+      const token = getAuthToken();
+      await axios.patch(
+        `/api/vaccine`,
+        {
+          vaccineId: id,
+          newStatus: "completed",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      }
-    );
-    fetchVaccines();
-  } catch (error) {
-    console.error("Error marking vaccine as completed:", error);
-  }
-};
+      );
+      fetchVaccines();
+    } catch (error) {
+      console.error("Error marking vaccine as completed:", error);
+    }
+  };
 
   const handleFileUpload = (e, targetVaccine = null) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (event) => {
         const fileBase64 = event.target.result;
         if (targetVaccine) {
-          setVaccines(
-            vaccines.map((vaccine) =>
-              vaccine._id === targetVaccine._id ? { ...vaccine, document: fileBase64 } : vaccine,
-            ),
-          )
+          setVaccines(vaccines.map((vaccine) => (vaccine._id === targetVaccine._id ? { ...vaccine, document: fileBase64 } : vaccine)));
           if (editingVaccine && editingVaccine._id === targetVaccine._id) {
             setEditingVaccine({ ...editingVaccine, document: fileBase64 });
           }
         } else if (editingVaccine) {
-          setEditingVaccine({ ...editingVaccine, document: fileBase64 })
+          setEditingVaccine({ ...editingVaccine, document: fileBase64 });
         } else {
-          setNewVaccine({ ...newVaccine, document: fileBase64 })
+          setNewVaccine({ ...newVaccine, document: fileBase64 });
         }
-        console.log("File selected (base64):", fileBase64.substring(0, 50) + "...")
-      }
-      reader.readAsDataURL(file)
+        console.log("File selected (base64):", fileBase64.substring(0, 50) + "...");
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const upcomingVaccines = vaccines
     .filter((vaccine) => vaccine.status !== "completed" && new Date(vaccine.scheduledDate) >= new Date())
     .sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate))
-    .slice(0, 3)
+    .slice(0, 3);
 
   const overdueVaccines = vaccines.filter((vaccine) => {
-    const today = new Date()
-    const scheduled = new Date(vaccine.scheduledDate)
-    return vaccine.status !== "completed" && scheduled < today
-  })
-
+    const today = new Date();
+    const scheduled = new Date(vaccine.scheduledDate);
+    return vaccine.status !== "completed" && scheduled < today;
+  });
 
   // Show login prompt if user is not authenticated
   if (!isAuth) {
@@ -227,47 +206,35 @@ export default function VaccineTracker({ babyId }) {
       {/* Page Header */}
       <div className="flex flex-wrap items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-gray-800">Medical Records: Vaccines & Important Contacts</h2>
-          <p className="text-gray-600">Keep track of your baby's vaccination schedule and essential medical contacts for quick access.</p>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Medical Records: Vaccines & Important Contacts</h2>
+          <p className="text-gray-600 dark:text-gray-300">Keep track of your baby's vaccination schedule and essential medical contacts for quick access.</p>
         </div>
         <Button
           onClick={() => {
             setIsAddingVaccine(true);
-            setEditingVaccine(null); 
-            setNewVaccine({ name: "", scheduledDate: "", completedDate: "", status: "scheduled", notes: "", document: null }); 
+            setEditingVaccine(null);
+            setNewVaccine({ name: "", scheduledDate: "", completedDate: "", status: "scheduled", notes: "", document: null });
           }}
-          className="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600"
-        >
-        <Plus className="w-4 h-4 mr-2" />
+          className="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600">
+          <Plus className="w-4 h-4 mr-2" />
           Add Vaccine
         </Button>
       </div>
 
       {/* Baby Birth Date Setup */}
       {!babyBirthDate && (
-        <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
+        <Card className="bg-white dark:bg-gray-700 border-blue-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 dark:text-gray-200">
+              <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-500 " />
               Set Baby's Birth Date
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-gray-600">
-              Enter your baby's birth date to automatically generate the standard vaccination schedule.
-            </p>
+            <p className="text-gray-600 dark:text-gray-200">Enter your baby's birth date to automatically generate the standard vaccination schedule.</p>
             <div className="flex gap-4 flex-wrap">
-              <Input
-                type="date"
-                value={babyBirthDate}
-                onChange={(e) => setBabyBirthDate(e.target.value)}
-                className="max-w-xs"
-              />
-              <Button
-                onClick={initializeStandardSchedule}
-                disabled={!babyBirthDate}
-                className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
-              >
+              <Input type="date" value={babyBirthDate} onChange={(e) => setBabyBirthDate(e.target.value)} className="max-w-xs dark:bg-gray-700 dark:text-gray-200" />
+              <Button onClick={initializeStandardSchedule} disabled={!babyBirthDate} className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600">
                 Generate Schedule
               </Button>
             </div>
@@ -277,7 +244,7 @@ export default function VaccineTracker({ babyId }) {
 
       {/* Alerts - Overdue Vaccines */}
       {overdueVaccines.length > 0 && (
-        <Card className="bg-red-50 border-red-200">
+        <Card className="bg-red-50 dark:bg-red-200 border-red-200">
           <CardContent className="pt-4">
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle className="w-5 h-5 text-red-600" />
@@ -285,19 +252,13 @@ export default function VaccineTracker({ babyId }) {
             </div>
             <div className="space-y-2">
               {overdueVaccines.map((vaccine) => (
-                <div key={vaccine._id} className="flex items-center justify-between p-2 bg-white/50 rounded">
-                  <span>
+                <div key={vaccine._id} className="flex items-center justify-between p-2 bg-white/50 dark:bg-red-200 rounded">
+                  <span className="dark:text-gray-700">
                     {vaccine.name} - {vaccine.description || "No description"}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-red-600">
-                      Due: {new Date(vaccine.scheduledDate).toLocaleDateString()}
-                    </span>
-                    <Button
-                      size="sm"
-                      onClick={() => markAsCompleted(vaccine._id)}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
+                    <span className="text-sm text-red-600">Due: {new Date(vaccine.scheduledDate).toLocaleDateString()}</span>
+                    <Button size="sm" onClick={() => markAsCompleted(vaccine._id)} className="bg-green-600 hover:bg-green-700">
                       Mark Complete
                     </Button>
                   </div>
@@ -310,7 +271,7 @@ export default function VaccineTracker({ babyId }) {
 
       {/* Upcoming Vaccines */}
       {upcomingVaccines.length > 0 && (
-        <Card className="bg-blue-50 border-blue-200">
+        <Card className="bg-blue-50 dark:bg-gray-700 dark:text-gray-200 border-blue-200">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bell className="w-5 h-5 text-blue-600" />
@@ -320,34 +281,26 @@ export default function VaccineTracker({ babyId }) {
           <CardContent>
             <div className="space-y-3">
               {upcomingVaccines.map((vaccine) => {
-                const status = getVaccineStatus(vaccine)
+                const status = getVaccineStatus(vaccine);
                 return (
-                  <div key={vaccine._id} className="flex items-center justify-between p-3 bg-white/50 rounded-lg">
+                  <div key={vaccine._id} className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-600  rounded-lg">
                     <div className="flex items-center gap-3">
                       <status.icon
                         className={`w-5 h-5 ${
-                          status.status === "completed"
-                            ? "text-green-600"
-                            : status.status === "overdue"
-                              ? "text-red-600"
-                              : status.status === "due"
-                                ? "text-yellow-600"
-                                : "text-blue-600"
+                          status.status === "completed" ? "text-green-600" : status.status === "overdue" ? "text-red-600" : status.status === "due" ? "text-yellow-600" : "text-blue-600"
                         }`}
                       />
                       <div>
                         <h4 className="font-medium">{vaccine.name}</h4>
-                        <p className="text-sm text-gray-600">{vaccine.description || "No description"}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{vaccine.description || "No description"}</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <Badge className={status.color}>{status.text}</Badge>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {new Date(vaccine.scheduledDate).toLocaleDateString()}
-                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">{new Date(vaccine.scheduledDate).toLocaleDateString()}</p>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </CardContent>
@@ -356,10 +309,10 @@ export default function VaccineTracker({ babyId }) {
 
       {/* Add/Edit Vaccine Form */}
       {(isAddingVaccine || editingVaccine) && (
-        <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-blue-200">
+        <Card className="bg-white dark:bg-gray-700 dark:text-gray-200 border-blue-200">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-blue-600" />
+              <Shield className="w-5 h-5 text-blue-600 dark:text-blue-700" />
               {editingVaccine ? "Edit Vaccine" : "Add New Vaccine"}
             </CardTitle>
           </CardHeader>
@@ -369,12 +322,13 @@ export default function VaccineTracker({ babyId }) {
                 <label className="block text-sm font-medium mb-2">Vaccine Name</label>
                 <Input
                   placeholder="e.g., DTaP"
+                  className="dark:bg-gray-600"
                   value={editingVaccine ? editingVaccine.name : newVaccine.name}
                   onChange={(e) => {
                     if (editingVaccine) {
-                      setEditingVaccine({ ...editingVaccine, name: e.target.value })
+                      setEditingVaccine({ ...editingVaccine, name: e.target.value });
                     } else {
-                      setNewVaccine({ ...newVaccine, name: e.target.value })
+                      setNewVaccine({ ...newVaccine, name: e.target.value });
                     }
                   }}
                 />
@@ -382,16 +336,15 @@ export default function VaccineTracker({ babyId }) {
               <div>
                 <label className="block text-sm font-medium mb-2">Status</label>
                 <select
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-gray-300 rounded-md dark:bg-gray-600"
                   value={editingVaccine ? editingVaccine.status : newVaccine.status}
                   onChange={(e) => {
                     if (editingVaccine) {
-                      setEditingVaccine({ ...editingVaccine, status: e.target.value })
+                      setEditingVaccine({ ...editingVaccine, status: e.target.value });
                     } else {
-                      setNewVaccine({ ...newVaccine, status: e.target.value })
+                      setNewVaccine({ ...newVaccine, status: e.target.value });
                     }
-                  }}
-                >
+                  }}>
                   <option value="scheduled">Scheduled</option>
                   <option value="completed">Completed</option>
                 </select>
@@ -400,12 +353,13 @@ export default function VaccineTracker({ babyId }) {
                 <label className="block text-sm font-medium mb-2">Scheduled Date</label>
                 <Input
                   type="date"
+                  className="dark:bg-gray-600"
                   value={editingVaccine ? editingVaccine.scheduledDate?.split("T")[0] : newVaccine.scheduledDate}
                   onChange={(e) => {
                     if (editingVaccine) {
-                      setEditingVaccine({ ...editingVaccine, scheduledDate: e.target.value })
+                      setEditingVaccine({ ...editingVaccine, scheduledDate: e.target.value });
                     } else {
-                      setNewVaccine({ ...newVaccine, scheduledDate: e.target.value })
+                      setNewVaccine({ ...newVaccine, scheduledDate: e.target.value });
                     }
                   }}
                 />
@@ -414,12 +368,13 @@ export default function VaccineTracker({ babyId }) {
                 <label className="block text-sm font-medium mb-2">Completed Date</label>
                 <Input
                   type="date"
+                  className="dark:bg-gray-600"
                   value={editingVaccine ? editingVaccine.completedDate?.split("T")[0] : newVaccine.completedDate}
                   onChange={(e) => {
                     if (editingVaccine) {
-                      setEditingVaccine({ ...editingVaccine, completedDate: e.target.value })
+                      setEditingVaccine({ ...editingVaccine, completedDate: e.target.value });
                     } else {
-                      setNewVaccine({ ...newVaccine, completedDate: e.target.value })
+                      setNewVaccine({ ...newVaccine, completedDate: e.target.value });
                     }
                   }}
                 />
@@ -429,14 +384,14 @@ export default function VaccineTracker({ babyId }) {
             <div>
               <label className="block text-sm font-medium mb-2">Notes</label>
               <textarea
-                className="w-full p-2 border border-gray-300 rounded-md h-20"
+                className="w-full p-2 border border-gray-300 rounded-md h-20 dark:bg-gray-600"
                 placeholder="Any additional notes..."
                 value={editingVaccine ? editingVaccine.notes : newVaccine.notes}
                 onChange={(e) => {
                   if (editingVaccine) {
-                    setEditingVaccine({ ...editingVaccine, notes: e.target.value })
+                    setEditingVaccine({ ...editingVaccine, notes: e.target.value });
                   } else {
-                    setNewVaccine({ ...newVaccine, notes: e.target.value })
+                    setNewVaccine({ ...newVaccine, notes: e.target.value });
                   }
                 }}
               />
@@ -445,39 +400,25 @@ export default function VaccineTracker({ babyId }) {
             <div>
               <label className="block text-sm font-medium mb-2">Upload Document</label>
               <div className="flex items-center gap-4">
-                <input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={(e) => handleFileUpload(e, editingVaccine || newVaccine)}
-                  className="hidden"
-                  id="vaccine-document"
-                />
-                <label
-                  htmlFor="vaccine-document"
-                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50"
-                >
+                <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => handleFileUpload(e, editingVaccine || newVaccine)} className="hidden" id="vaccine-document" />
+                <label htmlFor="vaccine-document" className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600">
                   <Upload className="w-4 h-4" />
                   Choose File
                 </label>
-                {(editingVaccine?.document || newVaccine.document) && (
-                  <span className="text-sm text-green-600">Document uploaded ✓</span>
-                )}
+                {(editingVaccine?.document || newVaccine.document) && <span className="text-sm text-green-600">Document uploaded ✓</span>}
               </div>
             </div>
 
             <div className="flex gap-2">
-              <Button
-                onClick={editingVaccine ? updateVaccine : addVaccine}
-                className="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600"
-              >
+              <Button onClick={editingVaccine ? updateVaccine : addVaccine} className="bg-gradient-to-r from-blue-500 to-pink-500 hover:from-blue-600 hover:to-pink-600">
                 <Save className="w-4 h-4 mr-2" />
                 {editingVaccine ? "Update" : "Add"} Vaccine
               </Button>
               <Button
                 variant="outline"
                 onClick={() => {
-                  setIsAddingVaccine(false)
-                  setEditingVaccine(null)
+                  setIsAddingVaccine(false);
+                  setEditingVaccine(null);
                   setNewVaccine({
                     name: "",
                     scheduledDate: "",
@@ -485,9 +426,8 @@ export default function VaccineTracker({ babyId }) {
                     status: "scheduled",
                     notes: "",
                     document: null,
-                  })
-                }}
-              >
+                  });
+                }}>
                 Cancel
               </Button>
             </div>
@@ -496,7 +436,7 @@ export default function VaccineTracker({ babyId }) {
       )}
 
       {/* Vaccine List */}
-      <Card className="bg-white/80 backdrop-blur-sm">
+      <Card className="bg-white/80 dark:bg-gray-700 dark:text-gray-300 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-blue-600" />
@@ -511,10 +451,7 @@ export default function VaccineTracker({ babyId }) {
             <div className="text-center py-8 text-gray-500">
               <Shield className="w-12 h-12 mx-auto mb-4 text-gray-300" />
               <p>No vaccines recorded yet</p>
-              <Button
-                className="bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white mt-4"
-                onClick={() => setIsAddingVaccine(true)}
-              >
+              <Button className="bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white mt-4" onClick={() => setIsAddingVaccine(true)}>
                 Add First Vaccine
               </Button>
             </div>
@@ -523,27 +460,18 @@ export default function VaccineTracker({ babyId }) {
               {vaccines
                 .sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate))
                 .map((vaccine) => {
-                  const status = getVaccineStatus(vaccine)
+                  const status = getVaccineStatus(vaccine);
                   return (
-                    <div
-                      key={vaccine._id} 
-                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
+                    <div key={vaccine._id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
                       <div className="flex items-center gap-4">
                         <status.icon
                           className={`w-5 h-5 ${
-                            status.status === "completed"
-                              ? "text-green-600"
-                              : status.status === "overdue"
-                                ? "text-red-600"
-                                : status.status === "due"
-                                  ? "text-yellow-600"
-                                  : "text-blue-600"
+                            status.status === "completed" ? "text-green-600" : status.status === "overdue" ? "text-red-600" : status.status === "due" ? "text-yellow-600" : "text-blue-600"
                           }`}
                         />
                         <div>
                           <h4 className="font-medium">{vaccine.name}</h4>
-                          <p className="text-sm text-gray-600">{vaccine.description || "No description"}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">{vaccine.description || "No description"}</p>
                           {vaccine.notes && <p className="text-sm text-gray-500 italic">"{vaccine.notes}"</p>}
                         </div>
                       </div>
@@ -551,14 +479,8 @@ export default function VaccineTracker({ babyId }) {
                       <div className="flex items-center gap-4">
                         <div className="text-right">
                           <Badge className={status.color}>{status.text}</Badge>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Scheduled: {new Date(vaccine.scheduledDate).toLocaleDateString()}
-                          </p>
-                          {vaccine.completedDate && (
-                            <p className="text-sm text-green-600">
-                              Completed: {new Date(vaccine.completedDate).toLocaleDateString()}
-                            </p>
-                          )}
+                          <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">Scheduled: {new Date(vaccine.scheduledDate).toLocaleDateString()}</p>
+                          {vaccine.completedDate && <p className="text-sm text-green-600">Completed: {new Date(vaccine.completedDate).toLocaleDateString()}</p>}
                         </div>
 
                         <div className="flex gap-2">
@@ -568,28 +490,22 @@ export default function VaccineTracker({ babyId }) {
                               variant="ghost"
                               onClick={() => {
                                 if (vaccine.document.startsWith("data:")) {
-                                  const link = document.createElement('a');
+                                  const link = document.createElement("a");
                                   link.href = vaccine.document;
-                                  link.download = `${vaccine.name}_document.${vaccine.document.split(';')[0].split('/')[1]}`;
+                                  link.download = `${vaccine.name}_document.${vaccine.document.split(";")[0].split("/")[1]}`;
                                   document.body.appendChild(link);
                                   link.click();
                                   document.body.removeChild(link);
                                 } else {
-                                  window.open(vaccine.document, '_blank');
+                                  window.open(vaccine.document, "_blank");
                                 }
-                              }}
-                            >
+                              }}>
                               <FileText className="w-4 h-4" />
                             </Button>
                           )}
 
                           {vaccine.status !== "completed" && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => markAsCompleted(vaccine._id)}
-                              className="text-green-600 hover:text-green-700"
-                            >
+                            <Button size="sm" variant="ghost" onClick={() => markAsCompleted(vaccine._id)} className="text-green-600 hover:text-green-700">
                               <CheckCircle className="w-4 h-4" />
                             </Button>
                           )}
@@ -598,18 +514,13 @@ export default function VaccineTracker({ babyId }) {
                             <Edit className="w-4 h-4" />
                           </Button>
 
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => deleteVaccine(vaccine._id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
+                          <Button size="sm" variant="ghost" onClick={() => deleteVaccine(vaccine._id)} className="text-red-600 hover:text-red-700">
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>
                     </div>
-                  )
+                  );
                 })}
             </div>
           )}
@@ -618,7 +529,7 @@ export default function VaccineTracker({ babyId }) {
 
       {/* Progress Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+        <Card className="bg-green-300 border-green-200">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
@@ -626,15 +537,13 @@ export default function VaccineTracker({ babyId }) {
               </div>
               <div>
                 <p className="text-sm text-green-600">Completed</p>
-                <p className="text-2xl font-bold text-green-700">
-                  {vaccines.filter((v) => v.status === "completed").length}
-                </p>
+                <p className="text-2xl font-bold text-green-700">{vaccines.filter((v) => v.status === "completed").length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <Card className="bg-blue-300 border-blue-200">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
@@ -642,15 +551,13 @@ export default function VaccineTracker({ babyId }) {
               </div>
               <div>
                 <p className="text-sm text-blue-600">Scheduled</p>
-                <p className="text-2xl font-bold text-blue-700">
-                  {vaccines.filter((v) => v.status === "scheduled").length}
-                </p>
+                <p className="text-2xl font-bold text-blue-700">{vaccines.filter((v) => v.status === "scheduled").length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+        <Card className="bg-orange-300 border-yellow-200">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
@@ -661,10 +568,10 @@ export default function VaccineTracker({ babyId }) {
                 <p className="text-2xl font-bold text-yellow-700">
                   {
                     vaccines.filter((v) => {
-                      const today = new Date()
-                      const scheduled = new Date(v.scheduledDate)
-                      const daysDiff = Math.ceil((scheduled - today) / (1000 * 60 * 60 * 24))
-                      return v.status !== "completed" && daysDiff <= 7 && daysDiff >= 0
+                      const today = new Date();
+                      const scheduled = new Date(v.scheduledDate);
+                      const daysDiff = Math.ceil((scheduled - today) / (1000 * 60 * 60 * 24));
+                      return v.status !== "completed" && daysDiff <= 7 && daysDiff >= 0;
                     }).length
                   }
                 </p>
@@ -673,7 +580,7 @@ export default function VaccineTracker({ babyId }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-red-50 to-pink-50 border-red-200">
+        <Card className="bg-red-300 border-red-200">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
@@ -707,5 +614,5 @@ export default function VaccineTracker({ babyId }) {
         .
       </div>
     </div>
-  )
+  );
 }
