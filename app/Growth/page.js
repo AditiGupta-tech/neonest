@@ -939,9 +939,9 @@ export default function GrowthPage() {
 
       {/* Quick Tips */}
       {growthLogs.length > 0 && (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 sm:p-6 rounded-lg border border-purple-200">
-          <h3 className="text-lg font-semibold text-purple-800 mb-3 flex items-center gap-2">💡 Growth Tracking Tips</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-purple-700">
+        <div className="bg-white dark:bg-gray-700 p-4 sm:p-6 rounded-lg border border-purple-200">
+          <h3 className="text-lg font-semibold text-purple-800 dark:text-purple-600 mb-3 flex items-center gap-2">💡 Growth Tracking Tips</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-purple-700 dark:text-purple-600">
             <div className="flex items-start gap-2">
               <span>📏</span>
               <span>Measure at the same time of day for consistency</span>
@@ -963,12 +963,12 @@ export default function GrowthPage() {
       )}
 
       <div className="space-y-6">
-        <div className="bg-white p-3 sm:p-4 rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-700 p-3 sm:p-4 rounded-lg shadow">
           <h3 className="text-xl font-semibold mb-4">Developmental Milestones</h3>
           <MilestoneTracker babyDOB={babyDOB} />
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
           <InteractionWithBaby />
         </div>
       </div>
