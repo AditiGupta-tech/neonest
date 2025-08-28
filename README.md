@@ -80,15 +80,15 @@
   <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 </div>
 
-![GSSoC Logo](/neonest/public/gssoc%20logo.png)
+![GSSoC Logo](gssocLogo.png)
 
 **🌟 Exciting News...**
 
-🚀 This project is now an official part of GirlScript Summer of Code – GSSoC'25! 💃🎉💻 We're thrilled to welcome contributors from all over India and beyond to collaborate, build, and grow NeoNest! Let’s make learning and career development smarter – together! 🌟👨‍💻👩‍💻
+🚀 This project is now an official part of GirlScript Summer of Code – GSSoC'25! 🎉 We're thrilled to welcome contributors from all over India and beyond to collaborate, build, and grow NeoNest! Let’s make learning and career development smarter – together! 🌟👨‍💻👩‍💻
 
-👩‍💻 GSSoC is one of India’s **largest 3-month-long open-source programs** that encourages developers of all levels to contribute to real-world projects 🌍 while learning, collaborating, and growing together. 🌱
+👩‍💻 GSSoC is one of India’s **largest 3-month-long open-source programs** that encourages developers of all levels to contribute to real-world projects while learning, collaborating, and growing together. 🌱
 
-🌈 With **mentorship, community support**, and **collaborative coding**, it's the perfect platform for developers to:
+With **mentorship, community support**, and **collaborative coding**, it's the perfect platform for developers to:
 
 - ✨ Improve their skills
 - 🤝 Contribute to impactful projects
