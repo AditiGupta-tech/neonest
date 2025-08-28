@@ -67,22 +67,11 @@
   <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 </div>
 
-<h2 align="center">🧑‍💻Project Admin:</h2>
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/AditiGupta-tech"><img src="https://avatars.githubusercontent.com/u/195787501?v=4" height="140px" width="140px" alt="Aditi Gupta"></a><br><sub><b>Aditi Gupta</b><br><a href="https://www.linkedin.com/in/aditi-gupta-464024324/"><img src="https://github-production-user-asset-6210df.s3.amazonaws.com/73993775/278833250-adb040ea-e3ef-446e-bcd4-3e8d7d4c0176.png" width="45px" height="45px"></a></sub>
-    </td>
-  </tr>
-</table>
-
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-</div>
-
-![GSSoC Logo](gssocLogo.png)
-
 **🌟 Exciting News...**
+
+<p align="center">
+  <img src="gssocLogo.png" alt="GSSoC Logo" width="500">
+</p>
 
 🚀 This project is now an official part of GirlScript Summer of Code – GSSoC'25! 🎉 We're thrilled to welcome contributors from all over India and beyond to collaborate, build, and grow NeoNest! Let’s make learning and career development smarter – together! 🌟👨‍💻👩‍💻
 
@@ -99,6 +88,32 @@ With **mentorship, community support**, and **collaborative coding**, it's the p
 
 <div align="center">
   <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+</div>
+
+<h2 align="center">🧑‍💻 Project Admin</h2>
+
+<div align="center">
+  <a href="https://github.com/AditiGupta-tech">
+    <img src="https://avatars.githubusercontent.com/u/195787501?v=4" width="140" height="140" alt="Aditi Gupta" style="border-radius:50%">
+  </a>
+  <br>
+  <sub>
+    <b>Aditi Gupta</b>
+    <br>
+    <a href="https://www.linkedin.com/in/aditi-gupta-464024324/">
+      <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/73993775/278833250-adb040ea-e3ef-446e-bcd4-3e8d7d4c0176.png" width="45" height="45" alt="LinkedIn">
+    </a>
+    &nbsp;&nbsp; 
+    <a href="https://aditi-gupta-portfolio.vercel.app/">
+      <img src="portfolio.png" width="45" height="45" alt="Portfolio" style="border-radius:50%">
+    </a>
+  </sub>
+</div>
+
+<br>
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%" alt="Project GIF">
 </div>
 
 **📁 NeoNest Folder Structure**
