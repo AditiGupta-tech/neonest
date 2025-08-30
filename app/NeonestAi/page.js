@@ -420,7 +420,7 @@ export default function NeonestAi() {
         </Card>
         <Card className="dark:bg-gray-700">
           <CardHeader>
-            <CardTitle>Top Questions</CardTitle>
+            <CardTitle className="dark:text-gray-200">Top Questions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {analytics.topQuestions?.map((q, i) => (

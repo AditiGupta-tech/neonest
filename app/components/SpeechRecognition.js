@@ -117,16 +117,16 @@ const SpeechRecognition = ({ onTranscript, isListening, setIsListening, disabled
         variant="outline"
         size="icon"
         onClick={toggleListening}
-        disabled={disabled}
-        className={`transition-all duration-200 ${isListening ? "bg-red-500 text-black hover:bg-red-600 border-red-500 shadow-lg" : "hover:bg-pink-50 border-pink-300"}`}
+        // disabled={disabled}
+        className={`transition-all duration-200 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 ${isListening ? "bg-red-500 text-white hover:bg-red-600 border-red-500 shadow-lg" : "hover:border-gray-300 dark:hover:border-gray-600"}`}
         title={isListening ? "Stop listening" : "Start listening"}>
         {isListening ? (
           <div className="relative">
-            <MicOff className="w-4 h-4 animate-pulse dark:text-white " />
+            <MicOff className="w-4 h-4 animate-pulse text-white" />
             <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500  rounded-full animate-ping" />
           </div>
         ) : (
-          <Mic className="w-4 h-4 dark:text-white " />
+          <Mic className="w-4 h-4 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100" />
         )}
       </Button>
 
