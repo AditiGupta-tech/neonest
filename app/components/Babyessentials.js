@@ -65,9 +65,9 @@ const getCategoryBadgeProps = (category) => {
 
 const Babyessentials = ({ onAddEssential }) => {
   return (
-    <Card className="bg-white/80 backdrop-blur-sm">
+    <Card className="bg-white/80 dark:bg-gray-700 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center dark:text-gray-200 gap-2">
           <ShoppingCart className="w-5 h-5 text-green-600" />
           Common Baby Essentials
         </CardTitle>
@@ -78,25 +78,21 @@ const Babyessentials = ({ onAddEssential }) => {
           return (
             <div
               key={index}
-              className="p-3 bg-pink-100 border border-blue-100 rounded-lg shadow-sm
+              className="p-3 bg-pink-100 dark:bg-gray-600  rounded-lg shadow-sm
                          hover:bg-pink-50 hover:border-blue-200 hover:shadow-md
-                         transition-all duration-200 cursor-default flex flex-col justify-between"
-            >
-              <div> 
-                <p className="font-semibold text-gray-800 mb-1">{item.name}</p>
-                <p className="text-sm text-gray-600 mb-2">{item.use}</p>
+                         transition-all duration-200 cursor-default flex flex-col justify-between">
+              <div>
+                <p className="font-semibold text-gray-800 dark:text-gray-200 mb-1">{item.name}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-200 mb-2">{item.use}</p>
               </div>
-              <div className="flex items-center justify-between gap-2"> 
-                <Badge className={`${badgeProps.className} capitalize`}>
-  {item.category}
-</Badge>
+              <div className="flex items-center justify-between gap-2">
+                <Badge className={`${badgeProps.className} capitalize dark:text-gray-800`}>{item.category}</Badge>
 
                 <button
                   onClick={() => onAddEssential(item.name, item.category)}
                   className="p-1 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors
                              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-                  title={`Add ${item.name} to inventory`}
-                >
+                  title={`Add ${item.name} to inventory`}>
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
