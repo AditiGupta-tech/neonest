@@ -212,7 +212,7 @@ export default function Page() {
                     <div key={index} className="border border-gray-200 dark:border-gray-700  rounded-lg my-2">
                       <Button variant="ghost" onClick={() => setExpandedFAQ(isExpanded ? null : `${category.id}-${index}`)} className="w-full justify-between p-5 h-auto text-left">
                         <span className="font-medium dark:text-gray-100">{faq.question}</span>
-                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        {isExpanded ? <ChevronUp className="w-4 h-4 dark:text-gray-200" /> : <ChevronDown className="w-4 h-4 dark:text-gray-200" />}
                       </Button>
                       {isExpanded && <div className="px-5 pb-5 text-gray-600 dark:text-gray-200">{faq.answer}</div>}
                     </div>

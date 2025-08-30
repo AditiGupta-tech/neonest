@@ -295,7 +295,7 @@ export default function NeonestAi() {
                     <span className={`text-xs block mt-1 ${m.role === "user" ? "text-gray-300" : "text-pink-700"}`}>{formatTime(m.createdAt)}</span>
                   </div>
                   {m.role === "assistant" && (
-                    <div className="flex justify-start mt-2">
+                    <div className="flex justify-start mt-2 ">
                       <TextToSpeech text={m.content} />
                     </div>
                   )}
@@ -358,7 +358,7 @@ export default function NeonestAi() {
             </TooltipProvider>
 
             <Button type="submit" disabled={isSending || !input.trim()} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
-              {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 dark:text-gray-100" />}
             </Button>
           </form>
 
@@ -424,7 +424,10 @@ export default function NeonestAi() {
           </CardHeader>
           <CardContent className="space-y-2">
             {analytics.topQuestions?.map((q, i) => (
-              <button key={i} onClick={() => handleQuickQuestion(q.question)} className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 px-2 py-1 rounded transition">
+              <button
+                key={i}
+                onClick={() => handleQuickQuestion(q.question)}
+                className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800 px-2 py-1 rounded transition">
                 <span>{q.question}</span>
                 <Badge variant="secondary">{q.count}</Badge>
               </button>
