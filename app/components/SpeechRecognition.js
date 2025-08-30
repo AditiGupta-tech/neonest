@@ -117,7 +117,7 @@ const SpeechRecognition = ({ onTranscript, isListening, setIsListening, disabled
         variant="outline"
         size="icon"
         onClick={toggleListening}
-        // disabled={disabled}
+        disabled={disabled}
         className={`transition-all duration-200 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 ${isListening ? "bg-red-500 text-white hover:bg-red-600 border-red-500 shadow-lg" : "hover:border-gray-300 dark:hover:border-gray-600"}`}
         title={isListening ? "Stop listening" : "Start listening"}>
         {isListening ? (
