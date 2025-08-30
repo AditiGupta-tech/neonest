@@ -249,13 +249,13 @@ export default function NeonestAi() {
                   <div className={`relative rounded-xl px-4 py-3 max-w-[80%] ${m.role === "user" ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white" : "bg-gray-200 text-gray-800"}`}>
                     {/* Action icons */}
                     <div
-                      className={`absolute bottom-full mb-2 flex gap-1 bg-white p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
+                      className={`absolute bottom-full mb-2 flex gap-1 bg-white dark:bg-gray-800 p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
                        ${m.role === "user" ? "right-0" : "left-0"}`}>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copyToClipboard(m.content)}>
-                              <Copy className="w-4 h-4 text-gray-600" />
+                            <Button variant="ghost" size="icon" className="h-7 w-7 dark:hover:bg-gray-600" onClick={() => copyToClipboard(m.content)}>
+                              <Copy className="w-4 h-4 text-gray-600 dark:text-white" />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>Copy to clipboard</TooltipContent>
@@ -336,7 +336,7 @@ export default function NeonestAi() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={isListening ? "Listening... Speak now..." : "Ask me about baby care..."}
-              className={`flex-1 ${isListening ? "border-green-500 bg-green-50 " : "border-pink-300 dark:bg-gray-700"}`}
+              className={`flex-1 dark:text-white ${isListening ? "border-green-500 bg-green-50 " : "border-pink-300 dark:bg-gray-700"}`}
               disabled={isSending}
             />
             <TooltipProvider>
