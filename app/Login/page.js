@@ -7,8 +7,8 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default function LoginPage() {
   useEffect(() => {
@@ -117,10 +117,7 @@ export default function LoginPage() {
           toast.error(
             <>
               No such user exists!{" "}
-              <span
-                onClick={() => router.push("/Signup")}
-                className="text-pink-600 italic cursor-pointer hover:underline"
-              >
+              <span onClick={() => router.push("/Signup")} className="text-pink-600 italic cursor-pointer hover:underline">
                 Sign up
               </span>{" "}
               instead.
@@ -142,37 +139,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 p-4">
+    <div className="min-h-screen flex items-center justify-center  dark:bg-gray-900/90  bg-pink-100  p-4">
       <ToastContainer />
-      <div className="w-full max-w-md animate-fade-in">
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]"
-        >
+      <div className="w-full max-w-md animate-fade-in ">
+        <form onSubmit={handleSubmit} className="bg-white  dark:bg-gray-800/90 p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2 hover:from-pink-700 hover:to-purple-700 transition-all duration-300">
               Welcome Back to NeoNest!
             </h2>
-            <p className="text-gray-600 text-sm hover:text-gray-700 transition-colors duration-300">
-              Sign in to continue your parenting journey
-            </p>
+            <p className="text-gray-600 text-sm hover:text-gray-700 dark:text-gray-200 transition-colors duration-300">Sign in to continue your parenting journey</p>
           </div>
 
           {/* Email Field */}
           <div className="mb-6 group">
-            <label className="block text-sm font-medium text-gray-700 mb-2 group-hover:text-gray-800 transition-colors duration-300">
-              Email Address
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2 group-hover:text-gray-500 dark:text-gray-200 transition-colors duration-300">Email Address</label>
             <div
               className={`flex items-center border rounded-xl px-3 py-3 bg-gray-50 focus-within:ring-2 focus-within:bg-white transition-all duration-300 hover:bg-gray-100 hover:border-pink-300 group
-              ${
-                emailError && emailTouched
-                  ? "border-red-500 focus-within:ring-red-400"
-                  : "border-gray-300 focus-within:ring-pink-400"
-              }
-            `}
-            >
+              ${emailError && emailTouched ? "border-red-500 focus-within:ring-red-400" : "border-gray-300 focus-within:ring-pink-400"}
+            `}>
               <Mail className="w-5 h-5 text-gray-400 mr-3 group-hover:text-pink-500 transition-colors duration-300" />
               <input
                 type="email"
@@ -181,7 +166,7 @@ export default function LoginPage() {
                 onChange={handleEmailChange}
                 onBlur={() => setEmailTouched(true)}
                 required
-                className="w-full bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 group-hover:placeholder-gray-600 transition-colors duration-300"
+                className="w-full bg-white focus:outline-none text-gray-900 placeholder-gray-500 group-hover:placeholder-gray-600  dark:bg-white transition-colors duration-300"
               />
             </div>
             {emailError && emailTouched && (
@@ -194,18 +179,11 @@ export default function LoginPage() {
 
           {/* Password Field */}
           <div className="mb-6 group">
-            <label className="block text-sm font-medium text-gray-700 mb-2 group-hover:text-gray-800 transition-colors duration-300">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2 group-hover:text-gray-500 dark:text-gray-200 transition-colors duration-300">Password</label>
             <div
               className={`flex items-center border rounded-xl px-3 py-3 bg-gray-50 focus-within:ring-2 focus-within:bg-white transition-all duration-300 hover:bg-gray-100 hover:border-pink-300 group
-              ${
-                passwordError && passwordTouched
-                  ? "border-red-500 focus-within:ring-red-400"
-                  : "border-gray-300 focus-within:ring-pink-400"
-              }
-            `}
-            >
+              ${passwordError && passwordTouched ? "border-red-500 focus-within:ring-red-400" : "border-gray-300 focus-within:ring-pink-400"}
+            `}>
               <Lock className="w-5 h-5 text-gray-400 mr-3 group-hover:text-pink-500 transition-colors duration-300" />
               <input
                 type={showPassword ? "text" : "password"}
@@ -214,18 +192,10 @@ export default function LoginPage() {
                 onChange={handlePasswordChange}
                 onBlur={() => setPasswordTouched(true)}
                 required
-                className="w-full bg-transparent focus:outline-none text-gray-900 placeholder-gray-500 group-hover:placeholder-gray-600 transition-colors duration-300"
+                className="w-full bg-white focus:outline-none text-gray-900  dark:bg-white placeholder-gray-500 group-hover:placeholder-gray-600 transition-colors duration-300"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="text-gray-400 hover:text-pink-500 transition-colors duration-300 hover:scale-110 transform"
-              >
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-pink-500 transition-colors duration-300 hover:scale-110 transform">
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
             {passwordError && passwordTouched && (
@@ -246,18 +216,14 @@ export default function LoginPage() {
                   ? "bg-gradient-to-r from-pink-400 to-purple-500 hover:from-pink-500 hover:to-purple-600 text-white hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg hover:shadow-pink-200"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }
-            `}
-          >
+            `}>
             {isFormValid ? "Sign In" : "Please fill all fields"}
           </button>
 
           {/* Signup Link */}
-          <p className="mt-6 text-sm text-center text-gray-600">
+          <p className="mt-6 text-sm text-center text-gray-600 dark:text-gray-200">
             Don't have an account?{" "}
-            <a
-              href="/Signup"
-              className="text-pink-600 hover:text-pink-700 font-medium transition-colors duration-300 hover:underline"
-            >
+            <a href="/Signup" className="text-pink-600 hover:text-pink-700 font-medium transition-colors duration-300 hover:underline">
               Sign up here
             </a>
           </p>

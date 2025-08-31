@@ -1,4 +1,3 @@
-
 "use client";
 
 import axios from "axios";
@@ -6,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default function SignupPage() {
   useEffect(() => {
@@ -109,7 +108,6 @@ export default function SignupPage() {
     return nameIsValid && emailIsValid && passwordIsValid;
   }, [name, email, password]);
 
-
   const handleNext = async (e) => {
     e.preventDefault();
 
@@ -133,10 +131,7 @@ export default function SignupPage() {
         password: password,
       };
 
-      const res = await axios.post(
-        "/api/auth/signup",
-        userData
-      );
+      const res = await axios.post("/api/auth/signup", userData);
 
       const data = res.data;
 
@@ -165,14 +160,9 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-yellow-100 to-pink-100">
-      <form
-        onSubmit={handleNext}
-        className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md"
-      >
-        <h1 className="text-2xl font-bold mb-4 text-center text-pink-600">
-          Parent Signup
-        </h1>
+    <div className="min-h-screen flex items-center justify-center p-6 dark:bg-gray-900/90 bg-pink-100">
+      <form onSubmit={handleNext} className="bg-white dark:bg-gray-800/90 p-6 rounded-xl shadow-xl w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-4 text-center text-pink-600">Parent Signup</h1>
 
         <div className="mb-4">
           <input
@@ -183,10 +173,10 @@ export default function SignupPage() {
             onBlur={() => setNameTouched(true)}
             required
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-              ${(nameError && nameTouched) ? 'border-red-500 focus:ring-red-400' : 'border-pink-300 focus:ring-pink-400'}
+              ${nameError && nameTouched ? "border-red-500 focus:ring-red-400" : "border-pink-300 focus:ring-pink-400"}
             `}
           />
-          {(nameError && nameTouched) && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
+          {nameError && nameTouched && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
         </div>
 
         <div className="mb-4">
@@ -198,62 +188,55 @@ export default function SignupPage() {
             onBlur={() => setEmailTouched(true)}
             required
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-              ${(emailError && emailTouched) ? 'border-red-500 focus:ring-red-400' : 'border-pink-300 focus:ring-pink-400'}
+              ${emailError && emailTouched ? "border-red-500 focus:ring-red-400" : "border-pink-300 focus:ring-pink-400"}
             `}
           />
-          {(emailError && emailTouched) && (
+          {emailError && emailTouched && (
             <p className="text-red-500 text-sm mt-1">
-              Email already exists!{' '}
+              Email already exists!{" "}
               <span
-                onClick={() => router.push('/Login')} // Navigate to login page
-                className="text-pink-600 italic cursor-pointer hover:underline"
-              >
+                onClick={() => router.push("/Login")} // Navigate to login page
+                className="text-pink-600 italic cursor-pointer hover:underline">
                 Login
-              </span>{' '}
+              </span>{" "}
               instead.
             </p>
           )}
         </div>
 
-          <div className="mb-6 relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Create Password"
-              value={password}
-              onChange={handlePasswordChange}
-              onBlur={() => setPasswordTouched(true)}
-              required
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-                ${(passwordError && passwordTouched) ? 'border-red-500 focus:ring-red-400' : 'border-pink-300 focus:ring-pink-400'}
+        <div className="mb-6 relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Create Password"
+            value={password}
+            onChange={handlePasswordChange}
+            onBlur={() => setPasswordTouched(true)}
+            required
+            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
+                ${passwordError && passwordTouched ? "border-red-500 focus:ring-red-400" : "border-pink-300 focus:ring-pink-400"}
               `}
-            />
-            <FontAwesomeIcon
-              icon={showPassword ? faEyeSlash : faEye}
-              onClick={togglePasswordVisibility}
-              className="absolute right-3 top-1/3 translate-y-[-50%]  cursor-pointer text-gray-500"
-              style={{ userSelect: "none" }}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            />
-            <p className="text-[11px] mt-1 text-gray-700 italic">Password must be at least 6 characters.</p>
-            {(passwordError && passwordTouched) && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
-          </div>
+          />
+          <FontAwesomeIcon
+            icon={showPassword ? faEyeSlash : faEye}
+            onClick={togglePasswordVisibility}
+            className="absolute right-3 top-1/3 translate-y-[-50%]  cursor-pointer text-gray-500"
+            style={{ userSelect: "none" }}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          />
+          <p className="text-[11px] mt-1 text-gray-700 italic">Password must be at least 6 characters.</p>
+          {passwordError && passwordTouched && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+        </div>
 
         <p className="text-center text-sm text-gray-500 mb-4">
-          At NeoNest, your data privacy is paramount. We are committed to
-          keeping your information confidential and do not share it with third
-          parties.
+          At NeoNest, your data privacy is paramount. We are committed to keeping your information confidential and do not share it with third parties.
         </p>
 
         <button
           type="submit"
           disabled={!isFormValid}
           className={`w-full py-2 rounded-lg font-semibold transition-transform
-            ${isFormValid
-              ? "bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:scale-105"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }
-          `}
-        >
+            ${isFormValid ? "bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:scale-105" : "bg-gray-300 text-gray-500 cursor-not-allowed"}
+          `}>
           Next
         </button>
       </form>

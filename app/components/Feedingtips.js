@@ -1,15 +1,9 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Info, AlertTriangle, Baby, Utensils, Apple, Cookie } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../components/ui/Carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../components/ui/Carousel";
 
 const feedingCategories = [
   {
@@ -133,32 +127,25 @@ const Feedingtips = () => {
   }, [selectedAge, ageApi]);
 
   return (
-    <section id="feeding-tips" className="px-4 py-6 bg-white/50 rounded-lg space-y-12">
+    <section id="feeding-tips" className="px-4 py-6 bg-white/50 dark:bg-gray-700 rounded-lg space-y-12">
       {/* General Tips Section */}
       <div className="container mx-auto">
         <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold text-gray-800 mb-2">Feeding Tips</h2>
-          <p className="text-lg text-gray-600">Essential guidance for safe and healthy feeding</p>
+          <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-2">Feeding Tips</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Essential guidance for safe and healthy feeding</p>
         </div>
 
         {/* Category selection buttons */}
-        <div className="flex flex-wrap justify-center gap-3 mb-4">
+        <div className="flex flex-wrap justify-center gap-3  mb-4">
           {feedingCategories.map((category) => (
             <label
               key={category.title}
-              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${selectedCategory === category.title
+              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${
+                selectedCategory === category.title
                   ? "bg-gradient-to-r from-pink-600 to-blue-600 text-white shadow-lg"
                   : "bg-white text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-blue-50 shadow-md"
-                }`}
-            >
-              <input
-                type="radio"
-                name="category"
-                value={category.title}
-                checked={selectedCategory === category.title}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="hidden"
-              />
+              }`}>
+              <input type="radio" name="category" value={category.title} checked={selectedCategory === category.title} onChange={(e) => setSelectedCategory(e.target.value)} className="hidden" />
               <category.icon className="w-4 h-4" />
               <span className="text-sm font-medium">{category.title}</span>
             </label>
@@ -173,8 +160,8 @@ const Feedingtips = () => {
                 .find((category) => category.title === selectedCategory)
                 ?.tips.map((tip, index) => (
                   <CarouselItem key={index}>
-                    <div className="p-0.5">
-                      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-pink-50 via-white to-blue-50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] transition-all duration-300">
+                    <div className="p-0.5 ">
+                      <Card className="relative overflow-hidden border-0 dark:bg-gray-600 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] transition-all duration-300">
                         <div className="absolute inset-0 bg-gradient-to-br from-pink-200/40 to-blue-200/40" />
                         <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-pink-300/30 to-transparent rounded-full -translate-x-16 -translate-y-16 blur-2xl" />
                         <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-blue-300/30 to-transparent rounded-full translate-x-16 translate-y-16 blur-2xl" />
@@ -184,9 +171,7 @@ const Feedingtips = () => {
                             <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-400/20 via-purple-400/20 to-blue-400/20 blur" />
 
                             <div className="relative bg-white/80 rounded-lg p-3 sm:p-4 backdrop-blur-sm border border-pink-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
-                              <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">
-                                {tip}
-                              </p>
+                              <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">{tip}</p>
                             </div>
                           </div>
                         </CardContent>
@@ -197,8 +182,8 @@ const Feedingtips = () => {
             </CarouselContent>
 
             <div className="flex justify-center gap-8 mt-4">
-              <CarouselPrevious className="static translate-y-0 bg-white hover:bg-gray-50" />
-              <CarouselNext className="static translate-y-0 bg-white hover:bg-gray-50" />
+              <CarouselPrevious className="static translate-y-0 bg-white dark:bg-gray-600 hover:bg-gray-50" />
+              <CarouselNext className="static translate-y-0 bg-white dark:bg-gray-600 hover:bg-gray-50" />
             </div>
           </Carousel>
         </div>
@@ -207,8 +192,8 @@ const Feedingtips = () => {
       {/* Age-Based Tips Section */}
       <div className="container mx-auto">
         <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold text-gray-800 mb-2">Tips by Age</h2>
-          <p className="text-lg text-gray-600">Age-appropriate feeding guidance for your baby</p>
+          <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-2">Tips by Age</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Age-appropriate feeding guidance for your baby</p>
         </div>
 
         {/* Age selection buttons */}
@@ -216,19 +201,12 @@ const Feedingtips = () => {
           {ageBasedTips.map((age) => (
             <label
               key={age.title}
-              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${selectedAge === age.title
+              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${
+                selectedAge === age.title
                   ? "bg-gradient-to-r from-pink-600 to-blue-600 text-white shadow-lg"
                   : "bg-white text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-blue-50 shadow-md"
-                }`}
-            >
-              <input
-                type="radio"
-                name="age"
-                value={age.title}
-                checked={selectedAge === age.title}
-                onChange={(e) => setSelectedAge(e.target.value)}
-                className="hidden"
-              />
+              }`}>
+              <input type="radio" name="age" value={age.title} checked={selectedAge === age.title} onChange={(e) => setSelectedAge(e.target.value)} className="hidden" />
               <age.icon className="w-4 h-4" />
               <span className="text-sm font-medium">{age.title}</span>
             </label>
@@ -244,7 +222,7 @@ const Feedingtips = () => {
                 ?.tips.map((tip, index) => (
                   <CarouselItem key={index}>
                     <div className="p-0.5">
-                      <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-pink-50 via-white to-blue-50 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] transition-all duration-300">
+                      <Card className="relative overflow-hidden border-0 dark:bg-gray-600 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.16)] transition-all duration-300">
                         <div className="absolute inset-0 bg-gradient-to-br from-pink-200/40 to-blue-200/40" />
                         <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-pink-300/30 to-transparent rounded-full -translate-x-16 -translate-y-16 blur-2xl" />
                         <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-blue-300/30 to-transparent rounded-full translate-x-16 translate-y-16 blur-2xl" />
@@ -254,9 +232,7 @@ const Feedingtips = () => {
                             <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-pink-400/20 via-purple-400/20 to-blue-400/20 blur" />
 
                             <div className="relative bg-white/80 rounded-lg p-3 sm:p-4 backdrop-blur-sm border border-pink-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
-                              <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">
-                                {tip}
-                              </p>
+                              <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">{tip}</p>
                             </div>
                           </div>
                         </CardContent>
@@ -267,8 +243,8 @@ const Feedingtips = () => {
             </CarouselContent>
 
             <div className="flex justify-center gap-8 mt-4">
-              <CarouselPrevious className="static translate-y-0 bg-white hover:bg-gray-50" />
-              <CarouselNext className="static translate-y-0 bg-white hover:bg-gray-50" />
+              <CarouselPrevious className="static translate-y-0 bg-white dark:bg-gray-600 hover:bg-gray-50" />
+              <CarouselNext className="static translate-y-0 bg-white dark:bg-gray-600 hover:bg-gray-50" />
             </div>
           </Carousel>
         </div>
