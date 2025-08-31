@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { Button } from "../components/ui/Button";
 import { Filter, Star, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardTitle, CardHeader } from '../components/ui/card';
+import './toys-card.css';
 import Badge from '../components/ui/Badge';
 
 // Dynamic import for JSON data
@@ -102,7 +103,7 @@ export default function Toys() {
                       {group.toys.map((toy) => (
                         <Card
                           key={toy.id}
-                          className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between"
+                          className="toys-card border border-gray-200 rounded-2xl shadow-sm flex flex-col justify-between"
                         >
                           <CardHeader className="p-4 pb-2">
                             <div className="flex items-center justify-center bg-white" style={{ minHeight: '160px' }}>
@@ -153,7 +154,7 @@ export default function Toys() {
                     groupedToys.find(g => g.id === selectedCategory)?.toys.map((toy) => (
                       <Card
                         key={toy.id}
-                        className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between"
+                        className="toys-card border border-gray-200 rounded-2xl shadow-sm flex flex-col justify-between"
                       >
                         <CardHeader className="p-4 pb-2">
                           <div className="flex items-center justify-between">
@@ -222,4 +223,3 @@ export default function Toys() {
     </div>
   );
 }
-
