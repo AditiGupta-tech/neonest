@@ -7,7 +7,7 @@ import Image from "next/image";
 import NewSections from "./Newsections";
 import NotificationDemo from "./NotificationDemo";
 import { Toaster, toast } from "sonner";
-
+import Link from "next/link";
 const Homepage = () => {
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
   const [selectedRating, setSelectedRating] = useState(0);
@@ -256,10 +256,14 @@ const Homepage = () => {
                   <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Utensils className="w-6 h-6 text-pink-600 dark:text-pink-400" />
                   </div>
-                  <CardTitle className="group-hover:text-pink-600   dark:group-hover:text-pink-400  transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
+                  <Link href="/Feeding">
+                  <CardTitle className="group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Feeding Schedule
                   </CardTitle>
-                  <CardDescription className="text-gray-600 dark:text-gray-300    text-sm">Track feeding times, amounts, and create custom schedules</CardDescription>
+                </Link>
+                <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
+                  Track feeding times, amounts, and create custom schedules
+                </CardDescription>
                 </CardHeader>
               </Card>
 
@@ -268,7 +272,9 @@ const Homepage = () => {
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
+                  <Link href="/Essentials">
                   <CardTitle className="group-hover:text-blue-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Inventory Tracker</CardTitle>
+                  </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Monitor baby essentials and get low stock alerts</CardDescription>
                 </CardHeader>
               </Card>
@@ -278,7 +284,9 @@ const Homepage = () => {
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30  rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Camera className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
+                  <Link href="/Memories">
                   <CardTitle className="group-hover:text-purple-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Memory Vault</CardTitle>
+                  </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Capture precious moments and share with community</CardDescription>
                 </CardHeader>
               </Card>
@@ -288,7 +296,9 @@ const Homepage = () => {
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30  rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
+                  <Link href="/Medical">
                   <CardTitle className="group-hover:text-green-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Vaccine Tracker</CardTitle>
+                  </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Track vaccinations and upload medical records</CardDescription>
                 </CardHeader>
               </Card>
@@ -298,7 +308,9 @@ const Homepage = () => {
                   <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <PlayCircle className="w-6 h-6 text-orange-600  dark:text-orange-400" />
                   </div>
+                  <Link href="/Resources">
                   <CardTitle className="group-hover:text-orange-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Parent Resources</CardTitle>
+                  </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Videos, articles, and expert advice</CardDescription>
                 </CardHeader>
               </Card>
@@ -308,7 +320,9 @@ const Homepage = () => {
                   <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <HelpCircle className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                   </div>
+                  <Link href="/Faqs">
                   <CardTitle className="group-hover:text-teal-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">FAQs</CardTitle>
+                  </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Quick answers to common baby care questions</CardDescription>
                 </CardHeader>
               </Card>
