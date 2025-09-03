@@ -12,6 +12,7 @@ import { Menu, X } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import { useAutoTask } from "../context/AutoTaskContext";
 import AutoTask from "./AutoTask";
+import Toys  from "../Toys/page"
 
 const tabs = [
   { label: "home", path: "/" },
@@ -180,6 +181,9 @@ const Navbar = () => {
               <Chatbot />
             </div>
             }
+            <div className="m-1 mb-3  border-white rounded-full border-2">
+              <Toys />
+            </div>
             <div className="m-1 border-white rounded-full border-2">
               <AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask}/>
             </div>
