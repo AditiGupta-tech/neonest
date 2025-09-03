@@ -143,8 +143,8 @@ export default function Resources() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       <div className="text-center space-y-2">
-        <h2 className="text-4xl font-bold text-gray-800">Parenting Resources</h2>
-        <p className="text-lg text-gray-600">Curated articles to support your parenting journey</p>
+        <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-200">Parenting Resources</h2>
+        <p className="text-lg text-gray-600 dark:text-gray-200">Curated articles to support your parenting journey</p>
       </div>
 
       {/* Search + Filters Section */}
@@ -156,7 +156,7 @@ export default function Resources() {
             placeholder="Search articles..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500 w-full h-10"
+            className="pl-10 rounded-xl dark:bg-gray-700 border border-gray-200 shadow-sm focus:ring-2 focus:ring-pink-500 focus:border-pink-500 w-full h-10"
           />
         </div>
 
@@ -171,7 +171,7 @@ export default function Resources() {
               </div>
               <Select.Root value={selectedCategory} onValueChange={setSelectedCategory}>
                 <Select.Trigger
-                  className="flex justify-between items-center rounded-xl border border-gray-300 px-3 py-2 text-sm w-full sm:w-auto
+                  className="flex justify-between items-center rounded-xl  dark:bg-gray-700 border border-gray-300 px-3 py-2 text-sm w-full sm:w-auto
             focus:ring-2 focus:ring-pink-500 focus:border-pink-500
             hover:border-pink-400 hover:shadow-md transition duration-150 ease-in-out">
                   <Select.Value placeholder="Select category" />
@@ -179,10 +179,10 @@ export default function Resources() {
                     <ChevronDown className="w-4 h-4 text-gray-500" />
                   </Select.Icon>
                 </Select.Trigger>
-                <Select.Content className="bg-white border z-50 border-gray-200 rounded-lg shadow-lg overflow-hidden w-full sm:w-auto" position="popper">
+                <Select.Content className="bg-white  dark:bg-gray-700 border z-50 border-gray-200 rounded-lg shadow-lg overflow-hidden w-full sm:w-auto" position="popper">
                   <Select.Viewport className="p-1">
                     {categories.map((cat) => (
-                      <Select.Item key={cat.id} value={cat.id} className="px-3 py-2 text-sm rounded-md hover:bg-pink-100 cursor-pointer focus:outline-none">
+                      <Select.Item key={cat.id} value={cat.id} className="px-3 py-2 text-sm rounded-md hover:bg-pink-100  dark:hover:bg-gray-600 cursor-pointer focus:outline-none">
                         <Select.ItemText>{cat.name}</Select.ItemText>
                       </Select.Item>
                     ))}
@@ -199,7 +199,7 @@ export default function Resources() {
               </div>
               <Select.Root value={selectedType} onValueChange={setSelectedType}>
                 <Select.Trigger
-                  className="flex justify-between items-center rounded-xl border border-gray-300 px-3 py-2 text-sm w-full sm:w-auto
+                  className="flex justify-between items-center rounded-xl dark:bg-gray-700 border border-gray-300 px-3 py-2 text-sm w-full sm:w-auto
             focus:ring-2 focus:ring-pink-500 focus:border-pink-500
             hover:border-pink-400 hover:shadow-md transition duration-150 ease-in-out">
                   <Select.Value placeholder="Select format" />
@@ -207,10 +207,10 @@ export default function Resources() {
                     <ChevronDown className="w-4 h-4 text-gray-500" />
                   </Select.Icon>
                 </Select.Trigger>
-                <Select.Content className="bg-white z-50 border border-gray-200 rounded-lg shadow-lg overflow-hidden w-full sm:w-auto" position="popper">
+                <Select.Content className="bg-white dark:bg-gray-700 z-50 border border-gray-200 rounded-lg shadow-lg overflow-hidden w-full sm:w-auto" position="popper">
                   <Select.Viewport className="p-1">
                     {formatCategories.map((format) => (
-                      <Select.Item key={format.id} value={format.id} className="px-3 py-2 text-sm rounded-md hover:bg-pink-100 cursor-pointer focus:outline-none">
+                      <Select.Item key={format.id} value={format.id} className="px-3 py-2 text-sm rounded-md hover:bg-pink-100 dark:hover:bg-gray-600 cursor-pointer focus:outline-none">
                         <Select.ItemText>{format.name}</Select.ItemText>
                       </Select.Item>
                     ))}
@@ -246,16 +246,16 @@ export default function Resources() {
         {filteredArticles.map((article) => (
           <Card
             key={article.id}
-            className="group bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between cursor-default overflow-hidden h-full">
+            className="group bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between cursor-default overflow-hidden h-full">
             {/* Thumbnail */}
             {article.thumbnail && (
-              <div className="overflow-hidden rounded-t-xl border-b border-gray-200">
+              <div className="overflow-hidden rounded-t-xl border-b  border-gray-200">
                 <img src={article.thumbnail} alt={article.title} className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
               </div>
             )}
 
             <CardHeader className="p-4 !pb-2">
-              <CardTitle className="text-lg mt-2 text-gray-800 transition-colors duration-200 group-hover:text-pink-600">{article.title}</CardTitle>
+              <CardTitle className="text-lg mt-2 text-gray-800 dark:text-gray-200 transition-colors duration-200 group-hover:text-pink-600">{article.title}</CardTitle>
             </CardHeader>
 
             <div className="px-4 pb-2">
@@ -266,14 +266,14 @@ export default function Resources() {
           article.type === "article"
             ? "bg-blue-100 text-blue-600"
             : article.type === "video"
-            ? "bg-red-100 text-red-600"
-            : article.type === "audio"
-            ? "bg-green-100 text-green-600"
-            : article.type === "podcast"
-            ? "bg-purple-100 text-purple-600"
-            : article.type === "journal"
-            ? "bg-yellow-100 text-yellow-600"
-            : "bg-gray-100 text-gray-600"
+              ? "bg-red-100 text-red-600"
+              : article.type === "audio"
+                ? "bg-green-100 text-green-600"
+                : article.type === "podcast"
+                  ? "bg-purple-100 text-purple-600"
+                  : article.type === "journal"
+                    ? "bg-yellow-100 text-yellow-600"
+                    : "bg-gray-100 text-gray-600"
         }
       `}>
                 {article.type}
@@ -282,10 +282,10 @@ export default function Resources() {
 
             <CardContent className="px-4 pb-6 !pt-2 flex flex-col flex-grow justify-between">
               <div>
-                <p className="text-gray-600 text-sm mb-4">{article.description}</p>
-                <div className="space-y-1 mb-4 text-sm text-gray-500">
-                  <div className="text-black">By {article.author}</div>
-                  <div className="flex items-center gap-3 text-gray-500">
+                <p className="text-gray-600 text-sm mb-4 dark:text-gray-200">{article.description}</p>
+                <div className="space-y-1 mb-4 text-sm text-gray-500 dark:text-gray-200">
+                  <div className="text-black dark:text-gray-200">By {article.author}</div>
+                  <div className="flex items-center gap-3 text-gray-500 dark:text-gray-200">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {article.readTime}
