@@ -207,7 +207,7 @@ export default function MemoriesCommunityBlog() {
                   placeholder="e.g., Baby's First Steps"
                   value={editingMemory?.title || newMemory.title}
                   onChange={(e) => (editingMemory ? setEditingMemory({ ...editingMemory, title: e.target.value }) : setNewMemory({ ...newMemory, title: e.target.value }))}
-                  className="w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-800 focus:ring-pink-400 focus:border-pink-400 transition-all"
+                  className="w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-600 focus:ring-pink-400 focus:border-pink-400 transition-all"
                 />
               </div>
               <div>
@@ -216,7 +216,7 @@ export default function MemoriesCommunityBlog() {
                 </label>
                 <select
                   id="type"
-                  className="w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-800 dark:text-gray-300 focus:ring-pink-400 focus:border-pink-400 transition-all appearance-none bg-white pr-8"
+                  className="w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-600 dark:text-gray-300 focus:ring-pink-400 focus:border-pink-400 transition-all appearance-none bg-white pr-8"
                   value={editingMemory?.type || newMemory.type}
                   onChange={(e) => (editingMemory ? setEditingMemory({ ...editingMemory, type: e.target.value }) : setNewMemory({ ...newMemory, type: e.target.value }))}>
                   <option value="photo">Photo</option>
@@ -231,7 +231,7 @@ export default function MemoriesCommunityBlog() {
               </label>
               <textarea
                 id="description"
-                className="w-full p-3 border border-gray-300 rounded-lg h-32 dark:bg-gray-800 resize-y focus:ring-pink-400 focus:border-pink-400 transition-all"
+                className="w-full p-3 border border-gray-300 rounded-lg h-32 dark:bg-gray-600 resize-y focus:ring-pink-400 focus:border-pink-400 transition-all"
                 placeholder="What's the story behind this precious moment?"
                 value={editingMemory?.description || newMemory.description}
                 onChange={(e) => (editingMemory ? setEditingMemory({ ...editingMemory, description: e.target.value }) : setNewMemory({ ...newMemory, description: e.target.value }))}
@@ -278,7 +278,7 @@ export default function MemoriesCommunityBlog() {
                 onChange={(e) => {
                   editingMemory ? setEditingMemory({ ...editingMemory, tags: e.target.value }) : setNewMemory({ ...newMemory, tags: e.target.value });
                 }}
-                className="w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-800 focus:ring-pink-400 focus:border-pink-400 transition-all"
+                className="w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-600 focus:ring-pink-400 focus:border-pink-400 transition-all"
               />
             </div>
 
