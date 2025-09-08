@@ -96,8 +96,6 @@ export default function LoginPage() {
         password: password,
       };
 
-      console.log("credentials",credentials)
-
       const res = await axios.post("/api/auth/login", credentials);
 
       const data = res.data;
