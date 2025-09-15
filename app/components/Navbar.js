@@ -90,7 +90,7 @@ return (
 
     {/* --- NAVBAR --- */}
     <header className="bg-white/80 dark:bg-gray-900/80 dark:border-gray-700 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-30">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div className="container mx-auto px-6 py-2 md:py-4 flex items-center justify-between">
         
         {/* Hamburger Menu and Logo */}
         <div className="flex items-center">
@@ -113,8 +113,8 @@ return (
               </>
             ) : (
               <>
-                <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"><Link href="/login">Login</Link></Button>
-                <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"><Link href="/signup">Signup</Link></Button>
+                <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"><Link href="/Login">Login</Link></Button>
+                <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"><Link href="/Signup">Signup</Link></Button>
               </>
             )}
         </div>
@@ -123,19 +123,19 @@ return (
     
 
       {/* --- floating chatbot and autoTask button --- */}
-      <div className="fixed bottom-6 right-7 z-20 flex flex-col gap-2">
+      <div className="fixed top-1/2 -translate-y-1/2 right-6 flex flex-col gap-3 z-20">
           <div className="m-1 border-white rounded-full border-2"><Chatbot /></div>
           <div className="m-1 border-white rounded-full border-2"><AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask} /></div>
       </div>
         
       {/* --- sidebar --- */}
-      {menuOpen && (
+      {/* {menuOpen && ( */}
         <div 
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" 
+          className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
           onClick={() => setMenuOpen(false)} // Close menu
         >
           <div 
-            className="fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 shadow-xl p-6 flex flex-col"
+            className={`"fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 shadow-xl p-6 flex flex-col transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}
             onClick={(e) => e.stopPropagation()} // Prevent clicks inside the menu from closing it
           >
             {/* Logo */}
@@ -144,7 +144,7 @@ return (
               <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">NeoNest</span>
             </Link>
 
-            <nav className="flex flex-col space-y-4">
+            <nav className="flex flex-col space-y-4 flex-grow overflow-y-auto">
               {tabs.map(({ label, path }) => (
                 <Link key={label} href={path}>
                   <span 
@@ -158,7 +158,7 @@ return (
             </nav>
           </div>
         </div>
-    )}
+    {/* )} */}
   </>
 );
 };
