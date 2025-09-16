@@ -8,6 +8,8 @@ import { NotificationProvider } from "./context/NotificationContext";
 import { AutoTaskProvider } from "./context/AutoTaskContext";
 import AutoTaskManager from "./components/AutoTaskManager";
 import { ThemeProvider } from "next-themes";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 // import Chatbot from "./components/Chatbot";
 
 const geistSans = Geist({
@@ -67,6 +69,8 @@ export default function RootLayout({ children }) {
             </AutoTaskProvider>
           </AuthProvider>
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights/>
       </body>
     </html>
   );
