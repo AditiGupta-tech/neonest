@@ -758,7 +758,7 @@ export default function GrowthPage() {
 
         {(!babyDOB || !babyGender) && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-            <p className="text-sm text-yellow-800">⚠️ Please enter baby's date of birth and gender first to enable growth tracking</p>
+            <p className="text-sm text-yellow-800">⚠️ Please enter baby&apos;s date of birth and gender first to enable growth tracking</p>
           </div>
         )}
       </div>
@@ -804,7 +804,7 @@ export default function GrowthPage() {
                             <div>WHO Weight Ref: {log.whoWeight} kg</div>
                           </div>
                         )}
-                        {log.comment && <p className="text-sm italic text-gray-500 mt-2 bg-gray-100 p-2 rounded">💭 "{log.comment}"</p>}
+                        {log.comment && <p className="text-sm italic text-gray-500 mt-2 bg-gray-100 p-2 rounded">💭 {log.comment}</p>}
                       </div>
                       <div className="flex gap-2 self-end sm:self-start">
                         <button onClick={() => editEntry(log)} className="text-indigo-600 hover:text-indigo-800 p-1 rounded hover:bg-indigo-100" title="Edit entry">
@@ -867,7 +867,7 @@ export default function GrowthPage() {
               <div className="mt-4 p-3 bg-blue-50 rounded-lg dark:bg-gray-800">
                 <p className="text-sm text-blue-800 dark:text-blue-400">
                   📊 <strong>WHO Reference:</strong> The colored bars show World Health Organization growth standards (50th percentile) for {babyGender === "male" ? "boys" : "girls"} to help track
-                  your baby's growth progress.
+                  your baby&apos;s growth progress.
                 </p>
               </div>
             )}
@@ -924,7 +924,7 @@ export default function GrowthPage() {
         <div className="text-center py-12 dark:bg-gray-800/90 bg-white rounded-lg border-2 border-dashed border-gray-200">
           <div className="text-6xl mb-4">📈</div>
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">No Growth Entries Yet</h3>
-          <p className="text-gray-500 dark:text-gray-100 mb-4">Start logging your baby's measurements to unlock growth charts and insights!</p>
+          <p className="text-gray-500 dark:text-gray-100 mb-4">Start logging your baby&apos;s measurements to unlock growth charts and insights!</p>
           {(!babyDOB || !babyGender) && <p className="text-sm text-yellow-600 bg-yellow-100 inline-block px-4 py-2 rounded-lg">📝 Please fill in baby information above first</p>}
         </div>
       )}
@@ -977,7 +977,7 @@ export default function GrowthPage() {
       </div>
       {hasBadge && (
         <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded">
-          🏆 Congratulations! Your baby unlocked the <strong>Milestone Badge</strong> for "Rolling over" and "Sitting without support"!
+          🏆 Congratulations! Your baby unlocked the <strong>Milestone Badge</strong> for &quot;Rolling over&quot; and &quot;Sitting without support&quot;!
         </div>
       )}
 

@@ -92,17 +92,17 @@ const Homepage = () => {
     if (showWelcomeToast === "true" && parentName) {
       setShowWelcomeOverlay(true);
       toast.success(`Welcome ${parentName}! Explore NeoNest and make your parenting experience beautiful!`, { duration: 3000 });
+      sessionStorage.removeItem("showWelcomeToast");
+      sessionStorage.removeItem("parentName");
       timer = setTimeout(() => {
-        sessionStorage.removeItem("showWelcomeToast");
-        sessionStorage.removeItem("parentName");
         setShowWelcomeOverlay(false);
       }, 3000);
     } else if (showWelcomeBackToast === "true" && parentName) {
       setShowWelcomeOverlay(true);
       toast.success(`Welcome back ${parentName}! Continue your parenting journey with NeoNest!`, { duration: 3000 });
+      sessionStorage.removeItem("showWelcomeBackToast");
+      sessionStorage.removeItem("parentName");
       timer = setTimeout(() => {
-        sessionStorage.removeItem("showWelcomeBackToast");
-        sessionStorage.removeItem("parentName");
         setShowWelcomeOverlay(false);
       }, 3000);
     }
@@ -257,13 +257,11 @@ const Homepage = () => {
                     <Utensils className="w-6 h-6 text-pink-600 dark:text-pink-400" />
                   </div>
                   <Link href="/Feeding">
-                  <CardTitle className="group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
-                    Feeding Schedule
-                  </CardTitle>
-                </Link>
-                <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
-                  Track feeding times, amounts, and create custom schedules
-                </CardDescription>
+                    <CardTitle className="group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">
+                      Feeding Schedule
+                    </CardTitle>
+                  </Link>
+                  <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">Track feeding times, amounts, and create custom schedules</CardDescription>
                 </CardHeader>
               </Card>
 
@@ -273,7 +271,7 @@ const Homepage = () => {
                     <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <Link href="/Essentials">
-                  <CardTitle className="group-hover:text-blue-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Inventory Tracker</CardTitle>
+                    <CardTitle className="group-hover:text-blue-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Inventory Tracker</CardTitle>
                   </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Monitor baby essentials and get low stock alerts</CardDescription>
                 </CardHeader>
@@ -285,7 +283,7 @@ const Homepage = () => {
                     <Camera className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <Link href="/Memories">
-                  <CardTitle className="group-hover:text-purple-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Memory Vault</CardTitle>
+                    <CardTitle className="group-hover:text-purple-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Memory Vault</CardTitle>
                   </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Capture precious moments and share with community</CardDescription>
                 </CardHeader>
@@ -297,7 +295,7 @@ const Homepage = () => {
                     <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
                   <Link href="/Medical">
-                  <CardTitle className="group-hover:text-green-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Vaccine Tracker</CardTitle>
+                    <CardTitle className="group-hover:text-green-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Vaccine Tracker</CardTitle>
                   </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Track vaccinations and upload medical records</CardDescription>
                 </CardHeader>
@@ -309,7 +307,7 @@ const Homepage = () => {
                     <PlayCircle className="w-6 h-6 text-orange-600  dark:text-orange-400" />
                   </div>
                   <Link href="/Resources">
-                  <CardTitle className="group-hover:text-orange-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Parent Resources</CardTitle>
+                    <CardTitle className="group-hover:text-orange-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">Parent Resources</CardTitle>
                   </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Videos, articles, and expert advice</CardDescription>
                 </CardHeader>
@@ -321,7 +319,7 @@ const Homepage = () => {
                     <HelpCircle className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                   </div>
                   <Link href="/Faqs">
-                  <CardTitle className="group-hover:text-teal-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">FAQs</CardTitle>
+                    <CardTitle className="group-hover:text-teal-600 transition-colors text-xl font-semibold text-gray-900 dark:text-gray-100">FAQs</CardTitle>
                   </Link>
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Quick answers to common baby care questions</CardDescription>
                 </CardHeader>

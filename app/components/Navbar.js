@@ -66,12 +66,12 @@ const Navbar = () => {
       setShowModal(false);
       router.push("/");
     }
-  }, [progress, showModal]);
+  }, [progress, showModal, router, setShowModal]);
 
-  return (
-    <>
-      {/* Logout Modal */}
-      {showModal && (
+return (
+  <>
+    {/* logout modal */}
+    {showModal && (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[999] flex items-center justify-center transition-all duration-300">
           <div className="bg-white dark:bg-gray-800 px-6 py-5 rounded-xl shadow-lg text-center w-[320px]">
             <p className="text-gray-800  dark:text-gray-100 mb-3">
@@ -86,112 +86,81 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      )}
+    )}
 
-      <header className="bg-white/80 dark:bg-gray-900/80 dark:border-gray-700 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between xl:pr-4">
+    {/* --- NAVBAR --- */}
+    <header className="bg-white/80 dark:bg-gray-900/80 dark:border-gray-700 backdrop-blur-sm border-b border-pink-100 sticky top-0 z-30">
+      <div className="container mx-auto px-6 py-2 md:py-4 flex items-center justify-between">
+        
+        {/* Hamburger Menu and Logo */}
+        <div className="flex items-center">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-pink-600 focus:outline-none z-50 mr-5">
+            {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+          <Link href="/" className="flex items-center">
+            <Image src="/logoFooter.png" alt="NeoNest" width={60} height={60} />
+            <span className="hidden sm:block text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">NeoNest</span>
+          </Link>
+        </div>
+
+        {/*Theme Toggle and Auth Buttons*/}
+        <div className="flex items-center space-x-2">
+            <ThemeToggle />
+            {isAuth ? (
+              <>
+                <NotificationBell />
+                <Button onClick={handleLogout} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">Logout</Button>
+              </>
+            ) : (
+              <>
+                <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"><Link href="/Login">Login</Link></Button>
+                <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"><Link href="/Signup">Signup</Link></Button>
+              </>
+            )}
+        </div>
+      </div>
+    </header>
+    
+
+      {/* --- floating chatbot and autoTask button --- */}
+      <div className="fixed top-1/2 -translate-y-1/2 right-6 flex flex-col gap-3 z-20">
+          <div className="m-1 border-white rounded-full border-2"><Chatbot /></div>
+          <div className="m-1 border-white rounded-full border-2"><AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask} /></div>
+      </div>
+        
+      {/* --- sidebar --- */}
+      {/* {menuOpen && ( */}
+        <div 
+          className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity duration-300 ${menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          onClick={() => setMenuOpen(false)} // Close menu
+        >
+          <div 
+            className={`"fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-900 shadow-xl p-6 flex flex-col transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}
+            onClick={(e) => e.stopPropagation()} // Prevent clicks inside the menu from closing it
+          >
             {/* Logo */}
-            {/* changed div tag to link tag so user can redirect to home page whenever they click on navbar logo */}
-            <Link href="/" className="flex items-center ">
+            <Link href="/" className="flex items-center mb-8" onClick={() => setMenuOpen(false)}>
               <Image src="/logoFooter.png" alt="NeoNest" width={60} height={60} />
               <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">NeoNest</span>
             </Link>
 
-            {/* Hamburger - Mobile */}
-            <div className="md:hidden">
-              <button onClick={() => setMenuOpen(!menuOpen)} className="text-pink-600 focus:outline-none">
-                {menuOpen ? <X size={28} /> : <Menu size={28} />}
-              </button>
-            </div>
-
-            {/* Nav - Desktop */}
-            <nav className="hidden xl:flex items-center gap-4">
+            <nav className="flex flex-col space-y-4 flex-grow overflow-y-auto">
               {tabs.map(({ label, path }) => (
-                <Link key={label} href={path} className={`transition-colors capitalize ${pathname === path ? "text-pink-600" : "text-gray-600  dark:text-gray-300  hover:text-pink-600"}`}>
-                  {label}
+                <Link key={label} href={path}>
+                  <span 
+                    onClick={() => setMenuOpen(false)} 
+                    className={`block capitalize text-lg font-medium p-2 rounded-md ${pathname === path ? "bg-pink-100 dark:bg-pink-900/50 text-pink-600" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+                  >
+                    {label}
+                  </span>
                 </Link>
               ))}
             </nav>
-
-            {/* CTA - Desktop */}
-            <div className="hidden md:flex items-center space-x-2">
-              <ThemeToggle />
-              {isAuth && <NotificationBell />}
-              <Chatbot />
-              <AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask} />
-              {!isAuth ? (
-                <>
-                  <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                    <Link href="/Login">Login</Link>
-                  </Button>
-                  <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                    <Link href="/Signup">Signup</Link>
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={handleLogout} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                  Logout
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Mobile Menu */}
-          {menuOpen && (
-            <div className="md:hidden mt-4 space-y-3">
-              <div className="flex flex-col gap-3">
-                {tabs.map(({ label, path }) => (
-                  <Link
-                    key={label}
-                    href={path}
-                    onClick={() => setMenuOpen(false)}
-                    className={`block capitalize px-3 py-2 rounded-md text-sm ${pathname === path ? "text-pink-600 font-medium" : "text-gray-700 dark:text-gray-300  hover:text-pink-600"}`}>
-                    {label}
-                  </Link>
-                ))}
-              </div>
-              <div className="mt-3 flex flex-col gap-2">
-                <div className="flex items-center justify-center py-2">
-                  <ThemeToggle />
-                </div>
-                {!isAuth ? (
-                  <>
-                    <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                      <Link href="/Login" onClick={() => setMenuOpen(false)}>
-                        Login
-                      </Link>
-                    </Button>
-                    <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                      <Link href="/Signup" onClick={() => setMenuOpen(false)}>
-                        Signup
-                      </Link>
-                    </Button>
-                  </>
-                ) : (
-                  <Button onClick={handleLogout} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                    Logout
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-        <div className=" md:hidden absolute right-0 flex justify-end top-[50vh] items-end">
-          <div className="m-4 bg-[#8882] transition-all duration-200 rounded-full shadow-xl">
-            {!(pathname === "/NeonestAi") && (
-              <div className="m-1 mb-3  border-white rounded-full border-2">
-                <Chatbot />
-              </div>
-            )}
-            <div className="m-1 border-white rounded-full border-2">
-              <AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask} />
-            </div>
           </div>
         </div>
-      </header>
-    </>
-  );
+    {/* )} */}
+  </>
+);
 };
 
 export default Navbar;

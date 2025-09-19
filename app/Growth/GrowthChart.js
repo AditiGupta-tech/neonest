@@ -643,10 +643,10 @@ export default function GrowthChart({ defaultMonths = 24 }) {
               <p style={{ color: "#20B2AA" }}>WHO Weight: {data.whoWeight} kg</p>
               {data.hasActualData && (
                 <>
-                  <p style={{ color: "#FF1493" }}>Baby's Height: {data.actualHeight} cm</p>
-                  <p style={{ color: "#4169E1" }}>Baby's Weight: {data.actualWeight} kg</p>
+                  <p style={{ color: "#FF1493" }}>Baby&apos;s Height: {data.actualHeight} cm</p>
+                  <p style={{ color: "#4169E1" }}>Baby&apos;s Weight: {data.actualWeight} kg</p>
                   <p className="text-xs text-gray-600 mt-2">Measured: {data.entryDate}</p>
-                  {data.comment && <p className="text-xs italic text-gray-500">"{data.comment}"</p>}
+                  {data.comment && <p className="text-xs italic text-gray-500">{data.comment}</p>}
                   {validation && (
                     <div className="mt-2 pt-2 border-t">
                       <p className={`text-xs ${validation.heightStatus.color}`}>Height: {validation.heightStatus.percentile}</p>
@@ -692,8 +692,8 @@ export default function GrowthChart({ defaultMonths = 24 }) {
         <div className="text-center py-8">
           <Info className="w-12 h-12 text-blue-500 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-700 mb-2 dark:text-gray-200">WHO Growth Standards Chart</h3>
-          <p className="text-gray-600 mb-4 dark:text-gray-300">Please fill in your baby's date of birth and gender above to see the WHO growth comparison.</p>
-          <div className="text-sm text-gray-500 dark:text-gray-300">This chart will compare your baby's actual growth measurements with WHO standards.</div>
+          <p className="text-gray-600 mb-4 dark:text-gray-300">Please fill in your baby&apos;s date of birth and gender above to see the WHO growth comparison.</p>
+          <div className="text-sm text-gray-500 dark:text-gray-300">This chart will compare your baby&apos;s actual growth measurements with WHO standards.</div>
         </div>
       </div>
     );
@@ -943,7 +943,7 @@ export default function GrowthChart({ defaultMonths = 24 }) {
         <div className="text-center py-8 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-600 dark:text-gray-200 mb-2">No Growth Data Yet</h3>
-          <p className="text-gray-500 dark:text-gray-300">Add some growth measurements above to see your baby's progress compared to WHO standards.</p>
+          <p className="text-gray-500 dark:text-gray-300">Add some growth measurements above to see your baby&apos;s progress compared to WHO standards.</p>
           <p className="text-sm text-gray-400 dark:text-gray-300 mt-2">Only real measurements will be displayed - no dummy data.</p>
         </div>
       )}
@@ -982,7 +982,7 @@ export default function GrowthChart({ defaultMonths = 24 }) {
       {/* Footer Note */}
       <div className="mt-6 pt-4 border-t text-xs text-gray-500 dark:text-gray-300 text-center">
         <p className="mb-2">This chart uses official WHO Child Growth Standards 2006 and is for educational purposes only. It should not replace professional medical advice or diagnosis.</p>
-        <p>Always consult with your pediatrician for personalized guidance on your baby's growth and development. In case of concerning measurements, seek professional medical evaluation promptly.</p>
+        <p>Always consult with your pediatrician for personalized guidance on your baby&apos;s growth and development. In case of concerning measurements, seek professional medical evaluation promptly.</p>
       </div>
     </div>
   );

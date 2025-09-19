@@ -176,7 +176,7 @@ export default function Page() {
               <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">Feeding: Tips and Schedule</span>
               <div className="absolute -top-2 -right-2 w-3 h-3 bg-pink-400 rounded-full animate-pulse"></div>
             </h2>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">Track your baby's feeding times and learn best practices with our intuitive interface.</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">Track your babys feeding times and learn best practices with our intuitive interface.</p>
           </div>
           <Button
             onClick={() => {
@@ -270,7 +270,7 @@ export default function Page() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center animate-glow">
                 <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Today's Feeding Schedule</span>
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Today&apos;s Feeding Schedule</span>
             </div>
             <Badge className="w-fit bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-lg animate-pulse">{todaySchedules.length} feedings</Badge>
           </h3>
@@ -314,7 +314,7 @@ export default function Page() {
                         <span className="text-xs sm:text-sm">{s.type.charAt(0).toUpperCase() + s.type.slice(1)}</span>
                       </Badge>
                       {s.amount && <span className="text-xs sm:text-sm text-gray-600 break-words bg-gray-100 px-2 py-1 rounded-lg">{s.amount}</span>}
-                      {s.notes && <span className="text-xs sm:text-sm text-gray-500 italic break-words bg-pink-50 px-2 py-1 rounded-lg">"{s.notes}"</span>}
+                      {s.notes && <span className="text-xs sm:text-sm text-gray-500 italic break-words bg-pink-50 px-2 py-1 rounded-lg">{s.notes}</span>}
                     </div>
                     <div className="flex gap-2 sm:gap-3 self-end sm:self-auto">
                       <Button
