@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { signIn } from "next-auth/react";
+
 
 export default function SignupPage() {
   useEffect(() => {
@@ -239,6 +241,27 @@ export default function SignupPage() {
           `}>
           Next
         </button>
+          <div className="flex flex-col gap-4">
+          {/* Existing signup form with name, email, password goes here */}
+
+          <hr className="my-4" />
+
+          <button
+            type="button"
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg"
+          >
+            Continue with Google
+          </button>
+
+          <button
+            type="button"
+            onClick={() => signIn("azure-ad", { callbackUrl: "/" })}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+          >
+            Continue with Microsoft
+          </button>
+      </div>
       </form>
     </div>
   );

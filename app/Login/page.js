@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function LoginPage() {
 
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
+
 
   const validateEmail = (emailValue) => {
     if (!emailValue.trim()) {
@@ -227,7 +229,25 @@ export default function LoginPage() {
               Sign up here
             </a>
           </p>
-        </form>
+          <div className="flex flex-col gap-3">
+            <button
+             type="button"
+              onClick={() => signIn("google",{ callbackUrl: "/" })}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg"
+            >
+              Continue with Google
+            </button>
+
+            <button
+             type="button"
+              onClick={() => signIn("azure-ad",{ callbackUrl: "/" })}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+            >
+              Continue with Microsoft
+            </button>
+          </div>
+
+        </form>        
       </div>
     </div>
   );
