@@ -288,10 +288,10 @@ cd neonest
    cp .env.example .env.local
    ```
 - **Google:**  
-  `http://localhost:3000/api/auth/callback/google`
+  `https://neonest-babycare.vercel.app/api/auth/callback/google`
 
 - **Microsoft (Azure AD):**  
-  `http://localhost:3000/api/auth/callback/azure-ad`
+  `https://neonest-babycare.vercel.app/api/auth/callback/azure-ad`
 
 
 6. **Make your changes:**
