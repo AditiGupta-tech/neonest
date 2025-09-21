@@ -287,7 +287,7 @@ export default function LoginPage() {
               <span>Continue with Google</span>
             </button>
 
-            <button
+            {/* <button
               type="button"
               onClick={handleMicrosoftSignIn}
               disabled={isGoogleLoading || isMicrosoftLoading}
@@ -304,7 +304,7 @@ export default function LoginPage() {
                 </svg>
               )}
               <span>Continue with Microsoft</span>
-            </button>
+            </button> */}
           </div>
 
         </form>        

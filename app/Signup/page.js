@@ -300,7 +300,7 @@ export default function SignupPage() {
             <span>Continue with Google</span>
           </button>
 
-          <button
+          {/* <button
             type="button"
             onClick={handleMicrosoftSignIn}
             disabled={isGoogleLoading || isMicrosoftLoading}
@@ -317,7 +317,7 @@ export default function SignupPage() {
               </svg>
             )}
             <span>Continue with Microsoft</span>
-          </button>
+          </button> */}
         </div>
       </form>
     </div>
