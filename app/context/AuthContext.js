@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+  const [hasCompletedSetup, setHasCompletedSetup] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,12 +21,43 @@ export const AuthProvider = ({ children }) => {
     if (storedToken) {
       setToken(storedToken);
       setIsAuth(true);
+      // Fetch user data to check if setup is completed
+      fetchUserData(storedToken);
     }
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
     setIsLoading(false);
   }, []);
+
+  const fetchUserData = async (token) => {
+    try {
+      const response = await fetch('/api/auth/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        // Check if user has completed baby details setup
+        const isSetupComplete = userData.noOfBabies && 
+                               userData.deliveryType && 
+                               userData.BabyDet && 
+                               userData.BabyDet.length > 0 &&
+                               userData.BabyDet.every(baby => 
+                                 baby.babyName && 
+                                 baby.dateOfBirth && 
+                                 baby.time && 
+                                 baby.gender
+                               );
+        setHasCompletedSetup(isSetupComplete);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   const login = (token, userData, shouldRedirect = true) => {
     localStorage.setItem('token', token);
@@ -35,14 +67,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     }
+    fetchUserData(token);
     if (shouldRedirect) {
       router.push('/');
     }
-  };
-
-  const updateUserData = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
   };
 
   const logout = () => {
@@ -51,6 +79,24 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     setIsAuth(false);
+    setHasCompletedSetup(false);
+  };
+
+  const updateUserData = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    // Re-check setup completion status
+    const isSetupComplete = userData.noOfBabies && 
+                           userData.deliveryType && 
+                           userData.BabyDet && 
+                           userData.BabyDet.length > 0 &&
+                           userData.BabyDet.every(baby => 
+                             baby.babyName && 
+                             baby.dateOfBirth && 
+                             baby.time && 
+                             baby.gender
+                           );
+    setHasCompletedSetup(isSetupComplete);
   };
 
   return (
@@ -59,6 +105,7 @@ export const AuthProvider = ({ children }) => {
       user,
       isAuth, 
       isLoading: isLoading || !isMounted, 
+      hasCompletedSetup,
       login, 
       logout,
       updateUserData
