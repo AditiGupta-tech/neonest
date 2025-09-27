@@ -11,7 +11,10 @@ export const AuthProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+<<<<<<< HEAD
   const [hasCompletedSetup, setHasCompletedSetup] = useState(false);
+=======
+>>>>>>> f3190df (added neonest ai in signup forms with white borders)
   const router = useRouter();
 
   useEffect(() => {
@@ -21,8 +24,9 @@ export const AuthProvider = ({ children }) => {
     if (storedToken) {
       setToken(storedToken);
       setIsAuth(true);
-      // Fetch user data to check if setup is completed
-      fetchUserData(storedToken);
+    }
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -30,6 +34,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   }, []);
 
+<<<<<<< HEAD
   const fetchUserData = async (token) => {
     try {
       const response = await fetch('/api/auth/user', {
@@ -59,6 +64,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+=======
+>>>>>>> f3190df (added neonest ai in signup forms with white borders)
   const login = (token, userData, shouldRedirect = true) => {
     localStorage.setItem('token', token);
     setToken(token);
@@ -67,10 +74,21 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     }
+<<<<<<< HEAD
     fetchUserData(token);
     if (shouldRedirect) {
       router.push('/');
     }
+=======
+    if (shouldRedirect) {
+      router.push('/');
+    }
+  };
+
+  const updateUserData = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+>>>>>>> f3190df (added neonest ai in signup forms with white borders)
   };
 
   const logout = () => {
@@ -79,6 +97,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     setIsAuth(false);
+<<<<<<< HEAD
     setHasCompletedSetup(false);
   };
 
@@ -97,6 +116,8 @@ export const AuthProvider = ({ children }) => {
                              baby.gender
                            );
     setHasCompletedSetup(isSetupComplete);
+=======
+>>>>>>> f3190df (added neonest ai in signup forms with white borders)
   };
 
   return (
@@ -105,7 +126,10 @@ export const AuthProvider = ({ children }) => {
       user,
       isAuth, 
       isLoading: isLoading || !isMounted, 
+<<<<<<< HEAD
       hasCompletedSetup,
+=======
+>>>>>>> f3190df (added neonest ai in signup forms with white borders)
       login, 
       logout,
       updateUserData

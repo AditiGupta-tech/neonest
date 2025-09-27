@@ -30,7 +30,7 @@ const tabs = [
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuth, logout, hasCompletedSetup } = useAuth();
+  const { isAuth, logout } = useAuth();
   const { setAutoTask, isAutoTask } = useAutoTask();
 
   const [showModal, setShowModal] = useState(false);
@@ -123,12 +123,10 @@ return (
     
 
       {/* --- floating chatbot and autoTask button --- */}
-      {isAuth && hasCompletedSetup && (
-        <div className="fixed top-1/2 -translate-y-1/2 right-6 flex flex-col gap-3 z-20">
-            <div className="m-1 border-white dark:border-gray-700 rounded-full border-2"><Chatbot /></div>
-            <div className="m-1 border-white dark:border-gray-700 rounded-full border-2"><AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask} /></div>
-        </div>
-      )}
+      <div className="fixed top-1/2 -translate-y-1/2 right-6 flex flex-col gap-3 z-20">
+          <div className="m-1 border-white rounded-full border-2"><Chatbot /></div>
+          <div className="m-1 border-white rounded-full border-2"><AutoTask setAutoTask={setAutoTask} isAutoTask={isAutoTask} /></div>
+      </div>
         
       {/* --- sidebar --- */}
       {/* {menuOpen && ( */}
