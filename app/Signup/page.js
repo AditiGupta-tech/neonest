@@ -137,7 +137,7 @@ export default function SignupPage() {
 
       if (res.status === 201) {
         console.log(data);
-        login(data.token);
+        login(data.token, data.newUser, false); // Don't redirect, we'll handle it below
 
         toast.success(data.success);
         router.push(`/signupbaby`);

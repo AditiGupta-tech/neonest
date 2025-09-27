@@ -7,93 +7,58 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
-  const [user, setUser] = useState(null);
-  const [hasCompletedSetup, setHasCompletedSetup] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
     const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
     if (storedToken) {
       setToken(storedToken);
       setIsAuth(true);
-      // Fetch user data to check if setup is completed
-      fetchUserData(storedToken);
+    }
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
     setIsLoading(false);
   }, []);
 
-  const fetchUserData = async (token) => {
-    try {
-      const response = await fetch('/api/auth/user', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        // Check if user has completed baby details setup
-        const isSetupComplete = userData.noOfBabies && 
-                               userData.deliveryType && 
-                               userData.BabyDet && 
-                               userData.BabyDet.length > 0 &&
-                               userData.BabyDet.every(baby => 
-                                 baby.babyName && 
-                                 baby.dateOfBirth && 
-                                 baby.time && 
-                                 baby.gender
-                               );
-        setHasCompletedSetup(isSetupComplete);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
-
-  const login = (token) => {
+  const login = (token, userData, shouldRedirect = true) => {
     localStorage.setItem('token', token);
     setToken(token);
     setIsAuth(true);
-    fetchUserData(token);
-    router.push('/');
+    if (userData) {
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+    }
+    if (shouldRedirect) {
+      router.push('/');
+    }
+  };
+
+  const updateUserData = (userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setToken(null);
-    setIsAuth(false);
     setUser(null);
-    setHasCompletedSetup(false);
-  };
-
-  const updateUserData = (userData) => {
-    setUser(userData);
-    // Re-check setup completion status
-    const isSetupComplete = userData.noOfBabies && 
-                           userData.deliveryType && 
-                           userData.BabyDet && 
-                           userData.BabyDet.length > 0 &&
-                           userData.BabyDet.every(baby => 
-                             baby.babyName && 
-                             baby.dateOfBirth && 
-                             baby.time && 
-                             baby.gender
-                           );
-    setHasCompletedSetup(isSetupComplete);
+    setIsAuth(false);
   };
 
   return (
     <AuthContext.Provider value={{ 
       token, 
+      user,
       isAuth, 
       isLoading: isLoading || !isMounted, 
-      user,
-      hasCompletedSetup,
       login, 
       logout,
       updateUserData
