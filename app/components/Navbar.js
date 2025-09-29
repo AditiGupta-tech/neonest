@@ -16,6 +16,7 @@ import ThemeToggle from "./ThemeToggle";
 
 const tabs = [
   { label: "home", path: "/" },
+  { label: "smart care", path: "/SmartCare", icon: "🤖", live: true },
   { label: "growth", path: "/Growth" },
   { label: "feeding", path: "/Feeding" },
   { label: "sleep", path: "/Sleep" },
@@ -103,9 +104,14 @@ return (
           </Link>
         </div>
 
-        {/*Theme Toggle and Auth Buttons*/}
+        {/*Theme Toggle, Smart Care tab, and Auth Buttons*/}
         <div className="flex items-center space-x-2">
             <ThemeToggle />
+            <Link href="/SmartCare" className="relative flex items-center px-3 py-1 rounded hover:bg-pink-100 dark:hover:bg-pink-900/50">
+              <span className="text-xl mr-1">🤖</span>
+              <span className="font-medium hidden sm:inline">Smart Care</span>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            </Link>
             {isAuth ? (
               <>
                 <NotificationBell />
@@ -145,12 +151,18 @@ return (
             </Link>
 
             <nav className="flex flex-col space-y-4 flex-grow overflow-y-auto">
-              {tabs.map(({ label, path }) => (
+              {tabs.map(({ label, path, icon, live }) => (
                 <Link key={label} href={path}>
                   <span 
                     onClick={() => setMenuOpen(false)} 
-                    className={`block capitalize text-lg font-medium p-2 rounded-md ${pathname === path ? "bg-pink-100 dark:bg-pink-900/50 text-pink-600" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
+                    className={`block capitalize text-lg font-medium p-2 rounded-md flex items-center gap-2 ${pathname === path ? "bg-pink-100 dark:bg-pink-900/50 text-pink-600" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
                   >
+                    {icon && (
+                      <span className="relative">
+                        {icon}
+                        {live && <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse" />}
+                      </span>
+                    )}
                     {label}
                   </span>
                 </Link>
