@@ -137,7 +137,7 @@ export default function SignupPage() {
 
       if (res.status === 201) {
         console.log(data);
-        login(data.token);
+        login(data.token, data.newUser, false); // Don't redirect, we'll handle it below
 
         toast.success(data.success);
         router.push(`/signupbaby`);
@@ -160,11 +160,11 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 dark:bg-gray-900/90 bg-pink-100">
-      <form onSubmit={handleNext} className="bg-white dark:bg-gray-800/90 p-6 rounded-xl shadow-xl w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4 text-center text-pink-600">Parent Signup</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
+      <form onSubmit={handleNext} className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] w-full max-w-md">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-8 text-center hover:from-pink-700 hover:to-purple-700 transition-all duration-300">Parent Signup</h1>
 
-        <div className="mb-4">
+        <div className="mb-6">
           <input
             type="text"
             placeholder="Your Name"
@@ -172,14 +172,17 @@ export default function SignupPage() {
             onChange={handleNameChange}
             onBlur={() => setNameTouched(true)}
             required
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-              ${nameError && nameTouched ? "border-red-500 focus:ring-red-400" : "border-pink-300 focus:ring-pink-400"}
+            className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-white transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700
+              ${nameError && nameTouched ? "border-red-500 dark:border-red-400 focus:ring-red-400 dark:focus:ring-red-500" : "border-gray-300 dark:border-gray-600 focus:ring-pink-400 dark:focus:ring-pink-500 hover:border-pink-300 dark:hover:border-pink-500"}
             `}
           />
-          {nameError && nameTouched && <p className="text-red-500 text-sm mt-1">{nameError}</p>}
+          {nameError && nameTouched && <p className="text-red-500 dark:text-red-400 text-sm mt-2 flex items-center animate-shake">
+            <span className="w-1 h-1 bg-red-500 dark:bg-red-400 rounded-full mr-2"></span>
+            {nameError}
+          </p>}
         </div>
 
-        <div className="mb-4">
+        <div className="mb-6">
           <input
             type="email"
             placeholder="Your Email"
@@ -187,16 +190,17 @@ export default function SignupPage() {
             onChange={handleEmailChange}
             onBlur={() => setEmailTouched(true)}
             required
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-              ${emailError && emailTouched ? "border-red-500 focus:ring-red-400" : "border-pink-300 focus:ring-pink-400"}
+            className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-white transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700
+              ${emailError && emailTouched ? "border-red-500 dark:border-red-400 focus:ring-red-400 dark:focus:ring-red-500" : "border-gray-300 dark:border-gray-600 focus:ring-pink-400 dark:focus:ring-pink-500 hover:border-pink-300 dark:hover:border-pink-500"}
             `}
           />
           {emailError && emailTouched && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-red-500 dark:text-red-400 text-sm mt-2 flex items-center animate-shake">
+              <span className="w-1 h-1 bg-red-500 dark:bg-red-400 rounded-full mr-2"></span>
               Email already exists!{" "}
               <span
-                onClick={() => router.push("/Login")} // Navigate to login page
-                className="text-pink-600 italic cursor-pointer hover:underline">
+                onClick={() => router.push("/Login")}
+                className="text-pink-600 dark:text-pink-400 italic cursor-pointer hover:underline">
                 Login
               </span>{" "}
               instead.
@@ -212,30 +216,36 @@ export default function SignupPage() {
             onChange={handlePasswordChange}
             onBlur={() => setPasswordTouched(true)}
             required
-            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2
-                ${passwordError && passwordTouched ? "border-red-500 focus:ring-red-400" : "border-pink-300 focus:ring-pink-400"}
+            className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-white transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700
+                ${passwordError && passwordTouched ? "border-red-500 dark:border-red-400 focus:ring-red-400 dark:focus:ring-red-500" : "border-gray-300 dark:border-gray-600 focus:ring-pink-400 dark:focus:ring-pink-500 hover:border-pink-300 dark:hover:border-pink-500"}
               `}
           />
           <FontAwesomeIcon
             icon={showPassword ? faEyeSlash : faEye}
             onClick={togglePasswordVisibility}
-            className="absolute right-3 top-1/3 translate-y-[-50%]  cursor-pointer text-gray-500"
+            className="absolute right-4 top-6 transform -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-pink-500 dark:hover:text-pink-400 transition-colors duration-300"
             style={{ userSelect: "none" }}
             aria-label={showPassword ? "Hide password" : "Show password"}
           />
-          <p className="text-[11px] mt-1 text-gray-700 italic">Password must be at least 6 characters.</p>
-          {passwordError && passwordTouched && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+          <p className="text-[11px] mt-2 text-gray-600 dark:text-gray-400 italic">Password must be at least 6 characters.</p>
+          {passwordError && passwordTouched && <p className="text-red-500 dark:text-red-400 text-sm mt-2 flex items-center animate-shake">
+            <span className="w-1 h-1 bg-red-500 dark:bg-red-400 rounded-full mr-2"></span>
+            {passwordError}
+          </p>}
         </div>
 
-        <p className="text-center text-sm text-gray-500 mb-4">
-          At NeoNest, your data privacy is paramount. We are committed to keeping your information confidential and do not share it with third parties.
-        </p>
+        {/* Privacy Notice */}
+        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 hover:scale-[1.02] group">
+          <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed group-hover:text-blue-900 dark:group-hover:text-blue-100 transition-colors duration-300">
+            <span className="font-medium">Privacy Notice:</span> At NeoNest, your data privacy is paramount. We are committed to keeping your information confidential and do not share it with third parties.
+          </p>
+        </div>
 
         <button
           type="submit"
           disabled={!isFormValid}
-          className={`w-full py-2 rounded-lg font-semibold transition-transform
-            ${isFormValid ? "bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:scale-105" : "bg-gray-300 text-gray-500 cursor-not-allowed"}
+          className={`w-full py-3 rounded-xl font-semibold shadow-md transition-all duration-300 transform
+            ${isFormValid ? "bg-gradient-to-r from-purple-400 to-pink-500 hover:from-purple-500 hover:to-pink-600 text-white hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg hover:shadow-purple-200 dark:hover:shadow-purple-800" : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"}
           `}>
           Next
         </button>

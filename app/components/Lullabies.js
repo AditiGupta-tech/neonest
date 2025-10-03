@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useRef, useEffect } from "react";
@@ -14,6 +13,9 @@ export default function LullabyModal({ show, onClose }) {
   const [currentId, setCurrentId] = useState(null);
   const [timer, setTimer] = useState(0);
   const [volume, setVolume] = useState(0.4); 
+  const [uploading, setUploading] = useState(false); // ✅ New: uploading state
+  const [uploadError, setUploadError] = useState(""); // ✅ New: error state
+
   const audioRef = useRef(null);
   const timerRef = useRef(null);
 
@@ -44,7 +46,6 @@ export default function LullabyModal({ show, onClose }) {
     }
   }, [volume]);
 
-
   const playLullaby = (id, src) => {
     if (audioRef.current) {
       if (currentId && currentId !== id) {
@@ -66,6 +67,7 @@ export default function LullabyModal({ show, onClose }) {
     setTimer(0);
   };
 
+  // ✅ Updated handleUpload with spinner, timeout, and error handling
   const handleUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -75,15 +77,33 @@ export default function LullabyModal({ show, onClose }) {
         return;
     }
 
-    const url = URL.createObjectURL(file);
-    const newLullaby = {
-      id: crypto.randomUUID(),
-      title: file.name.replace(/\.[^/.]+$/, ""),
-      src: url,
-      isCustom: true
-    };
-    setLullabies(prev => [...prev, newLullaby]);
-    e.target.value = null;
+    setUploading(true);
+    setUploadError("");
+
+    // Timeout in case upload takes too long (simulate slow network)
+    const timeoutId = setTimeout(() => {
+      setUploading(false);
+      setUploadError("Upload timed out. Please try again.");
+    }, 30000); // 30 seconds
+
+    try {
+      const url = URL.createObjectURL(file);
+      const newLullaby = {
+        id: crypto.randomUUID(),
+        title: file.name.replace(/\.[^/.]+$/, ""),
+        src: url,
+        isCustom: true
+      };
+      setLullabies(prev => [...prev, newLullaby]);
+      e.target.value = null;
+
+      clearTimeout(timeoutId);
+      setUploading(false);
+    } catch (err) {
+      clearTimeout(timeoutId);
+      setUploading(false);
+      setUploadError("Failed to upload. Please try again.");
+    }
   };
 
   const handleDelete = (id) => {
@@ -116,7 +136,6 @@ export default function LullabyModal({ show, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center p-4">
-    
       <div className="bg-gradient-to-br from-blue-100 via-pink-100 to-rose-100 border border-pink-300 rounded-xl shadow-2xl p-6 w-full max-w-lg relative overflow-hidden transform transition-all duration-300 scale-100 opacity-100">
         
         {/* Close Button */}
@@ -188,6 +207,20 @@ export default function LullabyModal({ show, onClose }) {
           <p className="text-xs text-gray-500 mt-1">
             (Formats: MP3, WAV, OGG. Keep it under 10MB for smooth playback.)
           </p>
+
+          {/* ✅ New Upload Feedback */}
+          {uploading && <p className="text-blue-600 mt-2">⏳ Uploading...</p>}
+          {uploadError && (
+            <div className="mt-2 text-red-600 flex items-center gap-2">
+              <span>{uploadError}</span>
+              <button
+                className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => setUploadError("")}
+              >
+                Retry
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Timer and Volume Controls */}
