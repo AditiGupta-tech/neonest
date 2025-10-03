@@ -11,10 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
-<<<<<<< HEAD
   const [hasCompletedSetup, setHasCompletedSetup] = useState(false);
-=======
->>>>>>> f3190df (added neonest ai in signup forms with white borders)
   const router = useRouter();
 
   useEffect(() => {
@@ -24,18 +21,17 @@ export const AuthProvider = ({ children }) => {
     if (storedToken) {
       setToken(storedToken);
       setIsAuth(true);
+      fetchUserData(storedToken); // Fetch user data if token exists
+    } else {
+      setIsLoading(false);
     }
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
   }, []);
 
-<<<<<<< HEAD
   const fetchUserData = async (token) => {
+    setIsLoading(true);
     try {
       const response = await fetch('/api/auth/user', {
         headers: {
@@ -45,8 +41,8 @@ export const AuthProvider = ({ children }) => {
       
       if (response.ok) {
         const userData = await response.json();
+        localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
-        // Check if user has completed baby details setup
         const isSetupComplete = userData.noOfBabies && 
                                userData.deliveryType && 
                                userData.BabyDet && 
@@ -58,14 +54,18 @@ export const AuthProvider = ({ children }) => {
                                  baby.gender
                                );
         setHasCompletedSetup(isSetupComplete);
+      } else {
+        // If token is invalid, logout
+        logout();
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      logout(); // Logout on error
+    } finally {
+      setIsLoading(false);
     }
   };
 
-=======
->>>>>>> f3190df (added neonest ai in signup forms with white borders)
   const login = (token, userData, shouldRedirect = true) => {
     localStorage.setItem('token', token);
     setToken(token);
@@ -74,21 +74,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     }
-<<<<<<< HEAD
     fetchUserData(token);
     if (shouldRedirect) {
       router.push('/');
     }
-=======
-    if (shouldRedirect) {
-      router.push('/');
-    }
-  };
-
-  const updateUserData = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
->>>>>>> f3190df (added neonest ai in signup forms with white borders)
   };
 
   const logout = () => {
@@ -97,14 +86,13 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     setIsAuth(false);
-<<<<<<< HEAD
     setHasCompletedSetup(false);
+    router.push('/Login'); // Redirect to login on logout
   };
 
   const updateUserData = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
-    // Re-check setup completion status
     const isSetupComplete = userData.noOfBabies && 
                            userData.deliveryType && 
                            userData.BabyDet && 
@@ -116,8 +104,6 @@ export const AuthProvider = ({ children }) => {
                              baby.gender
                            );
     setHasCompletedSetup(isSetupComplete);
-=======
->>>>>>> f3190df (added neonest ai in signup forms with white borders)
   };
 
   return (
@@ -126,10 +112,7 @@ export const AuthProvider = ({ children }) => {
       user,
       isAuth, 
       isLoading: isLoading || !isMounted, 
-<<<<<<< HEAD
       hasCompletedSetup,
-=======
->>>>>>> f3190df (added neonest ai in signup forms with white borders)
       login, 
       logout,
       updateUserData

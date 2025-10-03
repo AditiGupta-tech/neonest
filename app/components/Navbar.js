@@ -8,7 +8,7 @@ import { Button } from "./ui/Button";
 import Chatbot from "./Chatbot";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import { useAutoTask } from "../context/AutoTaskContext";
 import AutoTask from "./AutoTask";
@@ -109,7 +109,12 @@ return (
             {isAuth ? (
               <>
                 <NotificationBell />
-                <Button onClick={handleLogout} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">Logout</Button>
+                <Button asChild className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                  <Link href="/Profile" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Profile
+                  </Link>
+                </Button>
               </>
             ) : (
               <>
