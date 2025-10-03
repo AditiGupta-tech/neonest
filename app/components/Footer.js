@@ -44,19 +44,18 @@ export default function NeoNestFooter() {
       href: "https://github.com/AditiGupta-tech/neonest/blob/main/Contributing.md",
     },
     {
-      name: "GitHub Discussions",
       icon: MessageCircle,
       href: "https://github.com/AditiGupta-tech/neonest/discussions",
     },
   ];
 
   return (
-    <div className="w-full md:mx-10 lg:mx-0 bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-white flex flex-col justify-end">
+    <div className="w-full bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-white flex flex-col justify-end">
       <footer className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
         {/* Decorative top border */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
-        <div className="max-w-6xl mx-auto px-2 py-12 relative">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-12 relative">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             {/* Logo + Description */}
             <div className="md:col-span-2 space-y-4">
