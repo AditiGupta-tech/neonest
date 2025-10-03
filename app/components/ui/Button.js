@@ -4,11 +4,11 @@ import { Slot } from "@radix-ui/react-slot";
 const variantClasses = {
   default: "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600",
   primary: "bg-primary text-primary-foreground hover:bg-primary/90",
-  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-  outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-  ghost: "hover:bg-accent hover:text-accent-foreground",
-  link: "text-primary underline-offset-4 hover:underline",
+  destructive: "bg-red-500 text-white hover:bg-red-600",
+  outline: "border border-gray-300 dark:border-gray-600 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100",
+  secondary: "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700",
+  ghost: "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100",
+  link: "text-blue-600 dark:text-blue-400 underline-offset-4 hover:underline",
 };
 
 const sizeClasses = {
