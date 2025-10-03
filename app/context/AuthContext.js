@@ -14,6 +14,27 @@ export const AuthProvider = ({ children }) => {
   const [hasCompletedSetup, setHasCompletedSetup] = useState(false);
   const router = useRouter();
 
+  const fetchMe = async (jwt) => {
+    if (!jwt) return null;
+    try {
+      const res = await fetch('/api/auth/me', {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${jwt}` },
+        cache: 'no-store'
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (data && data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setUser(data.user);
+        return data.user;
+      }
+    } catch (e) {
+      // silently ignore
+    }
+    return null;
+  };
+
   useEffect(() => {
     setIsMounted(true);
     const storedToken = localStorage.getItem('token');
@@ -28,6 +49,15 @@ export const AuthProvider = ({ children }) => {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+<<<<<<< HEAD
+=======
+    // Always try to refresh user from server using JWT
+    if (storedToken) {
+      fetchMe(storedToken).finally(() => setIsLoading(false));
+      return;
+    }
+    setIsLoading(false);
+>>>>>>> 8990650 (pdf feature completed)
   }, []);
 
   const fetchUserData = async (token) => {
@@ -74,7 +104,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
     }
+<<<<<<< HEAD
     fetchUserData(token);
+=======
+    // Immediately fetch fresh user from DB using JWT
+    fetchMe(token);
+>>>>>>> 8990650 (pdf feature completed)
     if (shouldRedirect) {
       router.push('/');
     }

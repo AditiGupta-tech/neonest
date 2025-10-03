@@ -8,19 +8,8 @@ import { NotificationProvider } from "./context/NotificationContext";
 import { AutoTaskProvider } from "./context/AutoTaskContext";
 import AutoTaskManager from "./components/AutoTaskManager";
 import { ThemeProvider } from "next-themes";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-// import Chatbot from "./components/Chatbot";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
   title: {
@@ -52,6 +41,15 @@ export const metadata = {
   },
 };
 
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
@@ -69,8 +67,18 @@ export default function RootLayout({ children }) {
             </AutoTaskProvider>
           </AuthProvider>
         </ThemeProvider>
-        <Analytics />
-        <SpeedInsights/>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </body>
     </html>
   );
