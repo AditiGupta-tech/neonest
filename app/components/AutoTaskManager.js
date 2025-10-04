@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "./ui/Button";
+import { Button } from "./ui";
 import Input from "./ui/Input";
 import { useAutoTask } from "../context/AutoTaskContext";
 import { X,ShareIcon,File, XCircle,Trash,Loader2Icon} from "lucide-react";

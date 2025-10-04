@@ -1,7 +1,7 @@
-import Feeding from "@/app/models/Feeding.model";
-import User from "@/app/models/User.model";
-import { authenticateToken } from "@/lib/auth";
-import connectDB from "@/lib/connectDB";
+import Feeding from "@models/Feeding.model";
+import User from "@models/User.model";
+import { authenticateToken } from "@lib/auth";
+import connectDB from "@lib/connectDB";
 
 export async function POST(req) {
   try {

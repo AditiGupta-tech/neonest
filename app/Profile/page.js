@@ -1,20 +1,67 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Button } from "../components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { User, Baby, Settings, LogOut, Calendar, Clock } from "lucide-react";
+import { Button, Card, CardContent, CardHeader, CardTitle } from "../components/ui";
+import { User, LogOut, ArrowLeft, Edit, Mail, Users, X, FileDown, Pencil, Calendar, Scale, Stethoscope } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useChatStore } from "@/lib/store/chatStore";
-
-// Removed mock data: always use real user data from AuthContext
+import { toast } from 'react-toastify';
 
 const ProfilePage = () => {
-  const [activeTab, setActiveTab] = useState("overview");
-  const [isDownloading, setIsDownloading] = useState(false);
-  const { user, logout, token } = useAuth();
+  const { user, logout, token, updateUserData } = useAuth();
   const router = useRouter();
+
+  // State for UI
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isBabyModalOpen, setIsBabyModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [selectedBaby, setSelectedBaby] = useState(null);
+
+  // State for editable fields
+  const [editableUser, setEditableUser] = useState({ name: '', email: '', noOfBabies: '', deliveryType: '' });
+  const [editableBaby, setEditableBaby] = useState({ babyName: '', dateOfBirth: '', weight: '' });
+
+  useEffect(() => {
+    if (user) {
+      setEditableUser({
+        name: user.name || '',
+        email: user.email || '',
+        noOfBabies: user.noOfBabies || 0,
+        deliveryType: user.deliveryType || '',
+      });
+    }
+  }, [user]);
+
+  const openUserModal = () => {
+    setEditableUser({ 
+      name: user?.name || '', 
+      email: user?.email || '', 
+      noOfBabies: user?.noOfBabies || '', 
+      deliveryType: user?.deliveryType || '' 
+    });
+    setIsUserModalOpen(true);
+  };
+
+  const closeUserModal = () => setIsUserModalOpen(false);
+
+  const openBabyModal = (baby) => {
+    // Find the original baby data from user.BabyDet to avoid using modified gender
+    const originalBaby = user?.BabyDet?.find(b => b._id === baby._id) || baby;
+    setSelectedBaby(originalBaby);
+    setEditableBaby({ 
+      babyName: originalBaby.babyName || '', 
+      dateOfBirth: originalBaby.dateOfBirth ? new Date(originalBaby.dateOfBirth).toISOString().split('T')[0] : '', 
+      weight: originalBaby.weight || originalBaby.Weight || '' 
+    });
+    setIsBabyModalOpen(true);
+  };
+
+  const closeBabyModal = () => {
+    setSelectedBaby(null);
+    setIsBabyModalOpen(false);
+  };
 
   // Calculate age in months and days
   const calculateAge = (birthDate) => {
@@ -47,22 +94,46 @@ const ProfilePage = () => {
   };
 
   const handleLogout = () => {
-    useChatStore.getState().clearChatHistory();
-    logout();
-    router.push("/");
+    // Toast feedback for logout
+    toast.info('Logging out...', { toastId: 'logout' });
+    try {
+      useChatStore.getState().clearChatHistory();
+      logout();
+      toast.dismiss('logout');
+      toast.success('Logged out successfully!', {
+        autoClose: 3000,
+        position: 'top-right'
+      });
+    } catch (e) {
+      toast.dismiss('logout');
+      toast.error('Something went wrong while logging out.', {
+        autoClose: 5000,
+        position: 'top-right'
+      });
+    } finally {
+      router.push("/");
+    }
   };
 
   const handleDownloadPDF = async () => {
     if (!token) {
+      toast.error('Please log in to export your data (PDF).', {
+        autoClose: 4000,
+        position: 'top-right'
+      });
       return;
     }
 
     try {
       setIsDownloading(true);
+      toast.info('Generating report...', { toastId: 'pdf-export' });
 
       const res = await fetch('/api/export/pdf', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ user: displayUser, babies: displayBabies, email: displayUser?.email })
       });
 
@@ -81,8 +152,19 @@ const ProfilePage = () => {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
+
+      toast.dismiss('pdf-export');
+      toast.success('PDF exported successfully!', {
+        autoClose: 3000,
+        position: 'top-right'
+      });
     } catch (err) {
       console.error('PDF download error:', err);
+      toast.dismiss('pdf-export');
+      toast.error(err?.message || 'Failed to generate PDF. Please try again.', {
+        autoClose: 5000,
+        position: 'top-right'
+      });
     } finally {
       setIsDownloading(false);
     }
@@ -116,285 +198,377 @@ const ProfilePage = () => {
       }))
     : [];
 
+  const handleUserInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditableUser(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBabyInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditableBaby(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Helper function to validate required fields
+  const validateRequiredFields = (data, requiredFields) => {
+    for (const field of requiredFields) {
+      if (!data[field] || (typeof data[field] === 'string' && data[field].trim() === '')) {
+        toast.error(`${field.charAt(0).toUpperCase() + field.slice(1)} is required`);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  // Helper function to handle API response errors
+  const handleApiError = (result, toastId) => {
+    toast.dismiss(toastId);
+    
+    if (result.details && Array.isArray(result.details)) {
+      toast.error(`Validation failed: ${result.details.join(', ')}`, {
+        autoClose: 5000,
+        position: 'top-right'
+      });
+    } else if (result.details) {
+      toast.error(result.details, {
+        autoClose: 5000,
+        position: 'top-right'
+      });
+    } else {
+      toast.error(result.error || 'Operation failed', {
+        autoClose: 5000,
+        position: 'top-right'
+      });
+    }
+  };
+
+  const handleUserSave = async () => {
+    setIsSaving(true);
+    try {
+      // Prepare the data with proper validation
+      const userData = {
+        name: editableUser.name?.trim(),
+        email: editableUser.email?.trim(),
+        noOfBabies: editableUser.noOfBabies,
+        deliveryType: editableUser.deliveryType?.trim()
+      };
+
+
+      // Validate required fields
+      if (!validateRequiredFields(userData, ['name', 'email'])) {
+        setIsSaving(false);
+        return;
+      }
+
+      // Show loading toast
+      toast.info('Updating profile...', { toastId: 'user-update' });
+
+      const res = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+          type: 'user', 
+          data: userData 
+        })
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        handleApiError(result, 'user-update');
+        return;
+      }
+
+      // Update user in AuthContext immediately
+      updateUserData(result.user);
+
+      // Success toast
+      toast.success('Profile updated successfully!', {
+        autoClose: 3000,
+        position: 'top-right'
+      });
+      
+      closeUserModal();
+    } catch (error) {
+      console.error('Failed to save user profile:', error);
+      toast.dismiss('user-update');
+      toast.error('Network error. Please check your connection and try again.', {
+        autoClose: 5000,
+        position: 'top-right'
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleBabySave = async () => {
+    setIsSaving(true);
+    try {
+      // Prepare the data with proper validation
+      const babyData = {
+        id: selectedBaby._id,
+        babyName: editableBaby.babyName?.trim(),
+        dateOfBirth: editableBaby.dateOfBirth,
+        weight: editableBaby.weight
+      };
+
+
+      // Validate required fields
+      if (!validateRequiredFields(babyData, ['babyName'])) {
+        setIsSaving(false);
+        return;
+      }
+
+      if (!babyData.id) {
+        toast.error('Baby ID is missing');
+        setIsSaving(false);
+        return;
+      }
+
+      // Show loading toast
+      toast.info('Updating baby details...', { toastId: 'baby-update' });
+
+      const res = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+          type: 'baby', 
+          data: babyData 
+        })
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        handleApiError(result, 'baby-update');
+        return;
+      }
+
+      // Update user in AuthContext immediately
+      updateUserData(result.user);
+
+      // Success toast
+      toast.success('Baby details updated successfully!', {
+        autoClose: 3000,
+        position: 'top-right'
+      });
+      
+      closeBabyModal();
+    } catch (error) {
+      console.error('Failed to save baby profile:', error);
+      toast.dismiss('baby-update');
+      toast.error('Network error. Please check your connection and try again.', {
+        autoClose: 5000,
+        position: 'top-right'
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-4 sm:py-6 md:py-6">
-      <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8 md:mb-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2 sm:mb-3">
-            Profile
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 text-base sm:text-lg">
-            Manage your account and baby information
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900 dark:to-slate-800 p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Back Arrow */}
+        <Button variant="ghost" onClick={() => router.push('/')} className="mb-6 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Home
+        </Button>
 
-        {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-1 sm:gap-2 mb-6 sm:mb-8 md:mb-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-1 shadow-lg border border-pink-100 dark:border-gray-700">
-          <button
-            onClick={() => setActiveTab("overview")}
-            className={`flex-1 min-w-0 py-3 px-4 sm:px-6 rounded-lg text-sm font-semibold transition-all duration-200 ${
-              activeTab === "overview"
-                ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md"
-                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setActiveTab("settings")}
-            className={`flex-1 min-w-0 py-3 px-4 sm:px-6 rounded-lg text-sm font-semibold transition-all duration-200 ${
-              activeTab === "settings"
-                ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md"
-                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            Settings
-          </button>
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === "overview" && (
-          <div className="space-y-4 sm:space-y-6 md:space-y-6">
-            {/* User Info Section */}
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl ring-1 ring-pink-100 dark:ring-gray-700">
-              <CardHeader className="pb-3 sm:pb-4">
-                <CardTitle className="flex items-center gap-3 text-xl sm:text-2xl dark:text-white">
-                  <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg">
-                    <User className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                  </div>
-                  User Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
-                  {/* Profile Picture Placeholder */}
-                  <div className="relative flex-shrink-0">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
-                      <User className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full border-4 border-white dark:border-gray-800 flex items-center justify-center">
-                      <div className="w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-
-                  {/* User Details */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2 break-words">
-                      {displayUser.name}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 text-base sm:text-lg break-words">
-                      {displayUser.email}
-                    </p>
-                    <div className="flex items-center gap-3 sm:gap-6">
-                      <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/30 dark:to-purple-900/30 rounded-lg">
-                        <Baby className="h-4 w-4 sm:h-5 sm:w-5 text-pink-600 dark:text-pink-400" />
-                        <span className="font-semibold text-pink-800 dark:text-pink-300 text-sm sm:text-base">
-                          {displayBabies.length} {displayBabies.length === 1 ? 'Baby' : 'Babies'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Baby Info Cards */}
-            <div>
-              <div className="flex items-center gap-3 mb-4 sm:mb-6 md:mb-6">
-                <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg">
-                  <Baby className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-                  Baby Information
-                </h2>
+        {/* User Profile Card */}
+        <Card className="w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/80 shadow-subtle rounded-3xl overflow-hidden mb-10">
+          <CardContent className="p-8 relative">
+            <Button variant="ghost" size="icon" onClick={openUserModal} className="absolute top-4 right-4 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700 rounded-full">
+              <Pencil className="h-5 w-5" />
+            </Button>
+            <div className="flex flex-col md:flex-row items-center text-center md:text-left">
+              <div className="w-28 mt-5 sm:mt-0 h-28 bg-gradient-to-br from-pink-500 to-purple-600 dark:from-pink-600 dark:to-purple-700 rounded-full flex-shrink-0 flex items-center justify-center shadow-lg mb-6 md:mb-0 md:mr-8">
+                <User className="h-14 w-14 text-white/90" />
               </div>
-              
-              {displayBabies.length === 0 ? (
-                <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl ring-1 ring-pink-100 dark:ring-gray-700">
-                  <CardContent className="text-center py-12 sm:py-16">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                      <Baby className="h-8 w-8 sm:h-10 sm:w-10 text-pink-500" />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                      No babies added yet
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
-                      Add your baby's details to get started with tracking their growth and milestones.
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4 sm:gap-6 md:gap-6">
-                  {displayBabies.map((baby, index) => (
-                    <Card key={baby.id || index} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl ring-1 ring-pink-100 dark:ring-gray-700 hover:shadow-2xl transition-all duration-200 hover:-translate-y-1">
-                      <CardHeader className="pb-3 sm:pb-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shadow-lg ${
-                              normalizeGender(baby.gender) === 'female' ? 'bg-gradient-to-br from-pink-400 to-pink-600' :
-                              normalizeGender(baby.gender) === 'male' ? 'bg-gradient-to-br from-blue-400 to-blue-600' : 'bg-gradient-to-br from-purple-400 to-purple-600'
-                            }`}>
-                              {normalizeGender(baby.gender) === 'female' ? (
-                                <span className="text-white font-bold text-base sm:text-lg">♀</span>
-                              ) : normalizeGender(baby.gender) === 'male' ? (
-                                <span className="text-white font-bold text-base sm:text-lg">♂</span>
-                              ) : (
-                                <Baby className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <CardTitle className="text-xl sm:text-2xl font-bold dark:text-white mb-1 truncate">
-                                {baby.babyName}
-                              </CardTitle>
-                              <div className={`inline-flex items-center gap-2 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold ${
-                                normalizeGender(baby.gender) === 'female' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300' :
-                                normalizeGender(baby.gender) === 'male' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
-                              }`}>
-                                <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${
-                                  normalizeGender(baby.gender) === 'female' ? 'bg-pink-500' :
-                                  normalizeGender(baby.gender) === 'male' ? 'bg-blue-500' : 'bg-purple-500'
-                                }`} />
-                                {normalizeGender(baby.gender) === 'female' ? 'Girl' : normalizeGender(baby.gender) === 'male' ? 'Boy' : 'Other'}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-right flex-shrink-0">
-                            <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-xl">
-                              <span className="text-xs sm:text-sm font-semibold text-indigo-800 dark:text-indigo-300">
-                                {calculateAge(baby.dateOfBirth)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="flex items-center gap-3 p-2 sm:p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                            <div className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Born</p>
-                              <p className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base break-words">
-                                {formatDate(baby.dateOfBirth)}
-                              </p>
-                            </div>
-                          </div>
-
-                          {(baby.weight || baby.Weight) && (
-                            <div className="flex items-center gap-3 p-2 sm:p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                              <div className="p-1.5 sm:p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                                <div className="w-3 w-3 sm:w-4 sm:h-4 flex items-center justify-center">
-                                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-600 dark:bg-green-400 rounded-full" />
-                                </div>
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Birth Weight</p>
-                                <p className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">
-                                  {baby.weight || baby.Weight}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+              <div className="flex-grow">
+                <h2 className="text-3xl font-bold text-slate-800 dark:text-white">{user?.name}</h2>
+                <p className="text-md text-slate-500 dark:text-slate-400 mt-1">Parent Account</p>
+              </div>
             </div>
 
-            {/* Profile Actions */}
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl ring-1 ring-pink-100 dark:ring-gray-700">
-              <CardHeader className="pb-3 sm:pb-4">
-                <CardTitle className="flex items-center gap-3 text-xl sm:text-2xl dark:text-white">
-                  <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg">
-                    <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                  </div>
-                  Profile Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="group w-full">
-                    <Button
-                      onClick={handleDownloadPDF}
-                      disabled={isDownloading}
-                      className={`w-full h-14 sm:h-16 flex items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 ${
-                        isDownloading
-                          ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-                          : 'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl'
-                      }`}
-                      variant={isDownloading ? 'outline' : 'default'}
-                    >
-                      <div className={`p-2 rounded-lg ${isDownloading ? 'bg-gray-200 dark:bg-gray-600' : 'bg-indigo-600'}`}>
-                        {isDownloading ? (
-                          <span className="inline-block h-4 w-4 sm:h-5 sm:w-5 rounded-full border-2 border-gray-300 border-t-indigo-600 animate-spin" aria-label="Loading" />
-                        ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5"><path d="M12 16l4-5h-3V4h-2v7H8l4 5z"/><path d="M5 18h14v2H5z"/></svg>
-                        )}
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-sm sm:text-base">{isDownloading ? 'Generating PDF...' : 'Download Data'}</div>
-                        <div className="text-xs sm:text-sm opacity-90">{isDownloading ? 'Please wait' : 'Export as PDF'}</div>
-                      </div>
-                    </Button>
-                  </div>
-                  <div className="group w-full max-w-sm sm:max-w-none">
-                    <Button
-                      onClick={handleLogout}
-                      variant="destructive"
-                      className="w-full h-14 sm:h-16 flex items-center gap-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
-                    >
-                      <div className="p-2 bg-red-600 rounded-lg">
-                        <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-sm sm:text-base">Logout</div>
-                        <div className="text-xs sm:text-sm opacity-90">Sign out of your account</div>
-                      </div>
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              <InfoField label="Name" value={user?.name} icon={<User className="h-5 w-5 text-blue-400" />} />
+              <InfoField label="Email" value={user?.email} icon={<Mail className="h-5 w-5 text-purple-400" />} />
+              <InfoField label="Number of Babies" value={user?.noOfBabies} icon={<Users className="h-5 w-5 text-green-400" />} />
+              <InfoField label="Delivery Type" value={user?.deliveryType} icon={<Stethoscope className="h-5 w-5 text-red-400" />} />
+            </div>
+          </CardContent>
+        </Card>
 
-        {activeTab === "settings" && (
-          <div className="space-y-4 sm:space-y-6 md:space-y-6">
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl ring-1 ring-pink-100 dark:ring-gray-700">
-              <CardHeader className="pb-3 sm:pb-4">
-                <CardTitle className="flex items-center gap-3 text-xl sm:text-2xl dark:text-white">
-                  <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg">
-                    <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+        {/* Baby Information Section */}
+        <div className="mb-10">
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Baby Information</h3>
+          <div className="space-y-6">
+            {displayBabies.map((baby, index) => (
+              <Card key={index} className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/80 shadow-subtle rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <CardContent className="p-6">
+                  <div className="flex mt-5 sm:mt-0 items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-14 h-14 rounded-lg flex items-center justify-center ${
+                        normalizeGender(baby.gender) === 'female' ? 'bg-pink-100 dark:bg-pink-500/20' : 'bg-blue-100 dark:bg-blue-500/20'
+                      }`}>
+                        <span className={`text-2xl font-bold ${normalizeGender(baby.gender) === 'female' ? 'text-pink-500 dark:text-pink-400' : 'text-blue-500 dark:text-blue-400'}`}>
+                          {normalizeGender(baby.gender) === 'female' ? '♀' : '♂'}
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="text-2xl font-bold text-slate-800 dark:text-white">{baby.babyName}</h4>
+                        <div className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold mt-2 ${
+                          normalizeGender(baby.gender) === 'female' ? 'bg-pink-100 text-pink-700 dark:bg-pink-500/20 dark:text-pink-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300'
+                        }`}>
+                          <div className={`w-2 h-2 rounded-full ${normalizeGender(baby.gender) === 'female' ? 'bg-pink-500' : 'bg-blue-500'}`} />
+                          {normalizeGender(baby.gender) === 'female' ? 'Girl' : 'Boy'}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-full">
+                        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                          {calculateAge(baby.dateOfBirth)}
+                        </span>
+                      </div>
+                      <Button variant="ghost" size="icon" onClick={() => openBabyModal(baby)} className="text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-700 rounded-full">
+                        <Pencil className="h-5 w-5" />
+                      </Button>
+                    </div>
                   </div>
-                  Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="text-center py-12 sm:py-16">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6 sm:mb-8">
-                    <Settings className="h-10 w-10 sm:h-12 sm:w-12 text-pink-500" />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-4 p-4 bg-slate-50/80 dark:bg-slate-800/60 rounded-xl">
+                      <Calendar className="h-6 w-6 text-slate-400 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Born</p>
+                        <p className="font-semibold text-md text-slate-700 dark:text-slate-200">{formatDate(baby.dateOfBirth)}</p>
+                      </div>
+                    </div>
+                    {(baby.weight || baby.Weight) && (
+                      <div className="flex items-center gap-4 p-4 bg-slate-50/80 dark:bg-slate-800/60 rounded-xl">
+                        <Scale className="h-6 w-6 text-slate-400 flex-shrink-0" />
+                        <div>
+                          <p className="text-sm text-slate-500 dark:text-slate-400">Birth Weight</p>
+                          <p className="font-semibold text-md text-slate-700 dark:text-slate-200">{baby.weight || baby.Weight}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-                    Settings Coming Soon
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-2 text-base sm:text-lg max-w-md mx-auto">
-                    We're working on bringing you comprehensive settings to customize your experience.
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
-                    This section will include account preferences, notification settings, privacy controls, and more personalization options.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <Button onClick={handleDownloadPDF} disabled={isDownloading} className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:from-blue-600 hover:to-indigo-600 shadow-md hover:shadow-lg transition-all duration-300">
+            <FileDown className="mr-2 h-4 w-4" />
+            {isDownloading ? 'Generating PDF...' : 'Export PDF'}
+          </Button>
+          <Button variant="destructive" onClick={handleLogout} className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600 shadow-md hover:shadow-lg transition-all duration-300">
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
+        </div>
       </div>
+
+      {/* User Edit Modal */}
+      {isUserModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle>Edit User Information</CardTitle>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Update your profile details.</p>
+                </div>
+                <Button variant="ghost" size="icon" onClick={closeUserModal} className="-mt-2 -mr-2 rounded-full"><X className="h-4 w-4" /></Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Name</label>
+                  <input type="text" name="name" value={editableUser.name} onChange={handleUserInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Email</label>
+                  <input type="email" name="email" value={editableUser.email} onChange={handleUserInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Number of Babies</label>
+                  <input type="number" name="noOfBabies" value={editableUser.noOfBabies} onChange={handleUserInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Delivery Type</label>
+                  <input type="text" name="deliveryType" value={editableUser.deliveryType} onChange={handleUserInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 mt-6">
+                <Button variant="ghost" onClick={closeUserModal} className="text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700">Cancel</Button>
+                <Button onClick={handleUserSave} disabled={isSaving} className="bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-700 text-white">{isSaving ? 'Saving...' : 'Save Changes'}</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Baby Edit Modal */}
+      {isBabyModalOpen && selectedBaby && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle>Edit Baby Information</CardTitle>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Update details for {selectedBaby?.babyName}.</p>
+                </div>
+                <Button variant="ghost" size="icon" onClick={closeBabyModal} className="-mt-2 -mr-2 rounded-full"><X className="h-4 w-4" /></Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+                            <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Baby's Name</label>
+                  <input type="text" name="babyName" value={editableBaby.babyName} onChange={handleBabyInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Date of Birth</label>
+                  <input type="date" name="dateOfBirth" value={editableBaby.dateOfBirth} onChange={handleBabyInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Birth Weight</label>
+                  <input type="text" name="weight" value={editableBaby.weight} onChange={handleBabyInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 mt-6">
+                <Button variant="ghost" onClick={closeBabyModal} className="text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700">Cancel</Button>
+                <Button onClick={handleBabySave} disabled={isSaving} className="bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-700 text-white">{isSaving ? 'Saving...' : 'Save Changes'}</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
+
+const InfoField = ({ label, value, icon }) => (
+  <div className="flex items-start p-4 bg-slate-50/80 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+    <div className="mr-4 mt-1 flex-shrink-0">{icon}</div>
+    <div className="flex-1">
+      <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{label}</p>
+        <p className="text-md font-semibold text-slate-800 dark:text-white truncate mt-1">{value}</p>
+    </div>
+  </div>
+);
 
 export default ProfilePage;

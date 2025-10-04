@@ -1,8 +1,8 @@
 // app/api/sleep/route.js
 import { NextResponse } from "next/server";
-import Sleep from "@/app/models/Sleep.model";
-import connectDB from "@/lib/connectDB";
-import { authenticateToken } from "@/lib/auth";
+import Sleep from "@models/Sleep.model";
+import connectDB from "@lib/connectDB";
+import { authenticateToken } from "@lib/auth";
 
 export async function POST(req) {
   await connectDB();

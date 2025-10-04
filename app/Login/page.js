@@ -96,12 +96,17 @@ export default function LoginPage() {
         password: password,
       };
 
-      const res = await axios.post("/api/auth/login", credentials);
+      const res = await axios.post("/api/auth/login", credentials, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       const data = res.data;
 
       if (res.status === 200 && data.success) {
-        login(data.token);
+        // Pass both token and user data to AuthContext
+        login(data.token, data.userExists);
 
         toast.success(data.success);
 
