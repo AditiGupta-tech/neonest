@@ -14,6 +14,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function SignupBabyPage() {
   useEffect(() => {
@@ -581,6 +582,28 @@ export default function SignupBabyPage() {
                 </div>
               ))}
             </div>
+            
+            {/* Signup with Google Button */}
+            <div className="mb-6">
+              <button
+                type="button"
+                onClick={() => {
+                  // TODO: Handle Google signup logic
+                  console.log("Signup with Google clicked");
+                }}
+                className="w-full flex items-center justify-center py-3 rounded-xl font-semibold shadow-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Image
+                  src="/google-logo.png"
+                  alt="Google logo"
+                  width={20}
+                  height={20}
+                  className="mr-3"
+                />
+                Signup with Google
+              </button>
+            </div>
+
 
             {/* Privacy Notice */}
             <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 hover:scale-[1.02] group">

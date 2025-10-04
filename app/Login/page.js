@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 
 export default function LoginPage() {
   useEffect(() => {
@@ -206,6 +207,8 @@ export default function LoginPage() {
             )}
           </div>
 
+
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -219,6 +222,34 @@ export default function LoginPage() {
             `}>
             {isFormValid ? "Sign In" : "Please fill all fields"}
           </button>
+
+
+                    {/* Horizontal divider with OR */}
+            <div className="flex items-center my-4">
+              <hr className="flex-grow border-gray-300 dark:border-gray-600" />
+              <span className="mx-3 text-gray-400 dark:text-gray-400 font-semibold">OR</span>
+              <hr className="flex-grow border-gray-300 dark:border-gray-600" />
+            </div>
+
+            {/* Login with Google Button */}
+            <div className="mb-6">
+              <button
+                type="button"
+                onClick={() => {
+                  console.log("Login with Google clicked");
+                }}
+                className="w-full flex items-center justify-center py-3 rounded-xl font-semibold shadow-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Image
+                  src="/google-logo.png"
+                  alt="Google logo"
+                  width={20}
+                  height={20}
+                  className="mr-3"
+                />
+                Login with Google
+              </button>
+            </div>
 
           {/* Signup Link */}
           <p className="mt-6 text-sm text-center text-gray-600 dark:text-gray-200">
