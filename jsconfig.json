@@ -1,6 +1,13 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
+      "@lib/*": ["lib/*"],
+      "@app/lib/*": ["app/lib/*"],
+      "@models/*": ["app/models/*"],
+      "@components/*": ["app/components/*"],
+      "@context/*": ["app/context/*"],
+      "@utils/*": ["app/utils/*"],
       "@/*": ["./*"]
     }
   }

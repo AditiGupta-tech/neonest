@@ -1,12 +1,12 @@
-import Notification from "@/app/models/Notification.model";
-import User from "@/app/models/User.model";
-import { authenticateToken } from "@/lib/auth";
-import connectDB from "@/lib/connectDB";
+import Notification from "@models/Notification.model";
+import User from "@models/User.model";
+import { authenticateToken } from "@lib/auth";
+import connectDB from "@lib/connectDB";
 
-await connectDB();
 
 // Create a new notification
 export async function POST(req) {
+  await connectDB();
   try {
     const body = await req.json();
     const { type, title, message, priority, scheduledFor, actionUrl, metadata, category } = body;

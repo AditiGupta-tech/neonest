@@ -1,5 +1,5 @@
-import dbConnect from "../../../lib/db.js";
-import User from "../../../models/User.model.js";
+import dbConnect from "@lib/connectDB";
+import User from "@models/User.model";
 import jwt from "jsonwebtoken";
 
 export const runtime = 'nodejs';

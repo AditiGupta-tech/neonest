@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
-import Memory from "@/app/models/Memory.model";
-import { authenticateToken } from "@/lib/auth";
-import connectDB from "@/lib/connectDB";
-import User from "@/app/models/User.model";
-import { cloudinary } from "@/lib/cloudinary";
-
-await connectDB();
+import Memory from "@models/Memory.model";
+import { authenticateToken } from "@lib/auth";
+import dbConnect from "@app/lib/db";
+import User from "@models/User.model";
+import { cloudinary } from "@lib/cloudinary";
 
 // GET - Get public memories
 export async function GET(request) {
   try {
-    console.log(request.headers)
+    await dbConnect();
+
+    console.log(request.headers);
     const user = await authenticateToken(request);
-    console.log(user)
+    console.log(user);
     const userId = user?.user?.id;
     const privateMemories = await Memory.find({user : userId , isPublic: false});
     console.log(privateMemories);
@@ -31,6 +31,7 @@ export async function GET(request) {
 }
 export async function POST(request) {
   try {
+    await dbConnect();
     const formData = await request.formData();
     console.log(formData);
     const user = await authenticateToken(request);

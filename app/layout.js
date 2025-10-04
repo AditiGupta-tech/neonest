@@ -18,6 +18,7 @@ export const metadata = {
   },
   description: "Supporting parents through their baby's incredible first year with expert guidance, AI assistance, and a loving community.",
   keywords: ["parenting", "baby", "newborn", "first year", "AI parenting assistant", "NeoNest"],
+  metadataBase: new URL("https://neonest-babycare.vercel.app"),
   openGraph: {
     title: "NeoNest - For Parents and Babies",
     description: "Expert guidance and AI assistance for your baby's first year.",
@@ -53,32 +54,34 @@ const geistMono = Geist_Mono({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={`w-screen dark:bg-gray-900/50 flex flex-col min-h-screen overflow-x-hidden ${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-sans`}
+      >
+        <ThemeProvider attribute="class">
           <AuthProvider>
-            <AutoTaskProvider>
-              <NotificationProvider>
+            <NotificationProvider>
+              <AutoTaskProvider>
                 <Navbar />
-                <main className="flex-grow">{children}</main>
-                <AutoTaskManager />
-                <Footer />
+                <main>{children}</main>
                 <GoToTop />
-              </NotificationProvider>
-            </AutoTaskProvider>
+                <Footer />
+                <AutoTaskManager />
+                <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+              </AutoTaskProvider>
+            </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
       </body>
     </html>
   );

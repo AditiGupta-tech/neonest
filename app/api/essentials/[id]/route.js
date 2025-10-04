@@ -1,13 +1,12 @@
-
-import Essentials from "@/app/models/Essentials.model";
-import { authenticateToken } from "@/lib/auth";
-import connectDB from "@/lib/connectDB";
+import Essentials from "@models/Essentials.model";
+import { authenticateToken } from "@lib/auth";
+import connectDB from "@lib/connectDB";
 import { NextResponse } from "next/server";
 
 // Update an essential item
-await connectDB();
 
 export async function PUT(request, { params }) {
+  await connectDB();
   try {
     // Verify token and get user ID
     const user = await authenticateToken(request);

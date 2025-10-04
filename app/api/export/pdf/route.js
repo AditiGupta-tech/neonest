@@ -1,9 +1,9 @@
-import dbConnect from "../../../lib/db.js";
-import User from "../../../models/User.model.js";
-import Feeding from "../../../models/Feeding.model.js";
-import Sleep from "../../../models/Sleep.model.js";
-import Vaccine from "../../../models/Vaccine.model.js";
-import Essentials from "../../../models/Essentials.model.js";
+import dbConnect from "@app/lib/db";
+import User from "@models/User.model";
+import Feeding from "@models/Feeding.model";
+import Sleep from "@models/Sleep.model";
+import Vaccine from "@models/Vaccine.model";
+import Essentials from "@models/Essentials.model";
 
 // Server-side PDF generation using Puppeteer
 // POST expects JSON: { user: { name, email }, babies: [ { babyName, dateOfBirth, gender, weight, photoUrl? } ], email?: string }

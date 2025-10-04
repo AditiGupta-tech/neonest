@@ -44,4 +44,4 @@ const Button = React.forwardRef(function Button(
   return <Comp className={finalClassName} ref={ref} {...props} />;
 });
 
-export { Button };
+export default Button;

@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ThumbsUp, ThumbsDown, Heart, Star, Utensils, Package, Camera, Shield, PlayCircle, HelpCircle, Baby, X, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
-import { Button } from "./ui/Button";
+import { Button } from "./ui";
 import Image from "next/image";
 import NewSections from "./Newsections";
 import NotificationDemo from "./NotificationDemo";
