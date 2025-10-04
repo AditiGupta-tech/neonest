@@ -21,29 +21,29 @@ export const NotificationProvider = ({ children }) => {
   const { isAuth } = useAuth();
 
   // Fetch notifications from API
-  const fetchNotifications = async () => {
-    if (!isAuth) return;
+const fetchNotifications = useCallback(async () => {
+  if (!isAuth) return;
 
-    try {
-      setIsLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/notifications", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  try {
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
+    const response = await fetch("/api/notifications", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        setNotifications(data.notifications);
-        setUnreadCount(data.notifications.filter(n => !n.isRead).length);
-      }
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    } finally {
-      setIsLoading(false);
+    if (response.ok) {
+      const data = await response.json();
+      setNotifications(data.notifications);
+      setUnreadCount(data.notifications.filter((n) => !n.isRead).length);
     }
-  };
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+  } finally {
+    setIsLoading(false);
+  }
+}, [isAuth, setNotifications, setUnreadCount, setIsLoading]);
 
   // Create a new notification
   const createNotification = async (notificationData) => {
@@ -254,7 +254,7 @@ export const NotificationProvider = ({ children }) => {
       setNotifications([]);
       setUnreadCount(0);
     }
-  }, [isAuth]);
+  }, [isAuth,fetchNotifications]);
 
   const value = {
     notifications,

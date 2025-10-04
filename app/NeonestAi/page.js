@@ -89,7 +89,7 @@ export default function NeonestAi() {
       }
     };
     if (token) loadHistory();
-  }, [role, token, chatHistory, setChatHistory]);
+  }, [role, token, chatHistory, setChatHistory,historyLoaded]);
 
   useEffect(() => {
     if (messages.length === 0 || isUserNearBottom()) {

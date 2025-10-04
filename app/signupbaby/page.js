@@ -46,7 +46,7 @@ export default function SignupBabyPage() {
     setBabiesTouched(
       Array.from({ length: noOfBabies }, (_, i) => babiesTouched[i] || false)
     );
-  }, [noOfBabies]);
+  }, [noOfBabies,babiesTouched,babyErrors]);
 
   // --- Validation Functions ---
   const validateDeliveryType = (value) => {
@@ -414,9 +414,10 @@ export default function SignupBabyPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Baby Name */}
                     <div className="md:col-span-2 group">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
-                        Baby's Name
-                      </label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
+                            Baby&apos;s Name
+                          </label>
+
                       <div
                         className={`flex items-center border rounded-xl px-3 py-3 bg-white dark:bg-gray-800 focus-within:ring-2 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-500 group
                         ${
