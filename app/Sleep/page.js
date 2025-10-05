@@ -4,14 +4,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Plus, Clock, Moon, Edit, Trash2, Calendar, Save } from "lucide-react";
 import Input from "../components/ui/Input";
-import { Button } from "../components/ui/Button";
-import Badge from "../components/ui/Badge";
-import Sleeptips from "../components/Sleeptips";
-import { useAuth } from "../context/AuthContext";
-import LoginPrompt from "../components/LoginPrompt";
-
+import Button from "../components/ui/Button";
 export default function Page() {
-  const { isAuth, token } = useAuth();
+  const { isAuth, token, headers } = useAuth();
   const [schedules, setSchedules] = useState([]);
   const [isAddingSchedule, setIsAddingSchedule] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState(null);
@@ -24,7 +19,6 @@ export default function Page() {
     notes: "",
   });
 
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
   useEffect(() => {
     document.title = "Sleep | NeoNest";
@@ -35,13 +29,12 @@ export default function Page() {
           setSchedules(res.data);
         } catch (err) {
           console.error("Failed to fetch logs:", err);
-        } finally {
           setLoading(false);
         }
       };
       fetchLogs();
     }
-  }, [isAuth]);
+  }, [isAuth, headers, token]);
 
   const addSchedule = async () => {
     if (!newSchedule.time || !newSchedule.duration) return;
@@ -128,7 +121,7 @@ export default function Page() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Sleep: Tips & Routine</h2>
-          <p className="text-gray-600 dark:text-gray-300">Track your baby’s naps, nighttime sleep, and moods after rest.</p>
+          <p className="text-gray-600 dark:text-gray-300">Track your baby&apos;s naps, nighttime sleep, and moods after rest.</p>
         </div>
         <Button onClick={() => setIsAddingSchedule(true)} className="bg-gradient-to-r from-indigo-500 to-violet-500 text-white">
           <Plus className="w-4 h-4 mr-2" /> Add Sleep Log
@@ -286,7 +279,7 @@ export default function Page() {
                       {moodEmoji(s.mood)} {s.mood}
                     </span>
                   )}
-                  {s.notes && <span className="text-sm text-gray-400 italic">"{s.notes}"</span>}
+                  {s.notes && <span className="text-sm text-gray-400 italic">&quot;{s.notes}&quot;</span>}
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={() => setEditingSchedule(s)} className="text-sm">
@@ -335,7 +328,7 @@ export default function Page() {
                         {moodEmoji(s.mood)} {s.mood}
                       </span>
                     )}
-                    {s.notes && <span className="text-sm text-gray-400 italic">"{s.notes}"</span>}
+                    {s.notes && <span className="text-sm text-gray-400 italic">&quot;{s.notes}&quot;</span>}
                   </div>
                   <div className="flex gap-2">
                     <Button onClick={() => setEditingSchedule(s)} className="text-sm">

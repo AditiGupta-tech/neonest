@@ -5,7 +5,7 @@ import { useNotifications } from "../context/NotificationContext";
 import { Bell, Filter, Trash2, Check, ExternalLink, Calendar, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 
 const NotificationsPage = () => {
   const { notifications, markAsRead, deleteNotification, markAllAsRead, isLoading } = useNotifications();

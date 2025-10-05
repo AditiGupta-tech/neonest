@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Clock, Utensils, Baby, Edit, Trash2, Calendar, Save } from "lucide-react";
 import Input from "../components/ui/Input";
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 import Badge from "../components/ui/Badge";
 import Feedingtips from "../components/Feedingtips";
 import axios from "axios";

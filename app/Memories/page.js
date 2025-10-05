@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import { Share2, Image as ImageIcon, Heart, MessageCircle, Plus, Camera, Video, Edit, Trash2, Upload, Save, X, Eye, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Badge from "../components/ui/Badge";
 import { useAuth } from "../context/AuthContext";
@@ -31,20 +31,18 @@ export default function MemoriesCommunityBlog() {
   const [isLoading, setIsLoading] = useState(false);
   const [publicMemories, setPublicMemories] = useState([]);
   const [privateMemories, setPrivateMemories] = useState([]);
-
   useEffect(() => {
     document.title = "Memories, Community & Blogs | NeoNest";
     if (isAuth && token) {
       fetchMemories();
     }
-  }, [isAuth, token]);
+  }, [isAuth, token, fetchMemories]);
 
-  const fetchMemories = async () => {
+  const fetchMemories = useCallback(async () => {
     try {
       const res = await axios.get("/api/memories", {
         headers: {
           "Authorization": `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
         },
       });
       console.log(res);
@@ -54,7 +52,7 @@ export default function MemoriesCommunityBlog() {
     } catch (err) {
       console.error("Failed to fetch memories:", err);
     }
-  };
+  }, [token]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];

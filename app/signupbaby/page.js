@@ -20,7 +20,6 @@ export default function SignupBabyPage() {
     document.title = "Baby Details | NeoNest";
   }, []);
 
-  const router = useRouter();
   const { token, user, updateUserData } = useAuth();
 
   // State for form inputs

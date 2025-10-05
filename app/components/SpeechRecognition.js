@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Mic, MicOff } from "lucide-react";
-import { Button } from "./ui/Button";
+import Button from "./ui/Button";
 
 const SpeechRecognition = ({ onTranscript, isListening, setIsListening, disabled = false }) => {
   const [isSupported, setIsSupported] = useState(false);

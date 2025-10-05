@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ThumbsUp, ThumbsDown, Heart, Star, Utensils, Package, Camera, Shield, PlayCircle, HelpCircle, Baby, X, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
-import { Button } from "./ui";
+import Button from "./ui/Button";
 import Image from "next/image";
 import NewSections from "./Newsections";
 import NotificationDemo from "./NotificationDemo";
@@ -22,19 +22,19 @@ const Homepage = () => {
     {
       name: "Riya Sharma",
       tag: "Recommendations",
-      content: "Got neonest recommended by a friend... imagining my son, Aarav's first year without it gives me goosebumps",
+      content: "Got neonest recommended by a friend... imagining my son, Aarav&apos;s first year without it gives me goosebumps",
       keywords: ["Must have", "Smart parenting", "Better child care"],
     },
     {
       name: "Parag Mehta",
       tag: "Happy life",
-      content: "My wife's been happier ever since she started using neonest. our parenting life in the first year was really good. Thankyou neonest💕",
+      content: "My wife&apos;s been happier ever since she started using neonest. our parenting life in the first year was really good. Thankyou neonest💕",
       keywords: ["Helpful", "Life saver", "Easy parenting"],
     },
     {
       name: "Pooja Desai",
       tag: "AI Pediatrician",
-      content: "The AI pediatrician diagnosed my child's sickness based on symptoms and I was able to consult the doctor on time and help my child. Genius!",
+      content: "The AI pediatrician diagnosed my child&apos;s sickness based on symptoms and I was able to consult the doctor on time and help my child. Genius!",
       keywords: ["Health", "Reliable", "Safety"],
     },
     {
@@ -185,7 +185,7 @@ const Homepage = () => {
   const features = [
     {
       title: "Personalized Baby Tracker",
-      desc: "NeoNest tailors insights based on your baby's age, growth, and needs, so you're never left guessing.",
+      desc: "NeoNest tailors insights based on your baby&apos;s age, growth, and needs, so you're never left guessing.",
       icon: Baby,
       borderColor: "border-pink-400",
       bgColor: "bg-pink-50",
@@ -224,10 +224,10 @@ const Homepage = () => {
           <div className="container mx-auto text-center max-w-6xl">
             <div className="mb-10">
               <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
-                Your Baby's First Year Journey
+                Your Baby&apos;s First Year Journey
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Expert guidance, milestone tracking, and loving support for parents navigating their baby's incredible first year of life. Now with AI-powered chat support!
+                Expert guidance, milestone tracking, and loving support for parents navigating their baby&apos;s incredible first year of life. Now with AI-powered chat support!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12"></div>
               <div className="relative w-full max-w-2xl mx-auto">
@@ -333,7 +333,7 @@ const Homepage = () => {
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4 text-gray-800 dark:text-gray-100 leading-tight">Why Mothers Trust NeoNest</h2>
               <p className="text-lg text-gray-600  dark:text-gray-300    max-w-2xl mx-auto">
-                From sleepless nights to first giggles, NeoNest supports every step of your parenting journey. Here's why thousands of parents trust us.
+                From sleepless nights to first giggles, NeoNest supports every step of your parenting journey. Here&apos;s why thousands of parents trust us.
               </p>
             </div>
 

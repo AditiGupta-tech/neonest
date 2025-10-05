@@ -5,7 +5,7 @@ import axios from "axios";
 import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3, Copy } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../components/ui/tooltip";
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Badge from "../components/ui/Badge";
 import ReactMarkdown from "react-markdown";
@@ -83,13 +83,12 @@ export default function NeonestAi() {
         const messages = await fetchChatHistory(role, token);
         setChatHistory(role, messages);
       } catch (error) {
-        setChatHistory(role, []);
       } finally {
         setIsHistoryLoading(false);
       }
     };
     if (token) loadHistory();
-  }, [role, token, chatHistory, setChatHistory]);
+  }, [role, token, chatHistory, setChatHistory, historyLoaded]);
 
   useEffect(() => {
     if (messages.length === 0 || isUserNearBottom()) {

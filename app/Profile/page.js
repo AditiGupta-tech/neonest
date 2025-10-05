@@ -537,7 +537,7 @@ const ProfilePage = () => {
             <CardContent>
                             <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Baby's Name</label>
+                  <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Baby&apos;s Name</label>
                   <input type="text" name="babyName" value={editableBaby.babyName} onChange={handleBabyInputChange} className="w-full mt-1 p-2 bg-slate-100 dark:bg-slate-700 rounded-md border border-slate-300 dark:border-slate-600" />
                 </div>
                 <div>

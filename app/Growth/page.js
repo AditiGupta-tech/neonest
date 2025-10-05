@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { Baby, Plus, Calendar, BarChart3, Pencil, Trash2, CalendarIcon } from "lucide-react";
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import InteractionWithBaby from "../components/InteractionWithBaby";
 import MilestoneTracker from "../components/MilestoneTracker";

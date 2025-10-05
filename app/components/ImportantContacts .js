@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Input from "./ui/Input";
-import { Button } from "./ui/Button";
+import Button from "./ui/Button";
 import Badge from "./ui/Badge";
 import { Plus, Phone, Globe, Edit, Trash2, Save, XCircle } from "lucide-react";
 
@@ -186,7 +186,7 @@ export default function ImportantContacts() {
                           </a>
                         )}
                       </p>
-                      {contact.description && <p className="text-sm text-gray-500 italic">"{contact.description}"</p>}
+                      {contact.description && <p className="text-sm text-gray-500 italic">&quot;{contact.description}&quot;</p>}
                     </div>
                   </div>
 

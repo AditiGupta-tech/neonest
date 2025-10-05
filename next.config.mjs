@@ -32,7 +32,6 @@ const nextConfig = {
     return config;
   },
   // Disable SWC minifier for better compatibility
-  swcMinify: false,
 }
 
 export default nextConfig

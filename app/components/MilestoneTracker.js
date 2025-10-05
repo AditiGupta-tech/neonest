@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Lock, PlusCircle, PartyPopper, Check, MinusCircle } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 
 const defaultMilestones = {
   0: ["Lifts head", "Responds to sound"],

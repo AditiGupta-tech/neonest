@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Button } from "../components/ui/Button";
+import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import { ChevronDown, ChevronUp, Search, Baby, Utensils, Moon, Shield } from "lucide-react";
 

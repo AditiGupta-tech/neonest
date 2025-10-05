@@ -1,10 +1,10 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "./ui";
+import Button from "./ui/Button";
 import Input from "./ui/Input";
 import { useAutoTask } from "../context/AutoTaskContext";
-import { X,ShareIcon,File, XCircle,Trash,Loader2Icon} from "lucide-react";
+import { X, ShareIcon, File, XCircle, Trash, Loader2Icon } from "lucide-react";
 import { Share } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
 const AutoTaskManager=()=>{
@@ -92,7 +92,7 @@ const AutoTaskManager=()=>{
                     window.removeEventListener('mousemove',trackMove)
                     setAutoTask(false)
                 }
-        },[])
+        },[setAutoTask])
     
     const handleUpdates=()=>{
         const UI = updates.map((msg,i)=>

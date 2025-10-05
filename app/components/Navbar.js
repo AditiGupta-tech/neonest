@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "./ui";
+import Button from "./ui/Button";
 import Chatbot from "./Chatbot";
 import { useAuth } from "../context/AuthContext";
+import { useAutoTask } from "../context/AutoTaskContext";
 import { useChatStore } from "@/lib/store/chatStore";
 import { Menu, X, User } from "lucide-react";
 import NotificationBell from "./NotificationBell";
-import { useAutoTask } from "../context/AutoTaskContext";
 import AutoTask from "./AutoTask";
 import ThemeToggle from "./ThemeToggle";
 
