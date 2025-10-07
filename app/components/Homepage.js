@@ -55,13 +55,15 @@ const Homepage = () => {
   );
 
   useEffect(() => {
+    // Only run on client
+    if (typeof window === "undefined") return;
     const popUpTime = 15 * 24 * 60 * 60 * 1000;
     const checkAndPromptReview = () => {
-      const lastReview = localStorage.getItem("lastReviewPrompt");
+      const lastReview = window.localStorage.getItem("lastReviewPrompt");
       const now = Date.now();
 
       if (!lastReview) {
-        localStorage.setItem("lastReviewPrompt", now.toString());
+        window.localStorage.setItem("lastReviewPrompt", now.toString());
         setTimeout(() => setShowReviewPrompt(true), popUpTime);
       } else {
         const timePassed = now - parseInt(lastReview);
@@ -83,25 +85,27 @@ const Homepage = () => {
   }, []);
 
   useEffect(() => {
-    const showWelcomeToast = sessionStorage.getItem("showWelcomeToast");
-    const showWelcomeBackToast = sessionStorage.getItem("showWelcomeBackToast");
-    const parentName = sessionStorage.getItem("parentName");
+    // Only run on client
+    if (typeof window === "undefined") return;
+    const showWelcomeToast = window.sessionStorage.getItem("showWelcomeToast");
+    const showWelcomeBackToast = window.sessionStorage.getItem("showWelcomeBackToast");
+    const parentName = window.sessionStorage.getItem("parentName");
 
     let timer;
 
     if (showWelcomeToast === "true" && parentName) {
       setShowWelcomeOverlay(true);
       toast.success(`Welcome ${parentName}! Explore NeoNest and make your parenting experience beautiful!`, { duration: 3000 });
-      sessionStorage.removeItem("showWelcomeToast");
-      sessionStorage.removeItem("parentName");
+      window.sessionStorage.removeItem("showWelcomeToast");
+      window.sessionStorage.removeItem("parentName");
       timer = setTimeout(() => {
         setShowWelcomeOverlay(false);
       }, 3000);
     } else if (showWelcomeBackToast === "true" && parentName) {
       setShowWelcomeOverlay(true);
       toast.success(`Welcome back ${parentName}! Continue your parenting journey with NeoNest!`, { duration: 3000 });
-      sessionStorage.removeItem("showWelcomeBackToast");
-      sessionStorage.removeItem("parentName");
+      window.sessionStorage.removeItem("showWelcomeBackToast");
+      window.sessionStorage.removeItem("parentName");
       timer = setTimeout(() => {
         setShowWelcomeOverlay(false);
       }, 3000);
@@ -120,7 +124,9 @@ const Homepage = () => {
 
     setUserReview(newReview);
     setFeedbackSubmitted(true);
-    localStorage.setItem("lastReviewPrompt", Date.now().toString());
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("lastReviewPrompt", Date.now().toString());
+    }
     setTimeout(() => {
       setFeedbackSubmitted(false);
       setShowReviewPrompt(false);
