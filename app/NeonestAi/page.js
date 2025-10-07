@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import axios from "axios";
-import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3, Copy } from "lucide-react";
+import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3, Copy, Mic } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../components/ui/tooltip";
 import { Button } from "../components/ui/Button";
@@ -127,34 +127,44 @@ export default function NeonestAi() {
     if (e) e.preventDefault();
     const finalInput = customInput !== null ? customInput : input;
     if (!finalInput.trim()) return;
+
+    // Ensure voice is NOT active when sending a message
+    console.log("Disabling voice recognition before sending message"); // debug
+    setIsListening(false);
+
     const newMessage = {
-      id: Date.now(),
-      role: "user",
-      content: finalInput,
-      createdAt: new Date().toISOString(),
+        id: Date.now(),
+        role: "user",
+        content: finalInput,
+        createdAt: new Date().toISOString(),
     };
     const updatedMessages = [...messages, newMessage];
     setChatHistory(role, updatedMessages);
     setInput("");
     setIsSending(true);
+
+    console.log("Sending message:", finalInput); // debug
+
     try {
-      const res = await axios.post("/api/chat", {
-        messages: updatedMessages,
-        role,
-      });
-      const finalMessages = [...updatedMessages, res.data];
-      setChatHistory(role, finalMessages);
-      await saveChatHistory(role, finalMessages, token);
+        const res = await axios.post("/api/chat", {
+            messages: updatedMessages,
+            role,
+        });
+        const finalMessages = [...updatedMessages, res.data];
+        setChatHistory(role, finalMessages);
+        await saveChatHistory(role, finalMessages, token);
+        console.log("Received AI response:", res.data); // debug
     } catch (err) {
-      const errorMsg = {
-        id: Date.now() + 1,
-        role: "system",
-        content: "Oops! Something went wrong. Please try again.",
-        createdAt: new Date().toISOString(),
-      };
-      setChatHistory(role, [...updatedMessages, errorMsg]);
+        const errorMsg = {
+            id: Date.now() + 1,
+            role: "system",
+            content: "Oops! Something went wrong. Please try again.",
+            createdAt: new Date().toISOString(),
+        };
+        setChatHistory(role, [...updatedMessages, errorMsg]);
+        console.error("Error sending message:", err); // debug
     } finally {
-      setIsSending(false);
+        setIsSending(false);
     }
   };
 
@@ -164,7 +174,20 @@ export default function NeonestAi() {
   };
 
   const handleSpeechTranscript = (transcript) => {
+    console.log("Voice transcript received:", transcript); // debug
     setInput(transcript);
+  };
+
+  // Wrapper to allow only "button" source toggles
+  const setListeningFromSource = (val, source) => {
+    // debug log to trace caller
+    console.log("setListeningFromSource called with:", val, source);
+    if (source === "button") {
+      setIsListening(val);
+    } else {
+      // If other sources call it without "button", ignore (this preserves Enter behavior)
+      console.log("Ignored setIsListening call without 'button' source");
+    }
   };
 
   const formatTime = (isoString) => {
@@ -195,7 +218,8 @@ export default function NeonestAi() {
                 <select
                   value={role}
                   onChange={(e) => handleRoleChange(e.target.value)}
-                  className="border px-3 py-1 rounded-md dark:bg-gray-600 dark:text-gray-200 text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500">
+                  className="border px-3 py-1 rounded-md dark:bg-gray-600 dark:text-gray-200 text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                >
                   {roles.map((r) => (
                     <option key={r.value} value={r.value}>
                       {r.label}
@@ -250,7 +274,8 @@ export default function NeonestAi() {
                     {/* Action icons */}
                     <div
                       className={`absolute bottom-full mb-2 flex gap-1 bg-white dark:bg-gray-800 p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
-                       ${m.role === "user" ? "right-0" : "left-0"}`}>
+                       ${m.role === "user" ? "right-0" : "left-0"}`}
+                    >
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -288,14 +313,15 @@ export default function NeonestAi() {
                           em: ({ node, ...props }) => <em className="italic" {...props} />,
                           code: ({ node, ...props }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props} />,
                           blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-pink-300 pl-4 italic text-sm text-gray-600 my-2" {...props} />,
-                        }}>
+                        }}
+                      >
                         {m.content}
                       </ReactMarkdown>
                     </div>
                     <span className={`text-xs block mt-1 ${m.role === "user" ? "text-gray-300" : "text-pink-700"}`}>{formatTime(m.createdAt)}</span>
                   </div>
                   {m.role === "assistant" && (
-                    <div className="flex justify-start mt-2 ">
+                    <div className="flex justify-start mt-2">
                       <TextToSpeech text={m.content} />
                     </div>
                   )}
@@ -320,18 +346,22 @@ export default function NeonestAi() {
                   scrollToBottom();
                   setShowNewMessageButton(false);
                 }}
-                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition">
+                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition"
+              >
                 ⬇ New Message
               </button>
             </div>
           )}
 
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit(e);
-            }}
-            className="flex gap-2 pt-4 items-center">
+  onSubmit={(e) => {
+    e.preventDefault();
+    // Only send message, do NOT touch mic button or isListening
+    handleSubmit(e);
+  }}
+  className="flex gap-2 pt-4 items-center"
+>
+
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -339,29 +369,37 @@ export default function NeonestAi() {
               className={`flex-1 dark:text-white ${isListening ? "border-green-500 bg-green-50 " : "border-pink-300 dark:bg-gray-700"}`}
               disabled={isSending}
             />
-            <TooltipProvider>
-              <button
-                type="button" // important: ensures it does NOT submit the form
-                onClick={() => setShowConfirm(true)}
-                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-3 py-2 rounded ml-2">
-                Clear Chat
-              </button>
+            {/* Explicit mic button that passes "button" as the source when clicked */}
+            <button
+              type="button"
+              onClick={() => {
+                console.log("Mic button clicked. Current isListening:", isListening);
+                setListeningFromSource(!isListening, "button");
+              }}
+              disabled={isSending}
+              aria-pressed={isListening}
+              className={`p-2 rounded-full ml-1 border ${isListening ? "bg-red-100 dark:bg-red-600" : "bg-white dark:bg-gray-700"} hover:opacity-90 transition`}
+              title={isListening ? "Stop listening" : "Start listening"}
+            >
+              {isListening ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
+            </button>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <SpeechRecognition onTranscript={handleSpeechTranscript} isListening={isListening} setIsListening={setIsListening} disabled={isSending} />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="top">Click to start voice input (requires internet connection)</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <Button type="submit" disabled={isSending || !input.trim()} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
+            <Button
+              type="submit"
+              disabled={isSending || !input.trim()}
+              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+            >
               {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 dark:text-gray-100" />}
             </Button>
-          </form>
 
+            <button
+              type="button"
+              onClick={() => setShowConfirm(true)}
+              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-3 py-2 rounded ml-2"
+            >
+              Clear Chat
+            </button>
+          </form>
           {/* Confirm Modal */}
           {showConfirm && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -377,7 +415,8 @@ export default function NeonestAi() {
                       clearChatHistory("user");
                       setShowConfirm(false);
                     }}
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
                     Clear
                   </button>
                 </div>
@@ -418,6 +457,7 @@ export default function NeonestAi() {
             </div>
           </CardContent>
         </Card>
+
         <Card className="dark:bg-gray-700">
           <CardHeader>
             <CardTitle className="dark:text-gray-200">Top Questions</CardTitle>
@@ -427,7 +467,8 @@ export default function NeonestAi() {
               <button
                 key={i}
                 onClick={() => handleQuickQuestion(q.question)}
-                className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800 px-2 py-1 rounded transition">
+                className="flex justify-between text-sm border-b pb-1 w-full text-left hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800 px-2 py-1 rounded transition"
+              >
                 <span>{q.question}</span>
                 <Badge variant="secondary">{q.count}</Badge>
               </button>
