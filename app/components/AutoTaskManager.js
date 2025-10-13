@@ -92,7 +92,7 @@ const AutoTaskManager=()=>{
                     window.removeEventListener('mousemove',trackMove)
                     setAutoTask(false)
                 }
-        },[])
+        },[setAutoTask])
     
     const handleUpdates=()=>{
         const UI = updates.map((msg,i)=>

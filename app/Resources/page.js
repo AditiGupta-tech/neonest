@@ -8,7 +8,7 @@ import Input from "../components/ui/Input";
 import { BookOpen, ExternalLink, Search, Filter, Clock } from "lucide-react";
 import * as Select from "@radix-ui/react-select";
 import { ChevronDown, ChevronUp } from "lucide-react";
-
+import Image from "next/image";
 const articles = [
   {
     id: 1,
@@ -250,7 +250,13 @@ export default function Resources() {
             {/* Thumbnail */}
             {article.thumbnail && (
               <div className="overflow-hidden rounded-t-xl border-b  border-gray-200">
-                <img src={article.thumbnail} alt={article.title} className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" />
+               <Image
+                    src={article.thumbnail}
+                    alt={article.title}
+                    width={600}       // specify width
+                    height={300}      // specify height
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
               </div>
             )}
 

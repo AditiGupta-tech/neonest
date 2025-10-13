@@ -186,7 +186,10 @@ export default function ImportantContacts() {
                           </a>
                         )}
                       </p>
-                      {contact.description && <p className="text-sm text-gray-500 italic">"{contact.description}"</p>}
+                        {contact.description && (
+                          <p className="text-sm text-gray-500 italic">&quot;{contact.description}&quot;</p>
+                        )}
+
                     </div>
                   </div>
 

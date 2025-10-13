@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMomo } from "react";
 import axios from "axios";
 import { Plus, Clock, Moon, Edit, Trash2, Calendar, Save } from "lucide-react";
 import Input from "../components/ui/Input";
@@ -24,7 +24,9 @@ export default function Page() {
     notes: "",
   });
 
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+const headers = useMemo(() => {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}, [token]);
 
   useEffect(() => {
     document.title = "Sleep | NeoNest";
@@ -41,7 +43,7 @@ export default function Page() {
       };
       fetchLogs();
     }
-  }, [isAuth]);
+  }, [isAuth,headers]);
 
   const addSchedule = async () => {
     if (!newSchedule.time || !newSchedule.duration) return;
@@ -253,11 +255,12 @@ export default function Page() {
 
       {/* Today's Logs */}
       <div className="bg-white/80 dark:bg-gray-700 backdrop-blur-sm rounded-lg border p-6">
-        <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-          <Calendar className="w-5 h-5 text-indigo-600" />
-          Today's Sleep Schedule
-          <Badge>{todaySchedules.length} entries</Badge>
-        </h3>
+          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+            <Calendar className="w-5 h-5 text-indigo-600" />
+            Today&apos;s Sleep Schedule
+            <Badge>{todaySchedules.length} entries</Badge>
+          </h3>
+
 
         {todaySchedules.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
@@ -281,12 +284,17 @@ export default function Page() {
                     {s.type === "nap" ? "Nap" : "Night"}
                   </Badge>
                   {s.duration && <span className="text-sm text-gray-600">{s.duration}</span>}
-                  {s.mood && (
-                    <span className="text-sm text-gray-500 italic">
-                      {moodEmoji(s.mood)} {s.mood}
-                    </span>
-                  )}
-                  {s.notes && <span className="text-sm text-gray-400 italic">"{s.notes}"</span>}
+                      { s.mood && (
+                        <span className="text-sm text-gray-500 italic">
+                          {moodEmoji(s.mood)} {s.mood.replace(/'/g, "&apos;").replace(/"/g, "&quot;")}
+                        </span>
+                      )}
+                  {s.notes && (
+                      <span className="text-sm text-gray-400 italic">
+                        &quot;{s.notes}&quot;
+                      </span>
+                    )}
+
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={() => setEditingSchedule(s)} className="text-sm">
@@ -330,12 +338,18 @@ export default function Page() {
                       {s.type === "nap" ? "Nap" : "Night"}
                     </Badge>
                     {s.duration && <span className="text-sm text-gray-600 dark:text-gray-200">{s.duration}</span>}
-                    {s.mood && (
-                      <span className="text-sm text-gray-500 dark:text-gray-200 italic">
-                        {moodEmoji(s.mood)} {s.mood}
-                      </span>
-                    )}
-                    {s.notes && <span className="text-sm text-gray-400 italic">"{s.notes}"</span>}
+                      {s.mood && (
+                        <span className="text-sm text-gray-500 dark:text-gray-200 italic">
+                          {moodEmoji(s.mood)} {s.mood.replace(/'/g, "&apos;").replace(/"/g, "&quot;")}
+                        </span>
+                      )}
+
+                    {s.notes && (
+                        <span className="text-sm text-gray-400 italic">
+                          &quot;{s.notes}&quot;
+                        </span>
+                      )}
+
                   </div>
                   <div className="flex gap-2">
                     <Button onClick={() => setEditingSchedule(s)} className="text-sm">

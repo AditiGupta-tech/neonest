@@ -224,11 +224,13 @@ const Homepage = () => {
           <div className="container mx-auto text-center max-w-6xl">
             <div className="mb-10">
               <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
-                Your Baby's First Year Journey
+                Your Baby&apos;s First Year Journey
               </h1>
-              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Expert guidance, milestone tracking, and loving support for parents navigating their baby's incredible first year of life. Now with AI-powered chat support!
-              </p>
+
+<p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+  Expert guidance, milestone tracking, and loving support for parents navigating their baby&apos;s incredible first year of life. Now with AI-powered chat support!
+</p>
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12"></div>
               <div className="relative w-full max-w-2xl mx-auto">
                 <Image src="/happyBaby.png" alt="Happy baby with parents" width={500} height={500} className="mx-auto mt-8 rounded-2xl shadow-2xl w-full h-auto" />
@@ -332,9 +334,10 @@ const Homepage = () => {
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4 text-gray-800 dark:text-gray-100 leading-tight">Why Mothers Trust NeoNest</h2>
-              <p className="text-lg text-gray-600  dark:text-gray-300    max-w-2xl mx-auto">
-                From sleepless nights to first giggles, NeoNest supports every step of your parenting journey. Here's why thousands of parents trust us.
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                From sleepless nights to first giggles, NeoNest supports every step of your parenting journey. Here&apos;s why thousands of parents trust us.
               </p>
+
             </div>
 
             <div className="relative flex flex-col items-center">

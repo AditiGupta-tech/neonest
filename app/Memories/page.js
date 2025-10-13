@@ -37,9 +37,9 @@ export default function MemoriesCommunityBlog() {
     if (isAuth && token) {
       fetchMemories();
     }
-  }, [isAuth, token]);
+  }, [isAuth, token, fetchMemories]);
 
-  const fetchMemories = async () => {
+  const fetchMemories = useCallback(async () => {
     try {
       const res = await axios.get("/api/memories", {
         headers: {
@@ -54,8 +54,8 @@ export default function MemoriesCommunityBlog() {
     } catch (err) {
       console.error("Failed to fetch memories:", err);
     }
-  };
-
+  }, [token,setPublicMemories, setPrivateMemories]);
+  
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
