@@ -5,6 +5,10 @@ import axios from "axios";
 import { Plus, Clock, Moon, Edit, Trash2, Calendar, Save } from "lucide-react";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import { useAuth } from "../context/AuthContext";
+import LoginPrompt from "../components/LoginPrompt";
+import Badge from "../components/ui/Badge";
+import Sleeptips from "../components/Sleeptips";
 export default function Page() {
   const { isAuth, token, headers } = useAuth();
   const [schedules, setSchedules] = useState([]);
@@ -248,7 +252,7 @@ export default function Page() {
       <div className="bg-white/80 dark:bg-gray-700 backdrop-blur-sm rounded-lg border p-6">
         <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
           <Calendar className="w-5 h-5 text-indigo-600" />
-          Today's Sleep Schedule
+          Today&apos;s Sleep Schedule
           <Badge>{todaySchedules.length} entries</Badge>
         </h3>
 

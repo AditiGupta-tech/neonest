@@ -105,12 +105,10 @@ export default function LoginPage() {
       const data = res.data;
 
       if (res.status === 200 && data.success) {
-        // Pass both token and user data to AuthContext
-        login(data.token, data.userExists);
+        // Pass both token and user data to AuthContext (it will redirect)
+        await login(data.token, data.userExists);
 
         toast.success(data.success);
-
-        router.push("/");
       } else {
         toast.error(data.error || "Invalid login credentials.");
       }

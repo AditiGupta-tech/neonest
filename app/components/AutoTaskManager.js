@@ -127,7 +127,12 @@ const AutoTaskManager=()=>{
                     <div className="flex-col mt-10 sm:mt-4 sm:flex-row flex items-center w-[95%] sm:w-[80%] z-50 bg-white rounded-xl shadow-lg border border-l-4 border-gray-200 m-4" >
                         {/*Close Button*/}
                         
-                            <Input value={message} onInput={(e)=>{handleInput(e)}} className="flex-grow !w-[95%]  sm:w-full m-4 p-2" placeholder="Manage Your Logs Here... e.g. Add Essential"></Input>
+                    <Input
+                    value={message}
+                    onInput={(e) => handleInput(e)}
+                    className="flex-grow !w-[95%] sm:w-full m-4 p-2 text-gray-800"
+                    placeholder="Manage Your Logs Here... e.g. Add Essential"
+                    />
                         
                         <div className="m-2 w-full sm:w-auto flex items-center justify-end sm:justify-center">
                             {isLoading && <Loader2Icon className="animate-spin m-2"></Loader2Icon>}

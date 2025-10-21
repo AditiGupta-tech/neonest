@@ -49,28 +49,27 @@ export const AuthProvider = ({ children }) => {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-<<<<<<< HEAD
-=======
     // Always try to refresh user from server using JWT
     if (storedToken) {
       fetchMe(storedToken).finally(() => setIsLoading(false));
       return;
     }
     setIsLoading(false);
->>>>>>> 8990650 (pdf feature completed)
   }, []);
 
   const fetchUserData = async (token) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/user', {
+      // Use the /api/auth/me route which returns { user }
+      const response = await fetch('/api/auth/me', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
       if (response.ok) {
-        const userData = await response.json();
+        const json = await response.json();
+        const userData = json.user || json; // support either shape
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
         const isSetupComplete = userData.noOfBabies && 
@@ -85,31 +84,38 @@ export const AuthProvider = ({ children }) => {
                                );
         setHasCompletedSetup(isSetupComplete);
       } else {
-        // If token is invalid, logout
-        logout();
+        // If endpoint returns not ok, don't immediately logout here during hydration
+        // (this avoids logging out right after a successful login if an endpoint was temporarily missing)
+        console.warn('fetchUserData: non-ok response', response.status);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
-      logout(); // Logout on error
+      // don't force logout on transient errors during hydration; log for debugging
     } finally {
       setIsLoading(false);
     }
   };
 
-  const login = (token, userData, shouldRedirect = true) => {
+  const login = async (token, userData, shouldRedirect = true) => {
     localStorage.setItem('token', token);
     setToken(token);
     setIsAuth(true);
     if (userData) {
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
+      try {
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+      } catch (e) {
+        console.warn('Failed to persist user data locally', e);
+      }
     }
-<<<<<<< HEAD
-    fetchUserData(token);
-=======
-    // Immediately fetch fresh user from DB using JWT
-    fetchMe(token);
->>>>>>> 8990650 (pdf feature completed)
+
+    // Refresh user data from server and update local state before redirecting
+    try {
+      await Promise.allSettled([fetchUserData(token), fetchMe(token)]);
+    } catch (e) {
+      // ignore; errors handled inside those functions
+    }
+
     if (shouldRedirect) {
       router.push('/');
     }

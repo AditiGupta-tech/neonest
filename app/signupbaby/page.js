@@ -21,6 +21,7 @@ export default function SignupBabyPage() {
   }, []);
 
   const { token, user, updateUserData } = useAuth();
+  const router = useRouter();
 
   // State for form inputs
   const [noOfBabies, setNoOfBabies] = useState(1);
@@ -39,11 +40,14 @@ export default function SignupBabyPage() {
 
   // Initialize babyErrors and babiesTouched arrays when noOfBabies changes
   useEffect(() => {
-    setBabyErrors(
-      Array.from({ length: noOfBabies }, (_, i) => babyErrors[i] || {})
+    // Use functional updates to avoid referencing external arrays directly
+    // this keeps the effect dependent only on `noOfBabies` and avoids
+    // react-hooks/exhaustive-deps warnings.
+    setBabyErrors((prev) =>
+      Array.from({ length: noOfBabies }, (_, i) => prev[i] || {})
     );
-    setBabiesTouched(
-      Array.from({ length: noOfBabies }, (_, i) => babiesTouched[i] || false)
+    setBabiesTouched((prev) =>
+      Array.from({ length: noOfBabies }, (_, i) => prev[i] || false)
     );
   }, [noOfBabies]);
 
@@ -414,7 +418,7 @@ export default function SignupBabyPage() {
                     {/* Baby Name */}
                     <div className="md:col-span-2 group">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
-                        Baby's Name
+                        Baby&apos;s Name
                       </label>
                       <div
                         className={`flex items-center border rounded-xl px-3 py-3 bg-white dark:bg-gray-800 focus-within:ring-2 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-purple-300 dark:hover:border-purple-500 group
@@ -428,7 +432,7 @@ export default function SignupBabyPage() {
                         <Baby className="w-5 h-5 text-gray-400 dark:text-gray-500 mr-3" />
                         <input
                           type="text"
-                          placeholder="Enter baby's name"
+                          placeholder="Enter baby&apos;s name"
                           value={baby.babyName}
                           onChange={(e) =>
                             handleBabyChange(index, "babyName", e.target.value)
