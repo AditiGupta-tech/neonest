@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { ThumbsUp, ThumbsDown, Heart, Star, Utensils, Package, Camera, Shield, PlayCircle, HelpCircle, Baby, X, Users } from "lucide-react";
@@ -6,6 +7,7 @@ import { Button } from "./ui/Button";
 import Image from "next/image";
 import NewSections from "./Newsections";
 import NotificationDemo from "./NotificationDemo";
+import ToysSection from "./ToysSection";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 const Homepage = () => {
@@ -22,19 +24,19 @@ const Homepage = () => {
     {
       name: "Riya Sharma",
       tag: "Recommendations",
-      content: "Got neonest recommended by a friend... imagining my son, Aarav's first year without it gives me goosebumps",
+      content: "Got neonest recommended by a friend... imagining my son, Aarav&rsquo;s first year without it gives me goosebumps",
       keywords: ["Must have", "Smart parenting", "Better child care"],
     },
     {
       name: "Parag Mehta",
       tag: "Happy life",
-      content: "My wife's been happier ever since she started using neonest. our parenting life in the first year was really good. Thankyou neonest💕",
+      content: "My wife&rsquo;s been happier ever since she started using neonest. our parenting life in the first year was really good. Thankyou neonest💕",
       keywords: ["Helpful", "Life saver", "Easy parenting"],
     },
     {
       name: "Pooja Desai",
       tag: "AI Pediatrician",
-      content: "The AI pediatrician diagnosed my child's sickness based on symptoms and I was able to consult the doctor on time and help my child. Genius!",
+      content: "The AI pediatrician diagnosed my child&rsquo;s sickness based on symptoms and I was able to consult the doctor on time and help my child. Genius!",
       keywords: ["Health", "Reliable", "Safety"],
     },
     {
@@ -185,7 +187,7 @@ const Homepage = () => {
   const features = [
     {
       title: "Personalized Baby Tracker",
-      desc: "NeoNest tailors insights based on your baby's age, growth, and needs, so you're never left guessing.",
+      desc: "NeoNest tailors insights based on your baby&rsquo;s age, growth, and needs, so you&rsquo;re never left guessing.",
       icon: Baby,
       borderColor: "border-pink-400",
       bgColor: "bg-pink-50",
@@ -324,9 +326,12 @@ const Homepage = () => {
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Quick answers to common baby care questions</CardDescription>
                 </CardHeader>
               </Card>
+
             </div>
           </div>
         </section>
+
+
 
         <section id="about" className="py-4 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-5xl">
@@ -483,13 +488,13 @@ const Homepage = () => {
                       </button>
                     ))}
                   </div>
-                  <textarea
-                    rows={4}
-                    placeholder="Share your thoughts about NeoNest..."
-                    value={reviewText}
-                    onChange={(e) => setReviewText(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 text-base resize-y focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
-                    autoFocus></textarea>
+                    <textarea
+                      rows={4}
+                      placeholder="Share your thoughts about NeoNest..."
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg p-3 text-base resize-y focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                      autoFocus></textarea>
                   <div className="flex justify-center mt-5">
                     <Button
                       className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
