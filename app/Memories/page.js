@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { Share2, Image as ImageIcon, Heart, MessageCircle, Plus, Camera, Video, Edit, Trash2, Upload, Save, X, Eye, CheckCircle } from "lucide-react";
