@@ -11,6 +11,7 @@ import Badge from "../components/ui/Badge";
 import ReactMarkdown from "react-markdown";
 import SpeechRecognition from "../components/SpeechRecognition";
 import TextToSpeech from "../components/TextToSpeech";
+import PastChats from "../components/PastChats";
 import { fetchChatHistory, saveChatHistory } from "@/lib/chatService";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
@@ -89,7 +90,7 @@ export default function NeonestAi() {
       }
     };
     if (token) loadHistory();
-  }, [role, token, chatHistory, setChatHistory]);
+  }, [role, token, chatHistory, setChatHistory, historyLoaded]);
 
   useEffect(() => {
     if (messages.length === 0 || isUserNearBottom()) {
@@ -206,35 +207,39 @@ export default function NeonestAi() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-800 p-6 space-y-10">
-      <Card className="max-w-4xl mx-auto dark:bg-gray-700">
-        <CardHeader className="flex justify-between items-center bg-pink-100 dark:bg-pink-500 rounded-t-lg px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Bot className="w-6 h-6 text-pink-500 dark:text-pink-900" />
-            <CardTitle className="dark:text-gray-300">NeoNest AI Chatbot</CardTitle>
-          </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <select
-                  value={role}
-                  onChange={(e) => handleRoleChange(e.target.value)}
-                  className="border px-3 py-1 rounded-md dark:bg-gray-600 dark:text-gray-200 text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                >
-                  {roles.map((r) => (
-                    <option key={r.value} value={r.value}>
-                      {r.label}
-                    </option>
-                  ))}
-                </select>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={6}>
-                Choose the role you&apos;d like to chat with
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </CardHeader>
+      {/* 3-Zone Layout */}
+      <div className="max-w-7xl mx-auto flex gap-6">
+        {/* Left Side (70%) - Chat Area */}
+        <div className="w-[70%]">
+          <Card className="dark:bg-gray-700">
+            <CardHeader className="flex justify-between items-center bg-pink-100 dark:bg-pink-500 rounded-t-lg px-6 py-4">
+              <div className="flex items-center gap-3">
+                <Bot className="w-6 h-6 text-pink-500 dark:text-pink-900" />
+                <CardTitle className="dark:text-gray-300">NeoNest AI Chatbot</CardTitle>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <select
+                      value={role}
+                      onChange={(e) => handleRoleChange(e.target.value)}
+                      className="border px-3 py-1 rounded-md dark:bg-gray-600 dark:text-gray-200 text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    >
+                      {roles.map((r) => (
+                        <option key={r.value} value={r.value}>
+                          {r.label}
+                        </option>
+                      ))}
+                    </select>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" sideOffset={6}>
+                    Choose the role you&apos;d like to chat with
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </CardHeader>
 
-        <CardContent className="space-y-6 p-6 relative">
+            <CardContent className="space-y-6 p-6 relative">
           {transitionMessage && (
             <div className="absolute top-0 left-0 right-0 flex justify-center z-20">
               <span className="bg-pink-200 text-pink-900 dark:text-gray-200 px-6 py-2 rounded-lg shadow-lg font-semibold text-base">{transitionMessage}</span>
@@ -399,6 +404,8 @@ export default function NeonestAi() {
             >
               Clear Chat
             </button>
+
+
           </form>
           {/* Confirm Modal */}
           {showConfirm && (
@@ -423,10 +430,18 @@ export default function NeonestAi() {
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </div>
 
-      <div className="max-w-4xl mx-auto space-y-4">
+        {/* Right Side (30%) - Past Chats */}
+        <div className="w-[30%]">
+          <PastChats currentRole={role} />
+        </div>
+      </div>
+
+      {/* Bottom Full Width - Stats */}
+      <div className="max-w-7xl mx-auto space-y-4">
         <Card className="dark:bg-gray-700">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 dark:text-gray-200">
