@@ -219,10 +219,11 @@ export async function POST(req) {
     </html>
     `;
 
-    // Launch and create PDF
+    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || undefined;
     browser = await puppeteer.launch({
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      ...(executablePath ? { executablePath } : {}),
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
