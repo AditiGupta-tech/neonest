@@ -54,6 +54,16 @@ const Homepage = () => {
     }))
   );
 
+  //if not a user message will be displayed
+  const handlReviewClick = () => {
+  if (!Users) {
+    toast.error("Please log in to add a review");
+    return;
+  }
+
+  setShowReviewPrompt(true);
+  };
+
   useEffect(() => {
     const popUpTime = 15 * 24 * 60 * 60 * 1000;
     const checkAndPromptReview = () => {
