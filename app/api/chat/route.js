@@ -11,6 +11,7 @@ export async function POST(req) {
     }
 
     const { messages, role } = await req.json()
+    
 
 let systemInstruction = `You are a helpful and friendly AI assistant. You help parents understand and solve their queries. Incase you are unable to answer, politely tell them you may not be able to help them efficiently here and ask them to seek help from resources by suggesting them some English/hindi youtube videos, articles, journals. Respond in the same language the user uses.`;
 
