@@ -4,7 +4,7 @@ import Vaccine from '@/app/models/Vaccine.model';
 import { authenticateToken } from '@/lib/auth';
 
 export async function PUT(req, context) {
-  await connectDB();
+  connectDB();
 
   const userReq = await authenticateToken(req);
   const userId = userReq?.user?.id;

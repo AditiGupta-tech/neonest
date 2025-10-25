@@ -4,7 +4,7 @@ import { authenticateToken } from "@/lib/auth";
 import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 
-await connectDB();
+connectDB();
 export async function GET(request) {
   try {
     const user = await authenticateToken(request);

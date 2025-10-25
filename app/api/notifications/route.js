@@ -3,7 +3,7 @@ import User from "@/app/models/User.model";
 import { authenticateToken } from "@/lib/auth";
 import connectDB from "@/lib/connectDB";
 
-await connectDB();
+connectDB();
 
 // Create a new notification
 export async function POST(req) {

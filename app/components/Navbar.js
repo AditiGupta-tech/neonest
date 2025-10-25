@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -16,6 +16,7 @@ import ThemeToggle from "./ThemeToggle";
 
 const tabs = [
   { label: "home", path: "/" },
+  { label: "personalization & analytics widgets", path: "/Personalization-Analytics-Widgets" },
   { label: "growth", path: "/Growth" },
   { label: "feeding", path: "/Feeding" },
   { label: "sleep", path: "/Sleep" },

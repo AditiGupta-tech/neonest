@@ -1,7 +1,55 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Baby, Bot, Smile, Users } from "lucide-react";
+import RecentActivity from "./RecentActivity";
+import FeedingTrendsChart from "./FeedingTrendsChart";
+import SleepDurationsChart from "./SleepDurationsChart";
+import GrowthTrackingChart from "./GrowthTrackingChart";
+import Achievements from "./Achievements";
+import AISuggestions from "./AISuggestions";
+import { useAuth } from "../context/AuthContext";
+
+const DashboardWidgetsContent = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return (
+      <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 flex-1 min-w-[300px]">
+        <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">Personalization & Analytics Widgets</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 text-center">Sign in to view your real-time insights and analytics</p>
+        <div className="text-center">
+          <Link href="/login" className="inline-block bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 flex-1 min-w-[300px]">
+      <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">Personalization & Analytics Widgets</h2>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-6 text-center">Real-time insights and analytics for your baby's care journey</p>
+
+      <div className="grid grid-cols-1 gap-4 max-h-[600px] overflow-y-auto">
+        <RecentActivity />
+        <FeedingTrendsChart />
+        <SleepDurationsChart />
+        <GrowthTrackingChart />
+        <Achievements />
+        <AISuggestions />
+      </div>
+
+      <div className="mt-6 text-center">
+        <Link href="/Personalization-Analytics-Widgets" className="inline-block bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+          View Full Personalization & Analytics Widgets
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 const NewsletterContent = () => {
   const [email, setEmail] = useState("");
@@ -32,7 +80,7 @@ const NewsletterContent = () => {
           </button>
         </form>
       ) : (
-        <p className="text-green-600 dark:text-green-400 text-center font-medium">Thank you for subscribing! We’ll send updates to your email.</p>
+        <p className="text-green-600 dark:text-green-400 text-center font-medium">Thank you for subscribing! We'll send updates to your email.</p>
       )}
     </div>
   );
@@ -65,6 +113,7 @@ const NewSections = () => {
   return (
     <div className="container mx-auto max-w-6xl py-2 px-4 sm:px-6 lg:px-8 mb-10">
       <div className="flex flex-col lg:flex-row gap-10 items-start justify-center">
+        <DashboardWidgetsContent />
         <NewsletterContent />
         <AppStatsContent />
       </div>

@@ -8,6 +8,12 @@ import Image from "next/image";
 import NewSections from "./Newsections";
 import NotificationDemo from "./NotificationDemo";
 import ToysSection from "./ToysSection";
+import RecentActivity from "./RecentActivity";
+import FeedingTrendsChart from "./FeedingTrendsChart";
+import SleepDurationsChart from "./SleepDurationsChart";
+import GrowthTrackingChart from "./GrowthTrackingChart";
+import Achievements from "./Achievements";
+import AISuggestions from "./AISuggestions";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 const Homepage = () => {
@@ -215,6 +221,8 @@ const Homepage = () => {
     },
   ];
 
+
+
   return (
     <>
       <Toaster richColors position="top-center" />
@@ -244,6 +252,8 @@ const Homepage = () => {
             </div>
           </div>
         </section>
+
+
 
         <section className="py-4 px-4 sm:px-6 lg:px-8 bg-white/80  dark:bg-gray-900/50">
           <div className="container mx-auto max-w-6xl">
@@ -448,6 +458,8 @@ const Homepage = () => {
             </div>
           </div>
         </section>
+
+
 
         <NewSections />
 
