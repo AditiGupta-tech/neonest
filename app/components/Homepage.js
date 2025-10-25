@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { ThumbsUp, ThumbsDown, Heart, Star, Utensils, Package, Camera, Shield, PlayCircle, HelpCircle, Baby, X, Users } from "lucide-react";
@@ -135,6 +136,7 @@ const Homepage = () => {
       setFeedbackSubmitted(false);
       setShowReviewPrompt(false);
       setSelectedRating(0);
+      
       setReviewText("");
     }, 2000);
 
@@ -334,9 +336,12 @@ const Homepage = () => {
                   <CardDescription className="text-gray-600  dark:text-gray-300   text-sm">Quick answers to common baby care questions</CardDescription>
                 </CardHeader>
               </Card>
+
             </div>
           </div>
         </section>
+
+
 
         <section id="about" className="py-4 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-5xl">
@@ -419,11 +424,11 @@ const Homepage = () => {
                     key={index}
                     className="bg-white/90 border border-gray-200  dark:bg-gray-800/90 shadow-md p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
                     <CardHeader className="p-0 mb-3">
-                      <CardTitle className="text-lg text-gray-800 dark:text-gray-300 font-semibold">{review.name}</CardTitle>
+                      <CardTitle className="text-lg text-gray-800 dark:text-gray-100 font-semibold">{review.name}</CardTitle>
                       <CardDescription className="text-sm text-pink-600">#{review.tag}</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <p className="text-gray-700 dark:text-gray-400 text-base mb-3">{review.content}</p>
+                      <p className="text-gray-700 dark:text-gray-300 text-base mb-3">{review.content}</p>
                       <div className="text-xs text-gray-500 mb-2">Popular tags: {review.keywords.map((word) => `"${word}"`).join(", ")}</div>
 
                       <div className="flex items-center gap-6 text-sm mt-3">
@@ -488,18 +493,19 @@ const Homepage = () => {
                       <button
                         key={star}
                         onClick={() => setSelectedRating(star)}
+                        aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                         className={`w-10 h-10 text-3xl transition-colors duration-200 ${selectedRating >= star ? "text-yellow-500" : "text-gray-300 hover:text-yellow-400"}`}>
                         ★
                       </button>
                     ))}
                   </div>
-                  <textarea
-                    rows={4}
-                    placeholder="Share your thoughts about NeoNest..."
-                    value={reviewText}
-                    onChange={(e) => setReviewText(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-3 text-base resize-y focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
-                    autoFocus></textarea>
+                    <textarea
+                      rows={4}
+                      placeholder="Share your thoughts about NeoNest..."
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg p-3 text-base resize-y focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                      autoFocus></textarea>
                   <div className="flex justify-center mt-5">
                     <Button
                       className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
