@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 bun.lock
+package-lock.json
 # testing
 /coverage
 

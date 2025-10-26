@@ -6,7 +6,6 @@ import Button from "./ui/Button";
 import Image from "next/image";
 import NewSections from "./Newsections";
 import NotificationDemo from "./NotificationDemo";
-import ToysSection from "./ToysSection";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 const Homepage = () => {
@@ -23,19 +22,19 @@ const Homepage = () => {
     {
       name: "Riya Sharma",
       tag: "Recommendations",
-  content: "Got neonest recommended by a friend... imagining my son, Aarav&apos;s first year without it gives me goosebumps",
+      content: "Got neonest recommended by a friend... imagining my son, Aarav's first year without it gives me goosebumps",
       keywords: ["Must have", "Smart parenting", "Better child care"],
     },
     {
       name: "Parag Mehta",
       tag: "Happy life",
-  content: "My wife&apos;s been happier ever since she started using neonest. our parenting life in the first year was really good. Thankyou neonest💕",
+      content: "My wife's been happier ever since she started using neonest. our parenting life in the first year was really good. Thankyou neonest💕",
       keywords: ["Helpful", "Life saver", "Easy parenting"],
     },
     {
       name: "Pooja Desai",
       tag: "AI Pediatrician",
-  content: "The AI pediatrician diagnosed my child&apos;s sickness based on symptoms and I was able to consult the doctor on time and help my child. Genius!",
+      content: "The AI pediatrician diagnosed my child's sickness based on symptoms and I was able to consult the doctor on time and help my child. Genius!",
       keywords: ["Health", "Reliable", "Safety"],
     },
     {
@@ -126,6 +125,7 @@ const Homepage = () => {
       setFeedbackSubmitted(false);
       setShowReviewPrompt(false);
       setSelectedRating(0);
+      
       setReviewText("");
     }, 2000);
 
@@ -186,7 +186,7 @@ const Homepage = () => {
   const features = [
     {
       title: "Personalized Baby Tracker",
-  desc: "NeoNest tailors insights based on your baby&apos;s age, growth, and needs, so you&apos;re never left guessing.",
+      desc: "NeoNest tailors insights based on your baby's age, growth, and needs, so you're never left guessing.",
       icon: Baby,
       borderColor: "border-pink-400",
       bgColor: "bg-pink-50",
@@ -413,11 +413,11 @@ const Homepage = () => {
                     key={index}
                     className="bg-white/90 border border-gray-200  dark:bg-gray-800/90 shadow-md p-4 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
                     <CardHeader className="p-0 mb-3">
-                      <CardTitle className="text-lg text-gray-800 dark:text-gray-300 font-semibold">{review.name}</CardTitle>
+                      <CardTitle className="text-lg text-gray-800 dark:text-gray-100 font-semibold">{review.name}</CardTitle>
                       <CardDescription className="text-sm text-pink-600">#{review.tag}</CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <p className="text-gray-700 dark:text-gray-400 text-base mb-3">{review.content}</p>
+                      <p className="text-gray-700 dark:text-gray-300 text-base mb-3">{review.content}</p>
                       <div className="text-xs text-gray-500 mb-2">Popular tags: {review.keywords.map((word) => `"${word}"`).join(", ")}</div>
 
                       <div className="flex items-center gap-6 text-sm mt-3">
@@ -482,6 +482,7 @@ const Homepage = () => {
                       <button
                         key={star}
                         onClick={() => setSelectedRating(star)}
+                        aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                         className={`w-10 h-10 text-3xl transition-colors duration-200 ${selectedRating >= star ? "text-yellow-500" : "text-gray-300 hover:text-yellow-400"}`}>
                         ★
                       </button>
