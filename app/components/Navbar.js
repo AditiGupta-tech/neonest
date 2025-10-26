@@ -8,7 +8,7 @@ import { Button } from "./ui/Button";
 import Chatbot from "./Chatbot";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import { useAutoTask } from "../context/AutoTaskContext";
 import AutoTask from "./AutoTask";
@@ -31,19 +31,21 @@ const tabs = [
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuth, logout } = useAuth();
+  const { isAuth, signOut, user } = useAuth();
   const { setAutoTask, isAutoTask } = useAutoTask();
 
   const [showModal, setShowModal] = useState(false);
   const [progress, setProgress] = useState(100);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     useChatStore.getState().clearChatHistory();
-    logout();
+    await signOut();
     setShowModal(true);
     setProgress(100);
     setMenuOpen(false);
+    setProfileDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -68,6 +70,18 @@ const Navbar = () => {
       router.push("/");
     }
   }, [progress, showModal, router, setShowModal]);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileDropdownOpen && !event.target.closest('.profile-dropdown-container')) {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileDropdownOpen]);
 
 return (
   <>
@@ -110,7 +124,57 @@ return (
             {isAuth ? (
               <>
                 <NotificationBell />
-                <Button onClick={handleLogout} className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">Logout</Button>
+                {/* Profile Dropdown */}
+                <div className="relative profile-dropdown-container">
+                  <button
+                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                    className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-lg transition-colors"
+                  >
+                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center font-bold">
+                      {user?.user_metadata?.name ? user.user_metadata.name.charAt(0).toUpperCase() : user?.email.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="hidden md:block font-medium">
+                      {user?.user_metadata?.name || 'Account'}
+                    </span>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {profileDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 py-2 z-50">
+                      {/* User Info */}
+                      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <p className="font-semibold text-gray-900 dark:text-white">
+                          {user?.user_metadata?.name || 'User'}
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                          {user?.email}
+                        </p>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="py-2">
+                        <Link
+                          href="/profile"
+                          onClick={() => setProfileDropdownOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <User className="h-4 w-4" />
+                          <span>My Profile</span>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setProfileDropdownOpen(false);
+                            handleLogout();
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          <span>Logout</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
@@ -145,6 +209,31 @@ return (
               <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent ml-2">NeoNest</span>
             </Link>
 
+            {/* User Profile Section */}
+            {isAuth && user && (
+              <div className="mb-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 rounded-xl border border-pink-200 dark:border-pink-800">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    {user.user_metadata?.name ? user.user_metadata.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-gray-900 dark:text-white truncate">
+                      {user.user_metadata?.name || 'User'}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+                <Link href="/profile" onClick={() => setMenuOpen(false)}>
+                  <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors border border-gray-200 dark:border-gray-700">
+                    <User className="h-4 w-4" />
+                    <span className="text-sm font-medium">View Profile</span>
+                  </button>
+                </Link>
+              </div>
+            )}
+
             <nav className="flex flex-col space-y-4 flex-grow overflow-y-auto">
               {tabs.map(({ label, path }) => (
                 <Link key={label} href={path}>
@@ -157,6 +246,19 @@ return (
                 </Link>
               ))}
             </nav>
+
+            {/* Logout Button in Sidebar */}
+            {isAuth && (
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-lg transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="font-medium">Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
     {/* )} */}
