@@ -218,7 +218,11 @@ export async function POST(req) {
       </body>
     </html>
     `;
-
+    // Launch and create PDF
+    // Launch puppeteer. On platforms like Vercel the Chromium binary may not be present
+    // during runtime unless downloaded during install. If you provide an executable path
+    // via environment (e.g. PUPPETEER_EXECUTABLE_PATH or CHROME_PATH) we will use it.
+    
     const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || undefined;
     browser = await puppeteer.launch({
       headless: 'new',
