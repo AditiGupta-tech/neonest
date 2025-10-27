@@ -16,6 +16,7 @@ import ThemeToggle from "./ThemeToggle";
 
 const tabs = [
   { label: "home", path: "/" },
+  { label: "dashboard", path: "/Dashboard" },
   { label: "growth", path: "/Growth" },
   { label: "feeding", path: "/Feeding" },
   { label: "sleep", path: "/Sleep" },
