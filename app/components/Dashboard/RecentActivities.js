@@ -87,7 +87,7 @@ export default function RecentActivities({ activities }) {
                 <Activity className="w-12 h-12 mx-auto mb-3 text-gray-400 dark:text-gray-600" />
                 <p className="text-gray-600 dark:text-gray-400">No recent activities</p>
                 <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                  Start tracking your baby's activities
+                  Start tracking your baby&apos;s activities
                 </p>
               </div>
             )}

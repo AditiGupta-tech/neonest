@@ -105,7 +105,7 @@ export default function DashboardLayout() {
                   No Baby Information Yet
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  Add your baby's information to get started
+                  Add your baby&apos;s information to get started
                 </p>
               </div>
             </div>
