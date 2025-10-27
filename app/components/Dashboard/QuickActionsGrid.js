@@ -8,7 +8,7 @@ import {
   Shield, 
   Package, 
   Camera, 
-  Toy,
+  Blocks,
   Music,
   Heart,
   BarChart3
@@ -67,7 +67,7 @@ const quickActions = [
   {
     title: "Toys",
     description: "Age-appropriate toys",
-    icon: Toy,
+    icon: Blocks,
     href: "/Toys",
     color: "from-pink-400 to-rose-500",
     bgColor: "bg-pink-50 dark:bg-pink-900/20",
@@ -100,7 +100,7 @@ export default function QuickActionsGrid() {
               <Card className="group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-purple-300 dark:hover:border-purple-700 bg-white dark:bg-gray-800 h-full">
                 <CardContent className="p-6">
                   <div className={`${action.bgColor} w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={`w-7 h-7 bg-gradient-to-r ${action.color} bg-clip-text text-transparent`} style={{ WebkitTextFillColor: 'transparent', backgroundClip: 'text' }} />
+                    <Icon className="w-7 h-7 text-gray-700 dark:text-gray-300" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-1">
                     {action.title}
