@@ -231,7 +231,13 @@ const Homepage = () => {
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
                 Expert guidance, milestone tracking, and loving support for parents navigating their baby's incredible first year of life. Now with AI-powered chat support!
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12"></div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Link href="/Dashboard">
+                  <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 text-white px-8 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                    📊 View Your Dashboard
+                  </Button>
+                </Link>
+              </div>
               <div className="relative w-full max-w-2xl mx-auto">
                 <Image src="/happyBaby.png" alt="Happy baby with parents" width={500} height={500} className="mx-auto mt-8 rounded-2xl shadow-2xl w-full h-auto" />
                 <div className="absolute -top-4 -left-4 w-20 h-20 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce shadow-md">
