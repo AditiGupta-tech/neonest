@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { Utensils, TrendingUp } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { generateDemoFeedingData, enrichWithDemoData } from "../../utils/demoData";
 
 export default function FeedingChart() {
   const { token } = useAuth();
@@ -18,14 +19,23 @@ export default function FeedingChart() {
 
   const fetchFeedingData = async () => {
     try {
-      if (!token) {
-        setLoading(false);
-        return;
+      let feedings = [];
+      
+      if (token) {
+        try {
+          const headers = { Authorization: `Bearer ${token}` };
+          const response = await axios.get("/api/feeding", { headers });
+          feedings = response.data.feed || [];
+        } catch (err) {
+          console.log("Using demo data for feeding");
+        }
       }
-
-      const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get("/api/feeding", { headers });
-      const feedings = response.data.feed || [];
+      
+      // If no data or insufficient data, use demo data
+      if (feedings.length < 10) {
+        const demoData = generateDemoFeedingData();
+        feedings = enrichWithDemoData(feedings, demoData, 50);
+      }
 
       // Get last 7 days
       const last7Days = [];

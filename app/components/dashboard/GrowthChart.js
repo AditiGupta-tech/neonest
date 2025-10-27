@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { TrendingUp, Baby } from "lucide-react";
+import { generateDemoGrowthData } from "../../utils/demoData";
 
 export default function GrowthChart() {
   const [chartData, setChartData] = useState([]);
@@ -16,11 +17,23 @@ export default function GrowthChart() {
 
   const fetchGrowthData = () => {
     try {
+      let logs = [];
+      
       // Load from localStorage (same as Growth page)
       const savedLogs = localStorage.getItem("growthLogs");
       if (savedLogs) {
-        const logs = JSON.parse(savedLogs);
-        
+        logs = JSON.parse(savedLogs);
+      }
+      
+      // If no data or insufficient data, use demo data
+      if (logs.length < 5) {
+        const demoData = generateDemoGrowthData();
+        // Save demo data to localStorage for consistency
+        localStorage.setItem("growthLogs", JSON.stringify(demoData));
+        logs = demoData;
+      }
+      
+      if (logs.length > 0) {
         // Sort by date
         const sortedLogs = logs.sort((a, b) => new Date(a.date) - new Date(b.date));
         

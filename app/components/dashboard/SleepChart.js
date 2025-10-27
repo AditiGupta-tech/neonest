@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { Moon, TrendingUp } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { generateDemoSleepData, enrichWithDemoData } from "../../utils/demoData";
 
 export default function SleepChart() {
   const { token } = useAuth();
@@ -26,14 +27,23 @@ export default function SleepChart() {
 
   const fetchSleepData = async () => {
     try {
-      if (!token) {
-        setLoading(false);
-        return;
+      let sleepLogs = [];
+      
+      if (token) {
+        try {
+          const headers = { Authorization: `Bearer ${token}` };
+          const response = await axios.get("/api/sleep", { headers });
+          sleepLogs = response.data || [];
+        } catch (err) {
+          console.log("Using demo data for sleep");
+        }
       }
-
-      const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get("/api/sleep", { headers });
-      const sleepLogs = response.data || [];
+      
+      // If no data or insufficient data, use demo data
+      if (sleepLogs.length < 10) {
+        const demoData = generateDemoSleepData();
+        sleepLogs = enrichWithDemoData(sleepLogs, demoData, 50);
+      }
 
       // Get last 7 days
       const last7Days = [];

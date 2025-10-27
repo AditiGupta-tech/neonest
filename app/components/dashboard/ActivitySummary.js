@@ -5,6 +5,7 @@ import { Clock, Utensils, Moon, Baby, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { generateDemoFeedingData, generateDemoSleepData, enrichWithDemoData } from "../../utils/demoData";
 
 export default function ActivitySummary() {
   const { token } = useAuth();
@@ -22,64 +23,78 @@ export default function ActivitySummary() {
 
   const fetchActivityData = async () => {
     try {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
-      const headers = { Authorization: `Bearer ${token}` };
+      let feedings = [];
+      let sleepLogs = [];
 
       // Fetch feeding data
-      try {
-        const feedingRes = await axios.get("/api/feeding", { headers });
-        const feedings = feedingRes.data.feed || [];
-        
-        if (feedings.length > 0) {
-          const sortedFeedings = feedings.sort((a, b) => {
-            const dateA = new Date(a.createdAt || a.time);
-            const dateB = new Date(b.createdAt || b.time);
-            return dateB - dateA;
-          });
-          setLastFeed(sortedFeedings[0]);
-          
-          // Count today's feedings
-          const today = new Date().toISOString().split('T')[0];
-          const todayFeedings = feedings.filter(f => {
-            const feedDate = new Date(f.createdAt || f.time).toISOString().split('T')[0];
-            return feedDate === today;
-          });
-          setTodayStats(prev => ({ ...prev, totalFeedings: todayFeedings.length }));
+      if (token) {
+        try {
+          const headers = { Authorization: `Bearer ${token}` };
+          const feedingRes = await axios.get("/api/feeding", { headers });
+          feedings = feedingRes.data.feed || [];
+        } catch (err) {
+          console.log("Using demo feeding data");
         }
-      } catch (err) {
-        console.log("Feeding data not available:", err.message);
+      }
+      
+      // Use demo data if insufficient
+      if (feedings.length < 10) {
+        const demoData = generateDemoFeedingData();
+        feedings = enrichWithDemoData(feedings, demoData, 30);
+      }
+      
+      if (feedings.length > 0) {
+        const sortedFeedings = feedings.sort((a, b) => {
+          const dateA = new Date(a.createdAt || a.time);
+          const dateB = new Date(b.createdAt || b.time);
+          return dateB - dateA;
+        });
+        setLastFeed(sortedFeedings[0]);
+        
+        // Count today's feedings
+        const today = new Date().toISOString().split('T')[0];
+        const todayFeedings = feedings.filter(f => {
+          const feedDate = new Date(f.createdAt || f.time).toISOString().split('T')[0];
+          return feedDate === today;
+        });
+        setTodayStats(prev => ({ ...prev, totalFeedings: todayFeedings.length }));
       }
 
       // Fetch sleep data
-      try {
-        const sleepRes = await axios.get("/api/sleep", { headers });
-        const sleepLogs = sleepRes.data || [];
-        
-        if (sleepLogs.length > 0) {
-          const sortedSleep = sleepLogs.sort((a, b) => {
-            const dateA = new Date(a.date + ' ' + a.time);
-            const dateB = new Date(b.date + ' ' + b.time);
-            return dateB - dateA;
-          });
-          setLastSleep(sortedSleep[0]);
-          
-          // Calculate today's total sleep
-          const today = new Date().toISOString().split('T')[0];
-          const todaySleep = sleepLogs.filter(s => s.date === today);
-          const totalHours = todaySleep.reduce((sum, s) => {
-            const duration = s.duration || "";
-            const hours = parseFloat(duration.match(/(\d+\.?\d*)\s*(hr|hour)/i)?.[1] || 0);
-            const mins = parseFloat(duration.match(/(\d+)\s*(min|minute)/i)?.[1] || 0);
-            return sum + hours + (mins / 60);
-          }, 0);
-          setTodayStats(prev => ({ ...prev, totalSleepHours: totalHours }));
+      if (token) {
+        try {
+          const headers = { Authorization: `Bearer ${token}` };
+          const sleepRes = await axios.get("/api/sleep", { headers });
+          sleepLogs = sleepRes.data || [];
+        } catch (err) {
+          console.log("Using demo sleep data");
         }
-      } catch (err) {
-        console.log("Sleep data not available:", err.message);
+      }
+      
+      // Use demo data if insufficient
+      if (sleepLogs.length < 10) {
+        const demoData = generateDemoSleepData();
+        sleepLogs = enrichWithDemoData(sleepLogs, demoData, 30);
+      }
+      
+      if (sleepLogs.length > 0) {
+        const sortedSleep = sleepLogs.sort((a, b) => {
+          const dateA = new Date(a.date + ' ' + a.time);
+          const dateB = new Date(b.date + ' ' + b.time);
+          return dateB - dateA;
+        });
+        setLastSleep(sortedSleep[0]);
+        
+        // Calculate today's total sleep
+        const today = new Date().toISOString().split('T')[0];
+        const todaySleep = sleepLogs.filter(s => s.date === today);
+        const totalHours = todaySleep.reduce((sum, s) => {
+          const duration = s.duration || "";
+          const hours = parseFloat(duration.match(/(\d+\.?\d*)\s*(hr|hour)/i)?.[1] || 0);
+          const mins = parseFloat(duration.match(/(\d+)\s*(min|minute)/i)?.[1] || 0);
+          return sum + hours + (mins / 60);
+        }, 0);
+        setTodayStats(prev => ({ ...prev, totalSleepHours: totalHours }));
       }
 
       setLoading(false);

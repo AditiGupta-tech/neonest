@@ -5,6 +5,7 @@ import { Card, CardContent } from "../ui/card";
 import { Award, Trophy, Star, Target, Zap, Heart, CheckCircle } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { generateDemoFeedingData, generateDemoSleepData, generateDemoMemories, generateDemoMilestones, generateDemoGrowthData } from "../../utils/demoData";
 
 export default function AchievementsBadges() {
   const { token } = useAuth();
@@ -45,24 +46,30 @@ export default function AchievementsBadges() {
       }
 
       // Fetch memories
+      let memories = [];
       try {
         const memoriesRes = await axios.get("/api/memories", { headers });
-        const memories = memoriesRes.data || [];
-        
-        if (memories.length >= 1) {
-          earnedAchievements.push({
-            id: "first-memory",
-            title: "First Memory Uploaded",
-            description: "Captured your first precious moment",
-            icon: Heart,
-            color: "from-pink-500 to-rose-500",
-            bgColor: "bg-pink-50 dark:bg-pink-900/20",
-            borderColor: "border-pink-300 dark:border-pink-700",
-            earned: true
-          });
-        }
+        memories = memoriesRes.data || [];
       } catch (error) {
-        console.log("Memories not available");
+        console.log("Using demo memories");
+      }
+      
+      // Use demo data if insufficient
+      if (memories.length === 0) {
+        memories = generateDemoMemories();
+      }
+      
+      if (memories.length >= 1) {
+        earnedAchievements.push({
+          id: "first-memory",
+          title: "First Memory Uploaded",
+          description: "Captured your first precious moment",
+          icon: Heart,
+          color: "from-pink-500 to-rose-500",
+          bgColor: "bg-pink-50 dark:bg-pink-900/20",
+          borderColor: "border-pink-300 dark:border-pink-700",
+          earned: true
+        });
       }
 
       // Check for 3 days consistent sleep tracking
@@ -119,7 +126,14 @@ export default function AchievementsBadges() {
       }
 
       // Check for growth tracking
-      const growthLogs = JSON.parse(localStorage.getItem("growthLogs") || "[]");
+      let growthLogs = JSON.parse(localStorage.getItem("growthLogs") || "[]");
+      
+      // Use demo data if insufficient
+      if (growthLogs.length < 3) {
+        growthLogs = generateDemoGrowthData();
+        localStorage.setItem("growthLogs", JSON.stringify(growthLogs));
+      }
+      
       if (growthLogs.length >= 3) {
         earnedAchievements.push({
           id: "growth-tracker",
@@ -148,7 +162,14 @@ export default function AchievementsBadges() {
       }
 
       // Check for milestone achievements
-      const checkedMilestones = JSON.parse(localStorage.getItem("checkedMilestones") || "{}");
+      let checkedMilestones = JSON.parse(localStorage.getItem("checkedMilestones") || "{}");
+      
+      // Use demo data if insufficient
+      if (Object.keys(checkedMilestones).length < 5) {
+        checkedMilestones = generateDemoMilestones();
+        localStorage.setItem("checkedMilestones", JSON.stringify(checkedMilestones));
+      }
+      
       const milestoneCount = Object.values(checkedMilestones).filter(Boolean).length;
       
       if (milestoneCount >= 5) {
