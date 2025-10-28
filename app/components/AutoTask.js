@@ -13,8 +13,8 @@ import {
 const AutoTask = ({setAutoTask,isAutoTask}) => {
   const getClassName = ()=>{
     const className = "text-white p-2 rounded-full shadow-md transition-all duration-200 ease-in-out flex items-center justify-center "
-    if(isAutoTask) return "bg-purple-500 hover:bg-purple-600 "+className
-    else return "bg-pink-500 hover:bg-pink-600 "+className
+    if(isAutoTask) return "bg-purple-500 hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700 "+className
+    else return "bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 "+className
   }
   return (
     <TooltipProvider>

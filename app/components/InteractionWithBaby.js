@@ -1,15 +1,9 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { Baby, Heart, Star, Music } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../components/ui/Carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../components/ui/Carousel";
 
 const interactionStages = [
   {
@@ -94,11 +88,11 @@ const InteractionWithBaby = () => {
   }, [selectedAge, api]);
 
   return (
-    <section id="interaction-tips" className="px-4 py-6 bg-white/50 rounded-lg">
+    <section id="interaction-tips" className="px-4 py-6 bg-white/50 dark:bg-gray-800 rounded-lg">
       <div className="container mx-auto">
         <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold text-gray-800 mb-2">Interaction Tips by Age</h2>
-          <p className="text-lg text-gray-600">Discover meaningful ways to engage with your baby</p>
+          <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-2">Interaction Tips by Age</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Discover meaningful ways to engage with your baby</p>
         </div>
 
         {/* Age selection radio buttons */}
@@ -106,19 +100,12 @@ const InteractionWithBaby = () => {
           {interactionStages.map((stage) => (
             <label
               key={stage.title}
-              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${selectedAge === stage.title
+              className={`flex items-center space-x-2 cursor-pointer p-2 rounded-lg transition-all ${
+                selectedAge === stage.title
                   ? "bg-gradient-to-r from-pink-600 to-blue-600 text-white shadow-lg"
                   : "bg-white text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-blue-50 shadow-md"
-                }`}
-            >
-              <input
-                type="radio"
-                name="age"
-                value={stage.title}
-                checked={selectedAge === stage.title}
-                onChange={(e) => setSelectedAge(e.target.value)}
-                className="hidden"
-              />
+              }`}>
+              <input type="radio" name="age" value={stage.title} checked={selectedAge === stage.title} onChange={(e) => setSelectedAge(e.target.value)} className="hidden" />
               <stage.icon className="w-4 h-4" />
               <span className="text-sm font-medium">{stage.title}</span>
             </label>
@@ -146,9 +133,7 @@ const InteractionWithBaby = () => {
 
                             {/* Tip content with enhanced styling */}
                             <div className="relative bg-white/80 rounded-lg p-3 sm:p-4 backdrop-blur-sm border border-pink-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
-                              <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">
-                                {tip}
-                              </p>
+                              <p className="text-base sm:text-lg text-center leading-relaxed font-medium bg-gradient-to-l from-pink-600 to-blue-600 bg-clip-text text-transparent">{tip}</p>
                             </div>
                           </div>
                         </CardContent>
@@ -160,14 +145,13 @@ const InteractionWithBaby = () => {
 
             {/* Navigation buttons - simple, always at the bottom */}
             <div className="flex justify-center gap-8 mt-4">
-              <CarouselPrevious className="static translate-y-0 bg-white hover:bg-gray-50" />
-              <CarouselNext className="static translate-y-0 bg-white hover:bg-gray-50" />
+              <CarouselPrevious className="static translate-y-0 bg-white dark:bg-gray-700 hover:bg-gray-50" />
+              <CarouselNext className="static translate-y-0 bg-white dark:bg-gray-700 hover:bg-gray-50" />
             </div>
           </Carousel>
         </div>
 
         {/* Statement */}
-    
       </div>
     </section>
   );

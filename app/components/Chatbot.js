@@ -1,6 +1,6 @@
 "use client"
 
-import { MessageCircle, Mic } from "lucide-react"
+import { MessageCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
@@ -28,7 +28,7 @@ export default function Chatbot() {
         <TooltipTrigger asChild>
           <button
             onClick={() => router.push("/NeonestAi")}
-            className="bg-pink-500 hover:bg-pink-600 text-white p-2 rounded-full shadow-md transition-all duration-200 ease-in-out flex items-center justify-center"
+            className="bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:hover:bg-pink-700 text-white p-2 rounded-full shadow-md transition-all duration-200 ease-in-out flex items-center justify-center"
             aria-label="Open NeoNest Chatbot"
           >
             <MessageCircle className="w-5 h-5" /> 
