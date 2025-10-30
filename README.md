@@ -281,33 +281,46 @@ cd neonest
  git checkout -b yourname/feature-name
  ```
 
-5. **Make your changes:**
+5. **Local setup for OAuth (Google & Microsoft)**
+
+  Copy `.env.example` to `.env.local`:
+   ```bash
+   cp .env.example .env.local
+   ```
+- **Google:**  
+  `https://neonest-babycare.vercel.app/api/auth/callback/google`
+
+- **Microsoft (Azure AD):**  
+  `https://neonest-babycare.vercel.app/api/auth/callback/azure-ad`
+
+
+6. **Make your changes:**
  * Stick to the project structure.
  * Use helpful commit messages, eg:
  * `fix: corrected typo in LandingPage.jsx`
  * `feat: added baby sleep graph comparison`
 
-6. **Format your code:**
+7. **Format your code:**
 
  ```bash
  npm run lint
  ```
 
-7. **Update `pnpm-lock.yaml` file using this command and push along with other commits:**
+8. **Update `pnpm-lock.yaml` file using this command and push along with other commits:**
 
  ```bash/cmd
  pnpm install
  ```
 
-8. **Test everything!** (Manual/automated if applicable)
+9. **Test everything!** (Manual/automated if applicable)
 
-9. **Push your branch:**
+10. **Push your branch:**
 
  ```bash
  git push origin yourname/feature-name
  ```
 
-10. **Open a Pull Request (PR) from your fork:**
+11. **Open a Pull Request (PR) from your fork:**
  * Reference related issue(s): `Fixes #<issue-number>`
  * Add a clear title and summary.
 
