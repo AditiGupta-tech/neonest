@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import axios from "axios";
-import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3, Copy, Mic } from "lucide-react";
+import { Bot, Send, Loader2, Baby, Utensils, Clock, Heart, MessageSquare, ThumbsUp, Users, BarChart3, Copy, Mic ,Download} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../components/ui/tooltip";
 import { Button } from "../components/ui/Button";
@@ -14,6 +14,8 @@ import TextToSpeech from "../components/TextToSpeech";
 import { fetchChatHistory, saveChatHistory } from "@/lib/chatService";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
+import jsPDF from "jspdf"; 
+import html2canvas from "html2canvas"; 
 
 const quickQuestions = [
   { icon: Baby, text: "When should my baby start crawling?", color: "pink" },
@@ -28,12 +30,120 @@ const roles = [
   { label: "Motherly", value: "mother" },
 ];
 
+const formatDate = (isoString) => {
+  return new Date(isoString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+// --- NEW PAST CHATS PANEL COMPONENT ---
+const PastChatsPanel = ({
+  allChatHistory,
+  activeRole,
+  onSelectChat,
+  onExportPDF,
+}) => {
+  const processedChats = useMemo(() => {
+    const allMessages = [];
+    for (const role in allChatHistory) {
+      const messages = allChatHistory[role];
+      if (messages && messages.length > 0) {
+        // Get the most recent message to represent the chat
+        const lastMessage = messages[messages.length - 1];
+        allMessages.push({
+          role: role,
+          roleLabel: roles.find((r) => r.value === role)?.label || role,
+          content: lastMessage.content.substring(0, 50) + "...",
+          date: lastMessage.createdAt,
+        });
+      }
+    }
+
+    // Sort by date, most recent first
+    allMessages.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Group by date
+    const grouped = allMessages.reduce((acc, chat) => {
+      const dateKey = formatDate(chat.date);
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(chat);
+      return acc;
+    }, {});
+
+    return grouped;
+  }, [allChatHistory]);
+
+  return (
+    <Card className="dark:bg-gray-700 h-full sticky top-6">
+      <CardHeader className="flex flex-row justify-between items-center">
+        <CardTitle className="dark:text-gray-200 text-lg">Past Chats</CardTitle>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onExportPDF}
+          className="dark:text-gray-200"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Export Active Chat
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-4 overflow-y-auto max-h-[600px] pr-2">
+        {Object.keys(processedChats).length === 0 && (
+          <p className="text-sm text-gray-500 dark:text-gray-200 text-center">
+            No past chats found.
+          </p>
+        )}
+        {Object.entries(processedChats).map(([date, chats]) => (
+          <div key={date}>
+            <h4 className="font-semibold text-sm text-gray-600 dark:text-gray-300 mb-2">
+              {date}
+            </h4>
+            <div className="space-y-2">
+              {chats.map((chat) => (
+                <button
+                  key={chat.role}
+                  onClick={() => onSelectChat(chat.role)}
+                  className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                    activeRole === chat.role
+                      ? "bg-pink-100 dark:bg-pink-600 border-pink-500"
+                      : "bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-600"
+                  }`}
+                >
+                  <p className="font-semibold text-sm text-pink-700 dark:text-pink-300">
+                    {chat.roleLabel}
+                  </p>
+                  <p className="text-xs text-gray-700 dark:text-gray-200 truncate">
+                    {chat.content}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+};
+// --- END OF NEW COMPONENT ---
+
 export default function NeonestAi() {
   const [showConfirm, setShowConfirm] = useState(false);
   const clearChatHistory = useChatStore((state) => state.clearChatHistory);
   const [role, setRole] = useState("pediatrician");
-  const { chatHistory = {}, setChatHistory = () => {}, historyLoaded = {}, resetChatHistoryForRole = () => {} } = useChatStore((state) => state || {});
-  const messages = useMemo(() => chatHistory[role] || [], [chatHistory, role]);
+ const {
+    chatHistory: allChatHistory = {}, 
+    setChatHistory = () => {},
+    historyLoaded = {},
+    resetChatHistoryForRole = () => {},
+  } = useChatStore((state) => state || {});
+ const messages = useMemo(
+    () => allChatHistory[role] || [],
+    [allChatHistory, role]
+  );
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
@@ -76,20 +186,34 @@ export default function NeonestAi() {
   };
 
   useEffect(() => {
-    if (historyLoaded[role]) return;
-    const loadHistory = async () => {
-      setIsHistoryLoading(true);
-      try {
-        const messages = await fetchChatHistory(role, token);
-        setChatHistory(role, messages);
-      } catch (error) {
-        setChatHistory(role, []);
-      } finally {
-        setIsHistoryLoading(false);
+    if (!token) return;
+
+    const loadAllHistories = async () => {
+      // Set loading spinner only for the *active* chat window if its history isn't loaded
+      if (!historyLoaded[role]) {
+        setIsHistoryLoading(true);
+      }
+
+      // Fetch history for all roles in the background
+      for (const r of roles) {
+        if (!historyLoaded[r.value]) {
+          try {
+            const messages = await fetchChatHistory(r.value, token);
+            setChatHistory(r.value, messages); // Update store for each role
+          } catch (error) {
+            setChatHistory(r.value, []); // Set empty array on error
+          }
+        }
+      }
+
+      // Stop loading spinner for the active chat window
+      if (setIsHistoryLoading) {
+         setIsHistoryLoading(false);
       }
     };
-    if (token) loadHistory();
-  }, [role, token, chatHistory, setChatHistory]);
+
+    loadAllHistories();
+  }, [token, setChatHistory, historyLoaded, role]);
 
   useEffect(() => {
     if (messages.length === 0 || isUserNearBottom()) {
@@ -204,229 +328,451 @@ export default function NeonestAi() {
     }
   };
 
+  const handleExportPDF = () => {
+    const chatElement = chatContainerRef.current;
+    if (!chatElement) {
+      alert(
+        "Chat content not found. Please wait for the chat to load."
+      );
+      return;
+    }
+
+    alert(
+      "Generating PDF... This might take a moment. The PDF will be scaled to fit one page."
+    );
+
+    // Use html2canvas to capture the chat container
+    html2canvas(chatElement, {
+      backgroundColor: "#ffffff", // Set a white background for non-transparent PNG
+      scrollY: -window.scrollY,
+      useCORS: true,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      // Calculate the ratio to fit the image onto the PDF page
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+
+      // Calculate x offset to center the image
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 10; // Top margin
+
+      // Add the image to the PDF
+      pdf.addImage(
+        imgData,
+        "PNG",
+        imgX,
+        imgY,
+        imgWidth * ratio,
+        imgHeight * ratio
+      );
+
+      // Save the PDF
+      pdf.save(
+        `NeoNest-Chat-${role}-${new Date().toISOString().split("T")[0]}.pdf`
+      );
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-800 p-6 space-y-10">
-      <Card className="max-w-4xl mx-auto dark:bg-gray-700">
-        <CardHeader className="flex justify-between items-center bg-pink-100 dark:bg-pink-500 rounded-t-lg px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Bot className="w-6 h-6 text-pink-500 dark:text-pink-900" />
-            <CardTitle className="dark:text-gray-300">NeoNest AI Chatbot</CardTitle>
-          </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <select
-                  value={role}
-                  onChange={(e) => handleRoleChange(e.target.value)}
-                  className="border px-3 py-1 rounded-md dark:bg-gray-600 dark:text-gray-200 text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                >
-                  {roles.map((r) => (
-                    <option key={r.value} value={r.value}>
-                      {r.label}
-                    </option>
-                  ))}
-                </select>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={6}>
-                Choose the role you&apos;d like to chat with
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </CardHeader>
-
-        <CardContent className="space-y-6 p-6 relative">
-          {transitionMessage && (
-            <div className="absolute top-0 left-0 right-0 flex justify-center z-20">
-              <span className="bg-pink-200 text-pink-900 dark:text-gray-200 px-6 py-2 rounded-lg shadow-lg font-semibold text-base">{transitionMessage}</span>
-            </div>
-          )}
-
-          {messages.length === 0 && (
-            <div className="text-center space-y-4">
-              <p className="text-sm text-gray-500 dark:text-gray-200 mt-2">AI advice is not a substitute for professional medical consultation.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {quickQuestions.map((q, idx) => (
-                  <Button key={idx} onClick={() => handleQuickQuestion(q.text)} variant="outline" className="text-left dark:text-gray-200 justify-start text-sm">
-                    <q.icon className={`w-4 h-4 mr-2 text-${q.color}-500`} />
-                    {q.text}
-                  </Button>
-                ))}
+    // --- MODIFIED: Main Page Wrapper ---
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800 p-6 space-y-6">
+      
+      {/* --- MODIFIED: Top 2-Column Layout (Chat + Past Chats) --- */}
+      <div className="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
+        
+        {/* --- ZONE 1: Left Side (70%) Chat Area --- */}
+        <div className="lg:w-2/3 w-full">
+          <Card className="dark:bg-gray-700">
+            <CardHeader className="flex justify-between items-center bg-pink-100 dark:bg-pink-500 rounded-t-lg px-6 py-4">
+              <div className="flex items-center gap-3">
+                <Bot className="w-6 h-6 text-pink-500 dark:text-pink-900" />
+                <CardTitle className="dark:text-gray-300">
+                  NeoNest AI Chatbot
+                </CardTitle>
               </div>
-            </div>
-          )}
-
-          {isHistoryLoading ? (
-            <div className="space-y-4 max-h-[600px] min-h-[500px] overflow-y-auto pr-2 py-4">
-              {[1, 2, 3].map((_, i) => (
-                <div key={i} className={`flex ${i % 2 === 0 ? "justify-start" : "justify-end"} animate-pulse`}>
-                  <div className={`rounded-xl px-4 py-3 min-w-[60%] ${i % 2 === 0 ? "bg-gray-200" : "bg-gradient-to-r from-pink-300 to-purple-300"}`}>
-                    <div className="h-4 bg-white/50 rounded w-3/4 mb-2" />
-                    <div className="h-4 bg-white/50 rounded w-1/2" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div ref={chatContainerRef} className="space-y-4 max-h-[600px] overflow-y-auto pr-2 pb-4">
-              {messages.map((m, index) => (
-                <div key={`${m.id || index}-${index}`} className={`flex mt-3 group ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div className={`relative rounded-xl px-4 py-3 max-w-[80%] ${m.role === "user" ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white" : "bg-gray-200 text-gray-800"}`}>
-                    {/* Action icons */}
-                    <div
-                      className={`absolute bottom-full mb-2 flex gap-1 bg-white dark:bg-gray-800 p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
-                       ${m.role === "user" ? "right-0" : "left-0"}`}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <select
+                      value={role}
+                      onChange={(e) => handleRoleChange(e.target.value)}
+                      className="border px-3 py-1 rounded-md dark:bg-gray-600 dark:text-gray-200 text-sm bg-white cursor-pointer text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                     >
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 dark:hover:bg-gray-600" onClick={() => copyToClipboard(m.content)}>
-                              <Copy className="w-4 h-4 text-gray-600 dark:text-white" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>Copy to clipboard</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      {m.role === "assistant" && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div>
-                                <TextToSpeech text={m.content} />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>Listen to response</TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                    </div>
-                    <div className="prose prose-sm max-w-full text-sm">
-                      <ReactMarkdown
-                        components={{
-                          h1: ({ node, ...props }) => <h1 className={`text-2xl font-extrabold mb-2 mt-4 ${m.role === "pediatrician" ? "text-blue-700" : "text-pink-600"}`} {...props} />,
-                          h2: ({ node, ...props }) => <h2 className={`text-xl font-semibold mb-2 mt-4 ${m.role === "baby" ? "text-purple-700" : "text-blue-600"}`} {...props} />,
-                          h3: ({ node, ...props }) => <h3 className={`text-lg font-semibold mb-2 mt-4 ${m.role === "nani" ? "text-green-700" : "text-pink-500"}`} {...props} />,
-                          h4: ({ node, ...props }) => <h4 className={`text-base font-semibold mb-2 mt-4 ${m.role === "general" ? "text-orange-700" : "text-purple-500"}`} {...props} />,
-                          p: ({ node, ...props }) => <p className="text-sm leading-relaxed mb-2" {...props} />,
-                          ul: ({ node, ...props }) => <ul className="list-disc list-inside text-sm mb-2" {...props} />,
-                          li: ({ node, ...props }) => <li className="ml-4 mb-1" {...props} />,
-                          strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
-                          em: ({ node, ...props }) => <em className="italic" {...props} />,
-                          code: ({ node, ...props }) => <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props} />,
-                          blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-pink-300 pl-4 italic text-sm text-gray-600 my-2" {...props} />,
-                        }}
-                      >
-                        {m.content}
-                      </ReactMarkdown>
-                    </div>
-                    <span className={`text-xs block mt-1 ${m.role === "user" ? "text-gray-300" : "text-pink-700"}`}>{formatTime(m.createdAt)}</span>
-                  </div>
-                  {m.role === "assistant" && (
-                    <div className="flex justify-start mt-2">
-                      <TextToSpeech text={m.content} />
-                    </div>
-                  )}
+                      {roles.map((r) => (
+                        <option key={r.value} value={r.value}>
+                          {r.label}
+                        </option>
+                      ))}
+                    </select>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" sideOffset={6}>
+                    Choose the role you&apos;d like to chat with
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </CardHeader>
+
+            <CardContent className="space-y-6 p-6 relative">
+              {transitionMessage && (
+                <div className="absolute top-0 left-0 right-0 flex justify-center z-20">
+                  <span className="bg-pink-200 text-pink-900 dark:text-gray-200 px-6 py-2 rounded-lg shadow-lg font-semibold text-base">
+                    {transitionMessage}
+                  </span>
                 </div>
-              ))}
-              {isSending && (
-                <div className="flex justify-start mt-3">
-                  <div className="rounded-xl px-4 py-2 max-w-[80%] bg-gray-200 text-gray-800 flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">NeoNest AI is thinking...</span>
+              )}
+
+              {messages.length === 0 && !isHistoryLoading && (
+                <div className="text-center space-y-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-200 mt-2">
+                    AI advice is not a substitute for professional medical
+                    consultation.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {quickQuestions.map((q, idx) => (
+                      <Button
+                        key={idx}
+                        onClick={() => handleQuickQuestion(q.text)}
+                        variant="outline"
+                        className="text-left dark:text-gray-200 justify-start text-sm"
+                      >
+                        <q.icon
+                          className={`w-4 h-4 mr-2 text-${q.color}-500`}
+                        />
+                        {q.text}
+                      </Button>
+                    ))}
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} />
-            </div>
-          )}
 
-          {showNewMessageButton && (
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => {
-                  scrollToBottom();
-                  setShowNewMessageButton(false);
-                }}
-                className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition"
-              >
-                ⬇ New Message
-              </button>
-            </div>
-          )}
+              {isHistoryLoading ? (
+                <div className="space-y-4 max-h-[600px] min-h-[500px] overflow-y-auto pr-2 py-4">
+                  {[1, 2, 3].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`flex ${
+                        i % 2 === 0 ? "justify-start" : "justify-end"
+                      } animate-pulse`}
+                    >
+                      <div
+                        className={`rounded-xl px-4 py-3 min-w-[60%] ${
+                          i % 2 === 0
+                            ? "bg-gray-200"
+                            : "bg-gradient-to-r from-pink-300 to-purple-300"
+                        }`}
+                      >
+                        <div className="h-4 bg-white/50 rounded w-3/4 mb-2" />
+                        <div className="h-4 bg-white/50 rounded w-1/2" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  ref={chatContainerRef} // Ref added for PDF export
+                  className="space-y-4 max-h-[600px] overflow-y-auto pr-2 pb-4"
+                >
+                  {messages.map((m, index) => (
+                    <div
+                      key={`${m.id || index}-${index}`}
+                      className={`flex mt-3 group ${
+                        m.role === "user" ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      <div
+                        className={`relative rounded-xl px-4 py-3 max-w-[80%] ${
+                          m.role === "user"
+                            ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white"
+                            : "bg-gray-200 text-gray-800"
+                        }`}
+                      >
+                        {/* Action icons */}
+                        <div
+                          className={`absolute bottom-full mb-2 flex gap-1 bg-white dark:bg-gray-800 p-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10
+                       ${m.role === "user" ? "right-0" : "left-0"}`}
+                        >
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 dark:hover:bg-gray-600"
+                                  onClick={() => copyToClipboard(m.content)}
+                                >
+                                  <Copy className="w-4 h-4 text-gray-600 dark:text-white" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Copy to clipboard</TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          {m.role === "assistant" && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div>
+                                    <TextToSpeech text={m.content} />
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  Listen to response
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
+                        <div className="prose prose-sm max-w-full text-sm">
+                          <ReactMarkdown
+                            components={{
+                              h1: ({ node, ...props }) => (
+                                <h1
+                                  className={`text-2xl font-extrabold mb-2 mt-4 ${
+                                    m.role === "pediatrician"
+                                      ? "text-blue-700"
+                                      : "text-pink-600"
+                                  }`}
+                                  {...props}
+                                />
+                              ),
+                              h2: ({ node, ...props }) => (
+                                <h2
+                                  className={`text-xl font-semibold mb-2 mt-4 ${
+                                    m.role === "baby"
+                                      ? "text-purple-700"
+                                      : "text-blue-600"
+                                  }`}
+                                  {...props}
+                                />
+                              ),
+                              h3: ({ node, ...props }) => (
+                                <h3
+                                  className={`text-lg font-semibold mb-2 mt-4 ${
+                                    m.role === "nani"
+                                      ? "text-green-700"
+                                      : "text-pink-500"
+                                  }`}
+                                  {...props}
+                                />
+                              ),
+                              h4: ({ node, ...props }) => (
+                                <h4
+                                  className={`text-base font-semibold mb-2 mt-4 ${
+                                    m.role === "general"
+                                      ? "text-orange-700"
+                                      : "text-purple-500"
+                                  }`}
+                                  {...props}
+                                />
+                              ),
+                              p: ({ node, ...props }) => (
+                                <p
+                                  className="text-sm leading-relaxed mb-2"
+                                  {...props}
+                                />
+                              ),
+                              ul: ({ node, ...props }) => (
+                                <ul
+                                  className="list-disc list-inside text-sm mb-2"
+                                  {...props}
+                                />
+                              ),
+                              li: ({ node, ...props }) => (
+                                <li className="ml-4 mb-1" {...props} />
+                              ),
+                              strong: ({ node, ...props }) => (
+                                <strong
+                                  className="font-semibold"
+                                  {...props}
+                                />
+                              ),
+                              em: ({ node, ...props }) => (
+                                <em className="italic" {...props} />
+                              ),
+                              code: ({ node, ...props }) => (
+                                <code
+                                  className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono"
+                                  {...props}
+                                />
+                              ),
+                              blockquote: ({ node, ...props }) => (
+                                <blockquote
+                                  className="border-l-4 border-pink-300 pl-4 italic text-sm text-gray-600 my-2"
+                                  {...props}
+                                />
+                              ),
+                            }}
+                          >
+                            {m.content}
+                          </ReactMarkdown>
+                        </div>
+                        <span
+                          className={`text-xs block mt-1 ${
+                            m.role === "user"
+                              ? "text-gray-300"
+                              : "text-pink-700"
+                          }`}
+                        >
+                          {formatTime(m.createdAt)}
+                        </span>
+                      </div>
+                      {m.role === "assistant" && (
+                        <div className="flex justify-start mt-2">
+                          <TextToSpeech text={m.content} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {isSending && (
+                    <div className="flex justify-start mt-3">
+                      <div className="rounded-xl px-4 py-2 max-w-[80%] bg-gray-200 text-gray-800 flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm">
+                          NeoNest AI is thinking...
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
 
-          <form
-  onSubmit={(e) => {
-    e.preventDefault();
-    // Only send message, do NOT touch mic button or isListening
-    handleSubmit(e);
-  }}
-  className="flex gap-2 pt-4 items-center"
->
-
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={isListening ? "Listening... Speak now..." : "Ask me about baby care..."}
-              className={`flex-1 dark:text-white ${isListening ? "border-green-500 bg-green-50 " : "border-pink-300 dark:bg-gray-700"}`}
-              disabled={isSending}
-            />
-            {/* Explicit mic button that passes "button" as the source when clicked */}
-            <button
-              type="button"
-              onClick={() => {
-                console.log("Mic button clicked. Current isListening:", isListening);
-                setListeningFromSource(!isListening, "button");
-              }}
-              disabled={isSending}
-              aria-pressed={isListening}
-              className={`p-2 rounded-full ml-1 border ${isListening ? "bg-red-100 dark:bg-red-600" : "bg-white dark:bg-gray-700"} hover:opacity-90 transition`}
-              title={isListening ? "Stop listening" : "Start listening"}
-            >
-              {isListening ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
-            </button>
-
-            <Button
-              type="submit"
-              disabled={isSending || !input.trim()}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-            >
-              {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 dark:text-gray-100" />}
-            </Button>
-
-            <button
-              type="button"
-              onClick={() => setShowConfirm(true)}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-3 py-2 rounded ml-2"
-            >
-              Clear Chat
-            </button>
-          </form>
-          {/* Confirm Modal */}
-          {showConfirm && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded shadow-lg w-80">
-                <h3 className="text-lg font-semibold mb-4 dark:text-gray-200">Confirm Clear Chat</h3>
-                <p className="mb-4">This will remove all messages from this chat. Are you sure?</p>
-                <div className="flex justify-end gap-2">
-                  <button onClick={() => setShowConfirm(false)} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                    Cancel
-                  </button>
+              {showNewMessageButton && (
+                <div className="flex justify-center mt-4">
                   <button
                     onClick={() => {
-                      clearChatHistory("user");
-                      setShowConfirm(false);
+                      scrollToBottom();
+                      setShowNewMessageButton(false);
                     }}
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    className="text-sm text-white bg-pink-600 px-4 py-1 rounded-full shadow-md hover:bg-pink-700 transition"
                   >
-                    Clear
+                    ⬇ New Message
                   </button>
                 </div>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+              )}
 
-      <div className="max-w-4xl mx-auto space-y-4">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }}
+                className="flex gap-2 pt-4 items-center"
+              >
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={
+                    isListening
+                      ? "Listening... Speak now..."
+                      : "Ask me about baby care..."
+                  }
+                  className={`flex-1 dark:text-white ${
+                    isListening
+                      ? "border-green-500 bg-green-50 "
+                      : "border-pink-300 dark:bg-gray-700"
+                  }`}
+                  disabled={isSending}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log(
+                      "Mic button clicked. Current isListening:",
+                      isListening
+                    );
+                    setListeningFromSource(!isListening, "button");
+                  }}
+                  disabled={isSending}
+                  aria-pressed={isListening}
+                  className={`p-2 rounded-full ml-1 border ${
+                    isListening
+                      ? "bg-red-100 dark:bg-red-600"
+                      : "bg-white dark:bg-gray-700"
+                  } hover:opacity-90 transition`}
+                  title={isListening ? "Stop listening" : "Start listening"}
+                >
+                  {isListening ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Mic className="w-5 h-5" />
+                  )}
+                </button>
+
+                <Button
+                  type="submit"
+                  disabled={isSending || !input.trim()}
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                >
+                  {isSending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4 dark:text-gray-100" />
+                  )}
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(true)}
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-3 py-2 rounded ml-2"
+                >
+                  Clear Chat
+                </button>
+              </form>
+              {/* Confirm Modal */}
+              {showConfirm && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                  <div className="bg-white dark:bg-gray-700 p-6 rounded shadow-lg w-80">
+                    <h3 className="text-lg font-semibold mb-4 dark:text-gray-200">
+                      Confirm Clear Chat
+                    </h3>
+                    <p className="mb-4">
+                      This will remove all messages from this chat. Are you
+                      sure?
+                    </p>
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => setShowConfirm(false)}
+                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          clearChatHistory("user"); // This seems to be clearing based on a "user" key, not role. Keeping your logic.
+                          // If you intend to clear by *role*, it should be:
+                          // resetChatHistoryForRole(role);
+                          setShowConfirm(false);
+                        }}
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* --- ZONE 2: Right Side (30%) Past Chats Panel --- */}
+        <div className="lg:w-1/3 w-full">
+          <PastChatsPanel
+            allChatHistory={allChatHistory}
+            activeRole={role}
+            onSelectChat={handleRoleChange} // Re-using handleRoleChange to switch context
+            onExportPDF={handleExportPDF}
+          />
+        </div>
+      </div>
+
+      {/* --- ZONE 3: Bottom Full Width Stats --- */}
+      <div className="max-w-7xl mx-auto w-full space-y-4">
         <Card className="dark:bg-gray-700">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 dark:text-gray-200">
@@ -437,23 +783,39 @@ export default function NeonestAi() {
           <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
               <MessageSquare className="mx-auto text-pink-500" />
-              <p className="font-bold dark:text-gray-200">{analytics.totalChats}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-200">Total Conversations</p>
+              <p className="font-bold dark:text-gray-200">
+                {analytics.totalChats}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-200">
+                Total Conversations
+              </p>
             </div>
             <div>
               <Users className="mx-auto text-purple-500" />
-              <p className="font-bold dark:text-gray-200 ">{analytics.totalMessages}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-200">Messages Sent</p>
+              <p className="font-bold dark:text-gray-200 ">
+                {analytics.totalMessages}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-200">
+                Messages Sent
+              </p>
             </div>
             <div>
               <Clock className="mx-auto text-blue-500" />
-              <p className="font-bold dark:text-gray-200">{analytics.averageResponseTime}s</p>
-              <p className="text-xs text-gray-500 dark:text-gray-200">Avg. Response Time</p>
+              <p className="font-bold dark:text-gray-200">
+                {analytics.averageResponseTime}s
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-200">
+                Avg. Response Time
+              </p>
             </div>
             <div>
               <ThumbsUp className="mx-auto text-green-500" />
-              <p className="font-bold dark:text-gray-200">{analytics.satisfactionRate}%</p>
-              <p className="text-xs text-gray-500 dark:text-gray-200">Satisfaction</p>
+              <p className="font-bold dark:text-gray-200">
+                {analytics.satisfactionRate}%
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-200">
+                Satisfaction
+              </p>
             </div>
           </CardContent>
         </Card>
