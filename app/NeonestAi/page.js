@@ -15,7 +15,7 @@ import { fetchChatHistory, saveChatHistory } from "@/lib/chatService";
 import { useAuth } from "../context/AuthContext";
 import { useChatStore } from "@/lib/store/chatStore";
 import jsPDF from "jspdf"; 
-import html2canvas from "html2canvas"; 
+// import html2canvas from "html2canvas"; 
 
 const quickQuestions = [
   { icon: Baby, text: "When should my baby start crawling?", color: "pink" },
@@ -329,55 +329,93 @@ export default function NeonestAi() {
   };
 
   const handleExportPDF = () => {
-    const chatElement = chatContainerRef.current;
-    if (!chatElement) {
-      alert(
-        "Chat content not found. Please wait for the chat to load."
-      );
+    if (!messages || messages.length === 0) {
+      alert("No chat history to export.");
       return;
     }
 
-    alert(
-      "Generating PDF... This might take a moment. The PDF will be scaled to fit one page."
+    alert("Generating PDF... This might take a moment.");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const marginX = 15;
+    const marginY = 15;
+    const maxWidth = pageWidth - marginX * 2;
+    const lineHeight = 6; // Adjusted for 10pt font
+    let currentY = marginY;
+
+    // --- Helper function to check and add new page ---
+    const checkAddPage = (neededHeight) => {
+      if (currentY + neededHeight >= pageHeight - marginY) {
+        pdf.addPage();
+        currentY = marginY;
+        // Add title to new page (optional)
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(16);
+        pdf.text(
+          `NeoNest Chat - ${roles.find((r) => r.value === role)?.label} (Cont.)`,
+          marginX,
+          currentY
+        );
+        currentY += lineHeight * 2;
+      }
+    };
+
+    // --- 1. Add Title ---
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+    pdf.text(
+      `NeoNest Chat - ${roles.find((r) => r.value === role)?.label}`,
+      marginX,
+      currentY
     );
+    currentY += lineHeight * 3; // Add space after title
 
-    // Use html2canvas to capture the chat container
-    html2canvas(chatElement, {
-      backgroundColor: "#ffffff", // Set a white background for non-transparent PNG
-      scrollY: -window.scrollY,
-      useCORS: true,
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+    // --- 2. Iterate through messages ---
+    messages.forEach((m) => {
+      const isUser = m.role === "user";
+      const header = `${isUser ? "You" : "NeoNest AI"} (${formatTime(
+        m.createdAt
+      )}):`;
+      const content = m.content;
 
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
+      // Split content into lines that fit
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      const textLines = pdf.splitTextToSize(content, maxWidth - (isUser ? 5 : 0)); // Indent user text slightly
+      const neededHeight = (textLines.length + 2) * lineHeight; // +2 for header and spacing
 
-      // Calculate the ratio to fit the image onto the PDF page
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      // Check if we need a new page *before* printing
+      checkAddPage(neededHeight);
 
-      // Calculate x offset to center the image
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 10; // Top margin
+      // --- 3. Print Header ---
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
+      pdf.text(header, marginX, currentY);
+      currentY += lineHeight * 1.5; // Space after header
 
-      // Add the image to the PDF
-      pdf.addImage(
-        imgData,
-        "PNG",
-        imgX,
-        imgY,
-        imgWidth * ratio,
-        imgHeight * ratio
-      );
+      // --- 4. Print Content ---
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      
+      // Set text color for user/AI
+      isUser ? pdf.setTextColor(100, 100, 100) : pdf.setTextColor(0, 0, 0);
 
-      // Save the PDF
-      pdf.save(
-        `NeoNest-Chat-${role}-${new Date().toISOString().split("T")[0]}.pdf`
-      );
+      pdf.text(textLines, isUser ? marginX + 5 : marginX, currentY); // Indent user text
+      currentY += textLines.length * lineHeight;
+
+      // --- 5. Add spacing after message ---
+      currentY += lineHeight; // Space between messages
+      pdf.setTextColor(0, 0, 0); // Reset text color
     });
+
+    // --- 6. Save the PDF ---
+    pdf.save(
+      `NeoNest-Chat-${role}-${new Date().toISOString().split("T")[0]}.pdf`
+    );
   };
+  // --- END OF MODIFIED FUNCTION ---
 
   return (
     // --- MODIFIED: Main Page Wrapper ---
