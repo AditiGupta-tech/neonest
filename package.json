@@ -2,11 +2,16 @@
   "name": "NeoNest",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "install:legacy": "npm install --legacy-peer-deps"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
@@ -41,10 +46,10 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
-    "@types/bcryptjs": "^3.0.0",
+
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
-    "ai": "latest",
+    "ai": "^3.4.32",
     "autoprefixer": "^10.4.20",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
@@ -56,7 +61,7 @@
     "embla-carousel-react": "8.5.1",
     "formidable": "^3.5.4",
     "framer-motion": "^12.18.1",
-    "fs": "0.0.1-security",
+
     "input-otp": "1.4.1",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
@@ -65,17 +70,16 @@
     "next": "^15.3.3",
     "next-auth": "^4.24.11",
     "next-themes": "^0.4.4",
-    "pnpm": "^10.13.1",
-    "react": "^19.1.0",
-    "react-day-picker": "^8.10.1",
-    "react-dom": "^19.1.0",
+
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.1",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.7",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.0",
     "sonner": "^1.7.1",
-    "stream": "^0.0.3",
+
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.6",
@@ -86,12 +90,16 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@types/node": "^22",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "eslint": "^9.32.0",
     "eslint-config-next": "^15.4.5",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
+  },
+  "overrides": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

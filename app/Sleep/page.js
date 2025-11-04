@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Plus, Clock, Moon, Edit, Trash2, Calendar, Save } from "lucide-react";
 import Input from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
@@ -9,6 +8,8 @@ import Badge from "../components/ui/Badge";
 import Sleeptips from "../components/Sleeptips";
 import { useAuth } from "../context/AuthContext";
 import LoginPrompt from "../components/LoginPrompt";
+import { secureFetch } from "../../lib/clientSecurity";
+import { t } from "../../lib/i18n";
 
 export default function Page() {
   const { isAuth, token } = useAuth();
@@ -24,15 +25,16 @@ export default function Page() {
     notes: "",
   });
 
-  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  // Headers are now handled by secureFetch
 
   useEffect(() => {
     document.title = "Sleep | NeoNest";
     if (isAuth) {
       const fetchLogs = async () => {
         try {
-          const res = await axios.get("/api/sleep", { headers });
-          setSchedules(res.data);
+          const res = await secureFetch("/api/sleep", { method: 'GET' });
+          const data = await res.json();
+          setSchedules(data);
         } catch (err) {
           console.error("Failed to fetch logs:", err);
         } finally {
@@ -51,8 +53,12 @@ export default function Page() {
       babyName: "YourBaby",
     };
     try {
-      const res = await axios.post("/api/sleep", item, { headers });
-      setSchedules([...schedules, res.data]);
+      const res = await secureFetch("/api/sleep", {
+        method: 'POST',
+        body: JSON.stringify(item)
+      });
+      const data = await res.json();
+      setSchedules([...schedules, data]);
       resetForm();
     } catch (err) {
       console.error("Failed to add:", err);
@@ -61,8 +67,12 @@ export default function Page() {
 
   const updateSchedule = async (id, updated) => {
     try {
-      const res = await axios.patch(`/api/sleep/${id}`, updated, { headers });
-      setSchedules(schedules.map((s) => (s._id === id ? res.data : s)));
+      const res = await secureFetch(`/api/sleep/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(updated)
+      });
+      const data = await res.json();
+      setSchedules(schedules.map((s) => (s._id === id ? data : s)));
       setEditingSchedule(null);
     } catch (err) {
       console.error("Update failed:", err);
@@ -71,7 +81,7 @@ export default function Page() {
 
   const deleteSchedule = async (id) => {
     try {
-      await axios.delete(`/api/sleep/${id}`, { headers });
+      await secureFetch(`/api/sleep/${id}`, { method: 'DELETE' });
       setSchedules(schedules.filter((s) => s._id !== id));
     } catch (err) {
       console.error("Delete failed:", err);
@@ -144,7 +154,7 @@ export default function Page() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Time</label>
+              <label className="block text-sm font-medium mb-2">{t('time', 'Time')}</label>
               <Input
                 type="time"
                 value={editingSchedule ? editingSchedule.time : newSchedule.time}
@@ -162,7 +172,7 @@ export default function Page() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Sleep Type</label>
+              <label className="block text-sm font-medium mb-2">{t('sleep_type', 'Sleep Type')}</label>
               <select
                 className="w-full p-2 border border-gray-300 rounded-md dark:bg-gray-700"
                 value={editingSchedule ? editingSchedule.type : newSchedule.type}
@@ -181,7 +191,7 @@ export default function Page() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Duration</label>
+              <label className="block text-sm font-medium mb-2">{t('duration', 'Duration')}</label>
               <Input
                 placeholder="e.g., 45 mins, 2 hrs"
                 className="dark:bg-gray-700"
@@ -199,7 +209,7 @@ export default function Page() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Mood After Sleep</label>
+              <label className="block text-sm font-medium mb-2">{t('mood_after_sleep', 'Mood After Sleep')}</label>
               <select
                 className="w-full p-2 border border-gray-300 rounded-md dark:bg-gray-700"
                 value={editingSchedule ? editingSchedule.mood : newSchedule.mood}
@@ -221,7 +231,7 @@ export default function Page() {
             </div>
 
             <div className="col-span-full">
-              <label className="block text-sm font-medium mb-2">Notes</label>
+              <label className="block text-sm font-medium mb-2">{t('notes', 'Notes')}</label>
               <Input
                 placeholder="Optional notes..."
                 className="dark:bg-gray-700"
@@ -255,7 +265,7 @@ export default function Page() {
       <div className="bg-white/80 dark:bg-gray-700 backdrop-blur-sm rounded-lg border p-6">
         <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
           <Calendar className="w-5 h-5 text-indigo-600" />
-          Today's Sleep Schedule
+          Today&apos;s Sleep Schedule
           <Badge>{todaySchedules.length} entries</Badge>
         </h3>
 
@@ -286,7 +296,7 @@ export default function Page() {
                       {moodEmoji(s.mood)} {s.mood}
                     </span>
                   )}
-                  {s.notes && <span className="text-sm text-gray-400 italic">"{s.notes}"</span>}
+                  {s.notes && <span className="text-sm text-gray-400 italic">&quot;{s.notes}&quot;</span>}
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={() => setEditingSchedule(s)} className="text-sm">
@@ -335,7 +345,7 @@ export default function Page() {
                         {moodEmoji(s.mood)} {s.mood}
                       </span>
                     )}
-                    {s.notes && <span className="text-sm text-gray-400 italic">"{s.notes}"</span>}
+                    {s.notes && <span className="text-sm text-gray-400 italic">&quot;{s.notes}&quot;</span>}
                   </div>
                   <div className="flex gap-2">
                     <Button onClick={() => setEditingSchedule(s)} className="text-sm">

@@ -5,10 +5,9 @@ import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 
 // Update an essential item
-await connectDB();
-
 export async function PUT(request, { params }) {
   try {
+    await connectDB();
     // Verify token and get user ID
     const user = await authenticateToken(request);
     const userId = user.user.id;
@@ -60,6 +59,7 @@ export async function PUT(request, { params }) {
 // Delete an essential item
 export async function DELETE(request, { params }) {
   try {
+    await connectDB();
     // Verify token and get user ID
     const user = await authenticateToken(request);
     const userId = user.user.id;

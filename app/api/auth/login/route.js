@@ -1,9 +1,10 @@
 import User from "@/app/models/User.model";
 import connectDB from "@/lib/connectDB";
 import bcryptjs from "bcryptjs";
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import { withSecurity, validateAndSanitizeInput } from "@/lib/security";
 
-export async function POST(req) {
+async function loginHandler(req) {
   await connectDB();
   try {
     const body = await req.json();
@@ -16,19 +17,37 @@ export async function POST(req) {
       );
     }
 
-    const userExists = await User.findOne({ email: email.toLowerCase() });
-    if (!userExists) {
+    // Validate and sanitize inputs
+    if (!validateAndSanitizeInput(email, 'string', 254) || 
+        !validateAndSanitizeInput(password, 'string', 128)) {
       return Response.json(
-        { error: "no such user exists! signup instead" },
-        { status: 422 }
+        { error: "Invalid input format" },
+        { status: 400 }
       );
     }
 
-    const hashPass = await bcryptjs.compare(password , userExists.password);
-    if(!hashPass){
+    // Additional email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       return Response.json(
-        { error: "wrong password" },
+        { error: "Invalid email format" },
         { status: 400 }
+      );
+    }
+
+    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!userExists) {
+      return Response.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
+    }
+
+    const hashPass = await bcryptjs.compare(password, userExists.password);
+    if (!hashPass) {
+      return Response.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
       );
     }
 
@@ -41,16 +60,32 @@ export async function POST(req) {
       { expiresIn: "7d" }
     );
 
+    // Remove sensitive data from response
+    const { password: _, ...safeUserData } = userExists.toObject();
+
     return Response.json(
       {
-        success: "login Successful!",
-        userExists,
+        success: "Login successful!",
+        user: safeUserData,
         token,
       },
-      { status: 200 }
+      { 
+        status: 200,
+        headers: {
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY',
+          'X-XSS-Protection': '1; mode=block'
+        }
+      }
     );
   } catch (error) {
-    console.error(error);
-    return Response.json({ error: "Server error" }, { status: 500 });
+    console.error('Login error:', error);
+    return Response.json(
+      { error: "Authentication failed" },
+      { status: 500 }
+    );
   }
 }
+
+// Apply security middleware
+export const POST = withSecurity(loginHandler);

@@ -4,6 +4,22 @@ import { useState, useEffect } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { Button } from "./ui/Button";
 
+// Utility function to sanitize text input
+const sanitizeText = (text) => {
+  if (!text || typeof text !== 'string') return '';
+  // Remove HTML tags and potentially dangerous characters
+  return text.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, (match) => {
+    const entities = {
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '&': '&amp;'
+    };
+    return entities[match] || match;
+  }).trim();
+};
+
 const TextToSpeech = ({ text, disabled = false }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
@@ -24,12 +40,19 @@ const TextToSpeech = ({ text, disabled = false }) => {
   const speak = () => {
     if (!isSupported || !text || disabled) return;
 
+    // Sanitize the text input to prevent XSS
+    const sanitizedText = sanitizeText(text);
+    if (!sanitizedText) {
+      setError("Invalid text input");
+      return;
+    }
+
     try {
       // Stop any current speech
       window.speechSynthesis.cancel();
 
-      // Create speech utterance
-      const utterance = new SpeechSynthesisUtterance(text);
+      // Create speech utterance with sanitized text
+      const utterance = new SpeechSynthesisUtterance(sanitizedText);
 
       // Configure speech settings
       utterance.lang = "en-US";

@@ -4,7 +4,43 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API)
 
 export async function POST(req) {
   try {
+    // Validate API key
+    if (!process.env.GEMINI_API) {
+      return new Response(JSON.stringify({ error: "API configuration missing" }), {
+        status: 500,
+      })
+    }
+
     const { messages, role } = await req.json()
+    
+    // Input validation
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return new Response(JSON.stringify({ error: "Invalid messages format" }), {
+        status: 400,
+      })
+    }
+    
+    if (!role || typeof role !== 'string') {
+      return new Response(JSON.stringify({ error: "Invalid role" }), {
+        status: 400,
+      })
+    }
+    
+    // Content length validation
+    const totalContent = messages.map(m => m.content || '').join('')
+    if (totalContent.length > 10000) {
+      return new Response(JSON.stringify({ error: "Message too long" }), {
+        status: 400,
+      })
+    }
+    
+    // Validate allowed roles
+    const allowedRoles = ['parenting expert', 'sleep consultant', 'lactation consultant', 'pediatrician', 'experienced parent', 'nutritionist', 'baby', 'nani']
+    if (!allowedRoles.includes(role)) {
+      return new Response(JSON.stringify({ error: "Invalid role specified" }), {
+        status: 400,
+      })
+    }
 
 let systemInstruction = `You are a helpful and friendly AI assistant. You help parents understand and solve their queries. Incase you are unable to answer, politely tell them you may not be able to help them efficiently here and ask them to seek help from resources by suggesting them some English/hindi youtube videos, articles, journals. Respond in the same language the user uses.`; 
 
