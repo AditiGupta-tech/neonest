@@ -4,6 +4,22 @@ import { useState, useEffect, useRef } from "react";
 import { Mic, MicOff } from "lucide-react";
 import { Button } from "./ui/Button";
 
+// Utility function to sanitize transcript output
+const sanitizeTranscript = (transcript) => {
+  if (!transcript || typeof transcript !== 'string') return '';
+  // Remove HTML tags and potentially dangerous characters
+  return transcript.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, (match) => {
+    const entities = {
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '&': '&amp;'
+    };
+    return entities[match] || match;
+  }).trim();
+};
+
 const SpeechRecognition = ({ onTranscript, isListening, setIsListening, disabled = false }) => {
   const [isSupported, setIsSupported] = useState(false);
   const [error, setError] = useState("");
@@ -38,10 +54,17 @@ const SpeechRecognition = ({ onTranscript, isListening, setIsListening, disabled
       }
 
       if (finalTranscript) {
-        setIsListening(false);
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 2000);
-        onTranscript(finalTranscript);
+        // Sanitize the transcript before passing it to the callback
+        const sanitizedTranscript = sanitizeTranscript(finalTranscript);
+        if (sanitizedTranscript) {
+          setIsListening(false);
+          setShowSuccess(true);
+          setTimeout(() => setShowSuccess(false), 2000);
+          onTranscript(sanitizedTranscript);
+        } else {
+          setError("Invalid speech input detected");
+          setIsListening(false);
+        }
       }
     };
 

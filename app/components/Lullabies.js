@@ -156,7 +156,7 @@ export default function LullabyModal({ show, onClose }) {
         {/* Lullabies List */}
         <div className="space-y-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
           {lullabies.length === 0 && (
-            <p className="text-center text-gray-500 italic py-4">No lullabies found. Let's add some magic!</p>
+            <p className="text-center text-gray-500 italic py-4">No lullabies found. Let&apos;s add some magic!</p>
           )}
           {lullabies.map(lullaby => (
             <div key={lullaby.id} className="flex justify-between items-center p-3 border border-blue-200 rounded-lg shadow-sm bg-white hover:bg-blue-50 transition-colors duration-200">

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Input from "../components/ui/Input";
@@ -74,9 +74,9 @@ export default function VaccineTracker({ babyId }) {
       fetchVaccines();
       // fetchBabyBirthDate()
     }
-  }, [isAuth]);
+  }, [isAuth, fetchVaccines]);
 
-  const fetchVaccines = async () => {
+  const fetchVaccines = useCallback(async () => {
     try {
       const token = getAuthToken();
       const res = await axios.get("/api/vaccine", {
@@ -86,7 +86,7 @@ export default function VaccineTracker({ babyId }) {
     } catch (error) {
       console.error("Error fetching vaccines:", error);
     }
-  };
+  }, []);
 
   const initializeStandardSchedule = async () => {
     if (!babyBirthDate) return;
@@ -207,7 +207,7 @@ export default function VaccineTracker({ babyId }) {
       <div className="flex flex-wrap items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Medical Records: Vaccines & Important Contacts</h2>
-          <p className="text-gray-600 dark:text-gray-300">Keep track of your baby's vaccination schedule and essential medical contacts for quick access.</p>
+          <p className="text-gray-600 dark:text-gray-300">Keep track of your baby&apos;s vaccination schedule and essential medical contacts for quick access.</p>
         </div>
         <Button
           onClick={() => {
@@ -227,11 +227,11 @@ export default function VaccineTracker({ babyId }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 dark:text-gray-200">
               <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-500 " />
-              Set Baby's Birth Date
+              Set Baby&apos;s Birth Date
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-gray-600 dark:text-gray-200">Enter your baby's birth date to automatically generate the standard vaccination schedule.</p>
+            <p className="text-gray-600 dark:text-gray-200">Enter your baby&apos;s birth date to automatically generate the standard vaccination schedule.</p>
             <div className="flex gap-4 flex-wrap">
               <Input type="date" value={babyBirthDate} onChange={(e) => setBabyBirthDate(e.target.value)} className="max-w-xs dark:bg-gray-700 dark:text-gray-200" />
               <Button onClick={initializeStandardSchedule} disabled={!babyBirthDate} className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600">
@@ -472,7 +472,7 @@ export default function VaccineTracker({ babyId }) {
                         <div>
                           <h4 className="font-medium">{vaccine.name}</h4>
                           <p className="text-sm text-gray-600 dark:text-gray-300">{vaccine.description || "No description"}</p>
-                          {vaccine.notes && <p className="text-sm text-gray-500 italic">"{vaccine.notes}"</p>}
+                          {vaccine.notes && <p className="text-sm text-gray-500 italic">&quot;{vaccine.notes}&quot;</p>}
                         </div>
                       </div>
 

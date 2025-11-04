@@ -3,8 +3,6 @@ import Vaccine from '@/app/models/Vaccine.model';
 import connectDB from '@/lib/connectDB';
 import { authenticateToken } from '@/lib/auth';
 
-await connectDB();
-
 // ======================= GET =======================
 export async function GET(req) {
   const userReq = await authenticateToken(req);
@@ -15,6 +13,7 @@ export async function GET(req) {
   }
 
   try {
+    await connectDB();
     const vaccines = await Vaccine.find({ userId }).sort({ scheduledDate: 1 });
     return NextResponse.json(vaccines);
   } catch (error) {
@@ -34,6 +33,7 @@ export async function POST(req) {
   }
 
   try {
+    await connectDB();
     const vaccine = new Vaccine({
       userId,
       ...vaccineData,
@@ -60,6 +60,7 @@ export async function PATCH(req) {
   }
 
   try {
+    await connectDB();
     const vaccine = await Vaccine.findOneAndUpdate(
       { _id: vaccineId, userId },
       { status: newStatus },

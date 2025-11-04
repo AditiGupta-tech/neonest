@@ -151,10 +151,9 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authenticateToken } from "@/lib/auth";
 
-await connectDB();
-
 export async function POST(req) {
   try {
+    await connectDB();
     const body = await req.json();
     const { name, email, password } = body;
 
@@ -221,6 +220,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
   try {
+    await connectDB();
     const body = await req.json();
     // THIS IS THE CRITICAL FIX: BabyDet is already an array/object after req.json()
     const { noOfBabies, deliveryType, BabyDet } = body;
