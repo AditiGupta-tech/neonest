@@ -3,11 +3,10 @@ import User from "@/app/models/User.model";
 import { authenticateToken } from "@/lib/auth";
 import connectDB from "@/lib/connectDB";
 
-await connectDB();
-
 // Create a new notification
 export async function POST(req) {
   try {
+    await connectDB();
     const body = await req.json();
     const { type, title, message, priority, scheduledFor, actionUrl, metadata, category } = body;
 
@@ -68,6 +67,7 @@ export async function POST(req) {
 // Get all notifications for a user
 export async function GET(req) {
   try {
+    await connectDB();
     const user = await authenticateToken(req);
     const userId = user.user.id;
 
@@ -112,6 +112,7 @@ export async function GET(req) {
 // Update notification (mark as read, etc.)
 export async function PATCH(req) {
   try {
+    await connectDB();
     const body = await req.json();
     const { notificationId, isRead, isSent } = body;
 
@@ -167,6 +168,7 @@ export async function PATCH(req) {
 // Delete a notification
 export async function DELETE(req) {
   try {
+    await connectDB();
     const { searchParams } = new URL(req.url);
     const notificationId = searchParams.get("id");
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/Button";
 import Input from "../components/ui/Input";
@@ -47,7 +47,7 @@ export default function Page() {
   };
 
   // Fetch inventory from API
-  const fetchInventory = async () => {
+  const fetchInventory = useCallback(async () => {
     try {
       setIsInventoryLoading(true);
       const token = getAuthToken();
@@ -70,14 +70,14 @@ export default function Page() {
     } finally {
       setIsInventoryLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.title = "Essentials | NeoNest";
     if (isAuth) {
       fetchInventory();
     }
-  }, [isAuth]);
+  }, [isAuth, fetchInventory]);
 
   // Add new item
   const addItem = async () => {
@@ -515,7 +515,7 @@ export default function Page() {
                   </span>
                 </div>
 
-                {item.notes && <p className="text-sm text-gray-500 italic">"{item.notes}"</p>}
+                {item.notes && <p className="text-sm text-gray-500 italic">&quot;{item.notes}&quot;</p>}
 
                 <div className="flex gap-2">
                   <Button size="sm" variant="outline" onClick={() => setEditingItem(item)} className="flex-1">

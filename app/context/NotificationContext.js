@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useAuth } from "./AuthContext";
 import { toast } from "sonner";
 
@@ -21,7 +21,7 @@ export const NotificationProvider = ({ children }) => {
   const { isAuth } = useAuth();
 
   // Fetch notifications from API
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     if (!isAuth) return;
 
     try {
@@ -43,7 +43,7 @@ export const NotificationProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isAuth]);
 
   // Create a new notification
   const createNotification = async (notificationData) => {
@@ -254,7 +254,7 @@ export const NotificationProvider = ({ children }) => {
       setNotifications([]);
       setUnreadCount(0);
     }
-  }, [isAuth]);
+  }, [isAuth, fetchNotifications]);
 
   const value = {
     notifications,

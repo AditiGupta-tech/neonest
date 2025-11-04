@@ -51,11 +51,11 @@ export default function LoginPrompt({ sectionName = "this section" }) {
             </div>
 
             <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2 hover:from-pink-700 hover:to-purple-700 transition-all duration-300">
-              Access Your Baby's Personalized Features
+              Access Your Baby&apos;s Personalized Features
             </h2>
 
             <p className="text-gray-600 text-sm hover:text-gray-700 dark:text-gray-200 transition-colors duration-300">
-              Please log in to access your baby's personalized {sectionName} and track their progress with our comprehensive tools.
+              Please log in to access your baby&apos;s personalized {sectionName} and track their progress with our comprehensive tools.
             </p>
           </div>
 
@@ -92,7 +92,7 @@ export default function LoginPrompt({ sectionName = "this section" }) {
             </Button>
 
             <p className="text-sm text-center text-gray-600 dark:text-gray-200">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <button
                 onClick={handleSignupClick}
                 disabled={isNavigating}

@@ -7,9 +7,8 @@ import Sleep from "@/app/models/Sleep.model";
 import Vaccine from "@/app/models/Vaccine.model";
 import { formatTime } from "@/utils/formatTime";
 
-await connectDB()
-
 const saveFeeding=async (task,user)=>{
+    await connectDB();
     const {time,type,amount,notes} = task.values;
 
     if(!time || !type || !amount){

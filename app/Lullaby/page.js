@@ -367,9 +367,9 @@ export default function LullabyPage() {
                 </div>
                 {index === currentTrackIndex && isPlaying && (
                   <div className="flex items-center gap-1">
-                    <span className="w-1 h-3 bg-pink-500 rounded-full animate-pulse" style={{ animationDelay: "0s" }}></span>
-                    <span className="w-1 h-4 bg-pink-500 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></span>
-                    <span className="w-1 h-3 bg-pink-500 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></span>
+                    <span className="w-1 h-3 bg-pink-500 rounded-full animate-pulse [animation-delay:0s]"></span>
+                    <span className="w-1 h-4 bg-pink-500 rounded-full animate-pulse [animation-delay:0.2s]"></span>
+                    <span className="w-1 h-3 bg-pink-500 rounded-full animate-pulse [animation-delay:0.4s]"></span>
                   </div>
                 )}
               </div>

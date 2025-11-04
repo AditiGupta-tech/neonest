@@ -5,11 +5,10 @@ import connectDB from "@/lib/connectDB";
 import User from "@/app/models/User.model";
 import { cloudinary } from "@/lib/cloudinary";
 
-await connectDB();
-
 // GET - Get public memories
 export async function GET(request) {
   try {
+    await connectDB();
     console.log(request.headers)
     const user = await authenticateToken(request);
     console.log(user)
@@ -31,6 +30,7 @@ export async function GET(request) {
 }
 export async function POST(request) {
   try {
+    await connectDB();
     const formData = await request.formData();
     console.log(formData);
     const user = await authenticateToken(request);

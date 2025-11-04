@@ -4,9 +4,9 @@ import { authenticateToken } from "@/lib/auth";
 import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 
-await connectDB();
 export async function GET(request) {
   try {
+    await connectDB();
     const user = await authenticateToken(request);
     const userId = user.user.id;
     
@@ -33,6 +33,7 @@ export async function GET(request) {
 // Add new essential item
 export async function POST(request) {
   try {
+    await connectDB();
     
     const user = await authenticateToken(request);
     const userId = user.user.id;
