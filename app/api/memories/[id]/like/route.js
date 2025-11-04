@@ -5,9 +5,8 @@ import connectDB from '@/lib/connectDB';
 import { authenticateToken } from '@/lib/auth';
 import Memory from '@/app/models/Memory.model';
 
-await connectDB();
-
 export async function PUT(request, { params }) {
+  await connectDB();
   const user = await authenticateToken(request);
   const userId = user.user.id;
 

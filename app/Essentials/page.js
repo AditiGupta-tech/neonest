@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/Button";
 import Input from "../components/ui/Input";
@@ -41,13 +41,11 @@ export default function Page() {
   const [isInventoryLoading, setIsInventoryLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Get auth token from localStorage
   const getAuthToken = () => {
     return localStorage.getItem("token");
   };
 
-  // Fetch inventory from API
-  const fetchInventory = async () => {
+  const fetchInventory = useCallback(async () => {
     try {
       setIsInventoryLoading(true);
       const token = getAuthToken();
@@ -70,16 +68,15 @@ export default function Page() {
     } finally {
       setIsInventoryLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.title = "Essentials | NeoNest";
     if (isAuth) {
       fetchInventory();
     }
-  }, [isAuth]);
+  }, [isAuth, fetchInventory]);
 
-  // Add new item
   const addItem = async () => {
     if (newItem.name && newItem.currentStock && newItem.minThreshold) {
       try {
@@ -115,7 +112,6 @@ export default function Page() {
     }
   };
 
-  // Update item
   const updateItem = async (id, updatedItem) => {
     try {
       const token = getAuthToken();
@@ -141,7 +137,6 @@ export default function Page() {
     }
   };
 
-  // Delete item
   const deleteItem = async (id) => {
     try {
       const token = getAuthToken();
@@ -163,7 +158,6 @@ export default function Page() {
     }
   };
 
-  // Update stock
   const updateStock = async (id, newStock) => {
     try {
       const token = getAuthToken();
@@ -175,7 +169,7 @@ export default function Page() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ currentStock: newStock }),
+        body: JSON.stringify({ currentStock: parseInt(newStock) }),
       });
 
       if (!response.ok) throw new Error("Failed to update stock");
@@ -193,7 +187,7 @@ export default function Page() {
 
   const getStockStatus = (item) => {
     if (item.currentStock === 0) return { status: "out", color: "bg-red-400 text-red-700", text: "Out of Stock" };
-    if (item.currentStock <= item.minThreshold) return { status: "low", color: "bg-yellow-500 text-yellow-700 ", text: "Low Stock" };
+    if (item.currentStock <= item.minThreshold) return { status: "low", color: "bg-yellow-500 text-yellow-700", text: "Low Stock" };
     return { status: "good", color: "bg-green-500 text-green-700", text: "In Stock" };
   };
 
@@ -244,7 +238,6 @@ export default function Page() {
     );
   }
 
-  // Show loading state during hydration to prevent mismatch
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
@@ -256,14 +249,12 @@ export default function Page() {
     );
   }
 
-  // Show login prompt if user is not authenticated
   if (!isAuth) {
     return <LoginPrompt sectionName="essentials tracker" />;
   }
 
   return (
     <div className="space-y-6 px-4 sm:px-6 md:px-8 py-6 max-w-7xl mx-auto">
-      {/* Header and Add Item Button */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-1">Baby Essentials Tracker</h2>
@@ -275,7 +266,6 @@ export default function Page() {
         </Button>
       </div>
 
-      {/* "See Essentials" Toggle */}
       <div className="border-t pt-6 mt-6">
         <h3 className="text-xl font-semibold text-black mb-1 flex items-center justify-between">
           <span className="dark:text-gray-200">Not sure what to add? Start with these essentials:</span>
@@ -301,7 +291,6 @@ export default function Page() {
         </div>
       )}
 
-      {/* Alerts */}
       {(lowStockItems.length > 0 || outOfStockItems.length > 0) && (
         <div className="space-y-3">
           {outOfStockItems.length > 0 && (
@@ -342,16 +331,15 @@ export default function Page() {
         </div>
       )}
 
-      {/* Add/Edit Item */}
       {(isAddingItem || editingItem) && (
-        <Card className="bg-blue-50 dark:bg-gray-600  border-blue-200">
+        <Card className="bg-blue-50 dark:bg-gray-600 border-blue-200">
           <CardHeader>
             <CardTitle className="flex items-center dark:text-gray-200 gap-2">
               <Package className="w-5 h-5 text-blue-600" />
               {editingItem ? "Edit Item" : "Add New Item"}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 dark:text-gray-200 ">
+          <CardContent className="space-y-4 dark:text-gray-200">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium mb-2">Item Name</label>
@@ -481,7 +469,6 @@ export default function Page() {
         </Card>
       )}
 
-      {/* Essentials List */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {inventory.map((item) => {
           const stockStatus = getStockStatus(item);
@@ -515,7 +502,7 @@ export default function Page() {
                   </span>
                 </div>
 
-                {item.notes && <p className="text-sm text-gray-500 italic">"{item.notes}"</p>}
+                {item.notes && <p className="text-sm text-gray-500 italic">&quot;{item.notes}&quot;</p>}
 
                 <div className="flex gap-2">
                   <Button size="sm" variant="outline" onClick={() => setEditingItem(item)} className="flex-1">
@@ -546,7 +533,6 @@ export default function Page() {
         </Card>
       )}
 
-      {/* Shopping List */}
       {lowStockItems.length > 0 && (
         <Card className="bg-orange-50 dark:bg-gray-700 dark:text-gray-200 border-orange-200">
           <CardHeader>
@@ -556,7 +542,7 @@ export default function Page() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2  ">
+            <div className="space-y-2">
               <div className="flex flex-wrap gap-2 overflow-auto">
                 {lowStockItems.map((item) => (
                   <div key={item._id} className="flex items-center justify-between p-2 bg-white/50 dark:text-gray-100 rounded">

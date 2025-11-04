@@ -106,7 +106,7 @@ const NotificationBell = () => {
                   <div className="p-6 text-center dark:bg-gray-800 dark:text-gray-200 text-gray-500">
                     <Bell size={32} className="mx-auto mb-2 text-gray-300" />
                     <p>No notifications yet</p>
-                    <p className="text-sm">We'll notify you about important updates</p>
+                    <p className="text-sm">We&apos;ll notify you about important updates</p>
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">

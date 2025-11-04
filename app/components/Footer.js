@@ -73,7 +73,7 @@ export default function NeoNestFooter() {
                 </span>
               </div>
               <p className="text-gray-300 text-base leading-relaxed max-w-md">
-                Supporting parents through their baby's first year with expert guidance, AI tools, and a loving community.
+                Supporting parents through their baby&apos;s first year with expert guidance, AI tools, and a loving community.
               </p>
               <div className="flex items-center space-x-2 text-pink-400 font-medium text-sm">
                 <span>Happy baby, Happy you!</span>
